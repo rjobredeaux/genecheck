@@ -1,0 +1,1427 @@
+(asdf:disable-output-translations)
+(load "./cl-ppcre-2.0.7/cl-ppcre.asd")
+(lisp (asdf:oos 'asdf:load-op :cl-ppcre))
+
+(defstep AffineEllipsoid ()
+  (then@
+   (expand "wp")
+   (skeep*)
+   (beta)
+   (flatten)
+   (let ((s (cl-ppcre::scan-to-strings
+	     "l_qmat_[0-9]+"
+	     (unparse
+	      (formula
+	       (car
+		(select-seq (s-forms *goal*) 1)))
+	      :string t
+	      :pretty nil))))
+     (expand s))
+   (let ((goal (unparse
+		(formula
+		 (car
+		  (select-seq (s-forms *goal*) 1)))
+		:string t
+		:pretty nil)))
+     (let ((M_sizes (mat_sizes "l_mat_of_([0-9]+)x([0-9]+)_scalar" goal)))
+       (let ((Mr (parse-integer (car M_sizes)))
+	     (Mc (parse-integer (cadr M_sizes))))
+	 (let ((M (find_variables goal "l_mat_of_([0-9]+)x([0-9]+)_scalar\\("))
+	       (y (find_variables goal
+				  (format () "l_vect_of_~D_scalar\\(" Mr)))
+	       (Q (cl-ppcre::scan-to-strings "l_qmat_[0-9]+" goal)))
+	   (let ((relevant-antecedents
+		  (cons
+		   1
+		   (concatenate 'list
+				(aux1
+				 (map 'list
+				      #'filter-antecedent
+				      (n-sforms (current-goal *ps*)))
+				 (cl-ppcre::create-scanner Q)
+				 (length (n-sforms (current-goal *ps*)))
+				 1
+				 ())
+				(aux1-eq (n-sforms (current-goal *ps*))
+					 (length
+					  (n-sforms
+					   (current-goal *ps*)))
+					 1
+					 ())))))
+	     (let ((x (find_variables
+		       (unparse
+			(formula
+			 (car (select-seq
+			       (s-forms *goal*)
+			       (cadr relevant-antecedents))))
+			:string t
+			:pretty nil)
+		       (format () "l_vect_of_~D_scalar\\(" Mc))))
+	       (then@ (hide-all-but relevant-antecedents)
+		      (then@ (lemma "is_finite_to_float_32")
+			     (lemma "is_finite_to_float_64")
+			     (lemma "proj_float32")
+			     (lemma "proj_float64")
+			     (expand "Matrix_mult")
+			     (master-ellipsoid x y M Q Mr Mc))))))))))
+  "main strategy for ellipsoid"
+  "")
+
+(defstrat master-ellipsoid (x y M Q Mr Mc)
+  (let ((case1
+	 (format nil "~a`length=~d AND ~%~a`length=~d AND ~%~
+                      ~a`rows=~d AND ~%~a`cols=~d AND ~%~
+                      ~a`rows=~d AND ~%~a`cols=~d"
+		 x Mc y Mr M Mr M Mc Q Mc Q Mc))
+	(lem1 (format nil "q_vect_of_~d_scalar_length" Mc))
+	(lem2 (format nil "q_vect_of_~d_scalar_length" Mr))
+	(lem3 (format nil "q_mat_of_~dx~d_scalar_row" Mr Mc))
+	(lem4 (format nil "q_mat_of_~dx~d_scalar_col" Mr Mc))
+	(compmat (reverse (cons M (reverse (extract-Mcomponents M)))))
+	(compvect1 (reverse (cons x (reverse (extract-Vcomponents x)))))
+	(compvect2 (reverse (cons y (reverse (extract-Vcomponents y)))))
+	(case2 (format nil "~a`rows=~d and ~a`cols=~d" Q Mc Q Mc)))
+    (branch
+     (case case1)
+     ((phase_1 x y M Q Mr Mc)
+      (then@
+       (hide 2)
+       (branch
+	(case case2)
+	((branch (split)
+		 ((then@ (lemma lem1) (instantiate -1 compvect1) (assert))
+		  (then@ (lemma lem2) (instantiate -1 compvect2) (assert))
+		  (then@ (lemma lem3) (instantiate -1 compmat) (assert))
+		  (then@ (lemma lem4) (instantiate -1 compmat) (assert))
+		  (then@ (hide 2) (flatten) (assert))
+		  (then@ (hide 2) (flatten) (assert))
+		  (then@ (hide 2) (junk))))
+	 (then@ (hide-all-but 1)
+		(lemma "is_finite_to_float_32")
+		(lemma "is_finite_to_float_64")
+		(lemma "proj_float32")
+		(lemma "proj_float64")
+		(qmat-dimensions))
+	 (then@ (hide 2) (junk))))))))
+  ""
+  "")
+
+(defstrat phase_1 (x y M Q Mr Mc)
+  (branch (name-replace "M" M)
+	  ((branch (name-replace "Q" Q)
+		   ((branch (name-replace "x" x)
+			    ((branch (name-replace "y" y)
+				     ((then@ (flatten)
+					     (assert)
+					     ;; (expand "*")
+					     ;; (assert)
+					     ;; (expand transpose)
+					     (lemma "ellipsoid_general")
+					     (phase_1_1 x y M Q Mr Mc))
+				      (junk)))
+			     (junk)))
+		    (junk)))
+	   (junk)))
+  ""
+  "")
+
+(defstrat phase_1_1 (x y M Q Mr Mc)
+  (let ((x_vect (concatenate 'string x "`vect"))
+	(y_vect (concatenate 'string y "`vect"))
+	(Mc_string (write-to-string Mc))
+	(Mr_string (write-to-string Mr)))
+    (branch (inst -1 Mc_string Mr_string "Q" "M" "x`vect" "y`vect")
+	    ((branch (case "y`vect = M * x`vect")
+		     ((then@ (assert)
+			     (expand "*")
+			     (expand "transpose")
+			     (assert))
+		      (then@ (hide 2)
+			     (phase_2 x y M Q Mr Mc))
+		      (then@ (hide 2) (junk))))
+	     (then@ (hide 2) (junk)))))
+    ""
+    "")
+
+(defstrat phase_2 (x y M Q Mr Mc)
+  (let ((lemma_mat_select
+	 (concatenate 'string
+		      "q_mat_of_"
+		      (write-to-string Mr)
+		      "x"
+		      (write-to-string Mc)
+		      "_scalar_select"))
+	(lemma_vect1
+	 (concatenate 'string
+		      "q_vect_of_"
+		      (write-to-string Mc)
+		      "_scalar_select"))
+	(lemma_vect2
+	 (concatenate 'string
+		      "q_vect_of_"
+		      (write-to-string Mr)
+		      "_scalar_select"))
+	(compmat (reverse (cons "M" (reverse (extract-Mcomponents M)))))
+	(compvect1 (reverse (cons "x" (reverse (extract-Vcomponents x)))))
+	(compvect2 (reverse (cons "y" (reverse (extract-Vcomponents y))))))
+    (then@ (hide -1 2)
+	   (lemma lemma_mat_select)
+	   (instantiate -1 compmat)
+	   (branch
+	    (bddsimp -1)
+	    ((then@
+	      (lemma lemma_vect1)
+	      (instantiate -1 compvect1)
+	      (branch
+	       (bddsimp -1)
+	       ((then@ (lemma lemma_vect2)
+		       (instantiate -1 compvect2)
+		       (branch
+			(bddsimp -1)
+			((then@ (expand "*")
+				(expand "Matrix_select")
+				(expand "Vector_select")
+				(branch
+				 (decompose-equality)
+				 ((then@ (for Mc (expand sigma))
+					 (assert)
+					 (custom_for Mr Mr x y))
+				  (then@ (hide 2) (junk)))))
+			 (expand "y"))))
+		(expand "x"))))
+	     (expand "M")))))
+  ""
+  "")
+
+
+
+
+(defstrat Identity ()
+  (then@ (expand "wp")
+	 (skosimp*) (beta) (flatten)
+	 (let ((s (cl-ppcre::scan-to-strings
+		   "l_qmat_[0-9]+"
+		   (unparse (formula (car (select-seq (s-forms *goal*) 1)))
+			    :string t
+			    :pretty nil))))
+	   (expand s))
+	 (let ((goal
+		(unparse (formula (car (select-seq (s-forms *goal*) 1)))
+			 :string t
+			 :pretty nil)))
+	   (let ((M_sizes (mat_sizes "l_mat_of_([0-9]+)x([0-9]+)_scalar" goal)))
+	     (let ((Mr (parse-integer (car M_sizes)))
+		   (Mc (parse-integer (cadr M_sizes))))
+	       (let ((M (find_variables goal
+					"l_mat_of_([0-9]+)x([0-9]+)_scalar\\("))
+		     (x (find_variables goal
+					(format ()
+						"l_vect_of_~D_scalar\\("
+						Mr)))
+		     (Q (cl-ppcre::scan-to-strings
+			 "l_qmat_[0-9]+"
+			 goal)))
+		 (let ((relevant-antecedents
+			(cons
+			 1
+			 (aux1
+			  (map 'list
+			       #'filter-antecedent
+			       (n-sforms (current-goal *ps*)))
+			  (cl-ppcre::create-scanner Q)
+			  (length (n-sforms (current-goal *ps*)))
+			  1
+			  ()))))
+		   (then@ (hide-all-but relevant-antecedents)
+			  (lemma "is_finite_to_float_32")
+			  (lemma "is_finite_to_float_64")
+			  (lemma "proj_float32")
+			  (lemma "proj_float64")
+			  (expand "Matrix_mult")
+			  (master-ellipsoid_id x M Q Mr Mc))))))))
+  "main strategy for ellipsoid"
+  "")
+
+(defstrat master-ellipsoid_id (x M Q Mr Mc)
+  (let ((case1 (format nil "~a`length=~d AND ~%~
+                              ~a`rows=~d AND ~%~a`cols=~d AND ~%~
+                              ~a`rows=~d AND ~%~a`cols=~d"
+		       x Mc M Mr M Mc
+		       Q Mc Q Mc))
+	(lem1 (format nil "q_vect_of_~d_scalar_length" Mc))
+	(lem2 (format nil "q_mat_of_~dx~d_scalar_row" Mr Mc))
+	(lem3 (format nil "q_mat_of_~dx~d_scalar_col" Mr Mc))
+	(compmat (reverse (cons M (reverse (extract-Mcomponents M)))))
+	(compvect1 (reverse (cons x (reverse (extract-Vcomponents x)))))
+	(case2 (format nil "~a`rows=~d and ~a`cols=~d" Q Mc Q Mc)))
+    (branch (case case1)
+	    ((phase_1_id x M Q Mr Mc)
+	     (then@ (hide 2)
+		    (branch
+		     (case case2)
+		     ((branch
+		       (split)
+		       ((then@ (lemma lem1) (instantiate -1 compvect1) (assert))
+			(then@ (lemma lem2) (instantiate -1 compmat) (assert))
+			(then@ (lemma lem3) (instantiate -1 compmat) (assert))
+			(then@ (hide 2) (flatten) (assert))
+			(then@ (hide 2) (flatten) (assert))
+			(then@ (hide 2) (junk))))
+		      (then@ (hide-all-but 1)
+			     (lemma "is_finite_to_float_32")
+			     (lemma "is_finite_to_float_64")
+			     (lemma "proj_float32")
+			     (lemma "proj_float64")
+			     (qmat-dimensions))
+		      (then@ (hide 2) (junk))))))))
+  ""
+  "")
+
+(defstrat phase_1_id (x M Q Mr Mc)
+  (branch (name-replace "M" M)
+	  ((branch (name-replace "Q" Q)
+		   ((branch (name-replace "x" x)
+			    ((then@ (flatten)
+				    (assert)
+				    (phase_1_1_id x M Q Mr Mc))
+			     (junk)))
+		    (junk)))
+	   (junk)))
+  ""
+  "")
+
+(defstrat phase_1_1_id (x M Q Mr Mc)
+  (let ((x_vect (concatenate 'string x "`vect"))
+	(Mc_string (write-to-string Mc))
+	(Mr_string (write-to-string Mr)))
+    (branch (case "M*Q*transpose(M) = Q")
+	    ((then@ (assert)
+		    (replace -1)
+		    (expand "*")
+		    (expand "transpose")
+		    (assert))
+	     (then@ (hide 2)
+		    (phase_2_id x M Q Mr Mc))
+	     (then@ (hide 2) (expand "*") (expand "transpose") (assert)))))
+  ""
+  "")
+
+(defstrat phase_2_id (x M Q Mr Mc)
+  (let ((case_1 (format nil "M=I(~d)" Mr)))
+    (branch (case case_1)
+	    ((then@ (replace -1)
+		    (lemma ident_trans)
+		    (branch (inst? -1)
+			    ((then@ (replace -1)
+				    (lemma right_mult_ident)
+				    (lemma left_mult_ident)
+				    (branch (inst? -1)
+					    ((then@ (replace -1)
+						    (branch (inst? -2)
+							    ((assert)
+							     (junk))))
+					     (junk))))
+			     (junk))))
+	     (let ((lemma_mat_select (concatenate 'string
+						  "q_mat_of_"
+						  (write-to-string Mr)
+						  "x"
+						  (write-to-string Mc)
+						  "_scalar_select"))
+		   (compmat (reverse
+			     (cons "M" (reverse (extract-Mcomponents M))))))
+	       (then@ (hide 2)
+		      (lemma lemma_mat_select)
+		      (expand "M")
+		      (branch
+		       (inst? -1)
+		       ((branch
+			 (inst? -1)
+			 ((then@ (expand Matrix_select)
+				 (assert)
+				 (expand "I")
+				 (decompose-equality)
+				 (branch (decompose-equality)
+					 ((if (= Mr 1)
+					      (then (split) (junk))
+					    (custom_for_id_outer Mr Mr))
+					  (branch (split)
+						  ((junk)
+						   (junk))))))
+			  (junk)))
+			(junk))))))))
+  ""
+  "")
+
+(defstrat junk ()
+  (if (forall-expr? (formula (car (select-seq (s-forms *goal*) 1))))
+      (then@
+       (skosimp*)
+       (if (iff? (formula (car (select-seq (s-forms *goal*) 1))))
+	   (then (split)
+		 (bddsimp)
+		 (try (assert)
+		      (then@ (expand "V2Block")
+			     (assert))
+		      (then@ (expand "V2Block") (assert))))
+	 (if (conjunction? (formula (car (select-seq (s-forms *goal*) 1))))
+	     (then@ (expand "squareMat?")
+		    (expand "square?")
+		    (assert))
+	   (then@ (if (resolve* (pc-parse "i!1" 'expr) 'expr nil)
+		      (typepred "i!1")
+		    (skip))
+		  (expand V2Block) (assert)))))
+    (if (implication? (formula (car (select-seq (s-forms *goal*) 1))))
+	(then (bddsimp)
+	      (then@
+	       (expand "Zero_mat")
+	       (expand "*")
+	       (inst 1  "(# length :=1 , vect := vectors[1].zero #)")
+	       (inst 1 "I(1)") (assert)))
+      (if (exists-expr? (formula (car (select-seq (s-forms *goal*) 1))))
+	  (try (inst 1 "(# length :=1 , vect := vectors[1].zero #)")
+	       (skip)
+	       (inst 1 "I(1)"))
+	(if (conjunction? (formula (car (select-seq (s-forms *goal*) 1))))
+	    (then@ (expand "Zero_mat") (expand "*") (assert))
+	  (try (expand "squareMat?") (assert) (assert))))))
+  "to deal with junk TCCs"
+  "")
+
+
+
+(defstep SProcedure ()
+  (then@
+   (expand "wp")
+   (skosimp*)
+   (beta)
+   (flatten)
+   (let ((s
+	  (cl-ppcre::scan-to-strings
+	   "l_qmat_[0-9]+"
+	   (unparse
+	    (formula
+	     (car
+	      (select-seq (s-forms *goal*) 1)))
+	    :string t
+	    :pretty nil))))
+     (expand s))
+   (let ((goal (unparse
+		(formula
+		 (car
+		  (select-seq (s-forms *goal*) 1)))
+		:string t
+		:pretty nil)))
+     (let ((q1 (cl-ppcre::scan-to-strings "l_qmat_[0-9]+" goal))
+	   (sizes (mat_sizes
+		   "([0-9]+)[^0-9,]*,[^0-9,]*([0-9]+)"
+		   (find_variables goal "Zero_mat_ti\\(")))
+	   (z (find_variables goal "l_vect_of_([0-9]+)_scalar\\(")))
+       (let ((q2 (cl-ppcre::scan-to-strings
+			"l_qmat_[0-9]+"
+			(cl-ppcre::regex-replace-all q1 goal "")))
+	     (size_q1 (car sizes))
+	     (size_q2 (cadr sizes)))
+	 (let ((relevant-antecedent_1
+		(aux1
+		 (map 'list
+		      #'filter-antecedent
+		      (n-sforms (current-goal *ps*)))
+		 (cl-ppcre::create-scanner q1)
+		 (length (n-sforms (current-goal *ps*)))
+		 1
+		 ()))
+	       (relevant-antecedent_2
+		(aux1
+		 (map 'list
+		      #'filter-antecedent
+		      (n-sforms (current-goal *ps*)))
+		 (cl-ppcre::create-scanner q2)
+		 (length (n-sforms (current-goal *ps*)))
+		 1
+		 ()))
+	       (eq3 (aux1-eq (n-sforms (current-goal *ps*))
+			     (length (n-sforms (current-goal *ps*)))
+			     1
+			     ())))
+	   (let ((x (find_variables
+		     (unparse
+		      (formula
+		       (car
+			(select-seq
+			 (s-forms *goal*) (car relevant-antecedent_1))))
+		      :string t
+		      :pretty nil)
+		     (concatenate 'string
+				  "l_vect_of_"
+				  size_q1
+				  "_scalar\\(")))
+		 (y (find_variables
+		     (unparse
+		      (formula
+		       (car
+			(select-seq (s-forms *goal*)
+				    (car relevant-antecedent_2))))
+		      :string t :pretty nil)
+		     (concatenate 'string
+				  "l_vect_of_"
+				  size_q2
+				  "_scalar\\(")))
+		 (relevant-antecedents
+		  (cons 1 (concatenate 'list
+				       relevant-antecedent_1
+				       relevant-antecedent_2
+				       eq3)))
+		 (case1 (concatenate
+			 'string
+			 q1 "`rows=" size_q1 " and " q1 "`cols=" size_q1
+			 " and " q2 "`rows=" size_q2 " and " q2 "`cols="
+			 size_q2 " and " x "`length=" size_q1 " and "
+			 y "`length=" size_q2 " and " z "`length="
+			 (write-to-string
+			  (+ (parse-integer size_q1)
+			     (parse-integer size_q2))))))
+	     (then@
+	      (hide-all-but relevant-antecedents)
+	      (lemma "is_finite_to_float_32")
+	      (lemma "is_finite_to_float_64")
+	      (lemma "proj_float32")
+	      (lemma "proj_float64")
+	      (branch
+	       (case case1)
+	       ((then@
+		 (flatten)
+		 (assert)
+		 (expand "Block_ti")
+		 (expand "Zero_mat_ti")
+		 (let ((Q (find_variables
+			   (unparse
+			    (formula
+			     (car
+			      (select-seq (s-forms *goal*) 1)))
+			    :string t :pretty nil) "Block2M\\(")))
+		   (branch
+		    (name-replace "Q" Q)
+		    ((let ((case2
+			    (concatenate 'string Q
+					 "`cols="
+					 (write-to-string
+					  (+ (parse-integer size_q1)
+					     (parse-integer size_q2)))
+					 " and " Q "`rows="
+					 (write-to-string
+					  (+ (parse-integer size_q1)
+					     (parse-integer size_q2)))))
+			   (mu_1 (aref (cadr (multiple-value-list
+					      (cl-ppcre::scan-to-strings
+					       (format
+						nil
+						"\\(([^*()]+)\\*\\s*~a\\s*\\)"
+						q1)
+					       Q)))
+				       0))
+			   (mu_2 (aref (cadr
+					(multiple-value-list
+					 (cl-ppcre::scan-to-strings
+					  (format nil
+						  "\\(([^*()]+)\\*\\s*~a\\s*\\)"
+						  q2)
+					  Q)))
+				       0)))
+		       (let ((lambda_1 (concatenate 'string "1 / (" mu_1 ")"))
+			     (lambda_2 (concatenate 'string "1 / (" mu_2 ")"))
+			     (x_vect (concatenate 'string x "`vect"))
+			     (y_vect (concatenate 'string y "`vect"))
+			     (z_vect (concatenate 'string z "`vect")))
+			 (then@
+			  (expand "*")
+			  (expand "Zero_mat")
+			  (branch
+			   (case case2)
+			   ((then@
+			     (flatten)
+			     (assert)
+			     (lemma "ellipsoid_combination_plus")
+			     (expand "Q")
+			     (branch
+			      (inst -1 size_q1 size_q2 lambda_1 lambda_2
+				    q1 q2 x_vect y_vect z_vect)
+			      ((then@
+				(assert)
+				(let ((case3
+				       (show
+					(concatenate
+					 'string
+					 z_vect "=Block2V(V2Block(" size_q1 ","
+					 size_q2 ")(" x_vect "," y_vect "))"))))
+				  (branch
+				   (case case3)
+				   ((then@ (expand *) (assert))
+				    (then@
+				     (hide 2)
+				     (expand "Block2V")
+				     (expand "V2Block")
+				     (dim_block_vect x y z size_q1 size_q2))
+				    (then@ (hide 2) (junk))))))
+			       (then@ (hide 2) (junk)))))
+			    (then@ (hide 2)
+				   (expand "Block2M")
+				   (expand "M2Block")
+				   (expand "Zero_mat")
+				   (expand "*")
+				   (assert))
+			    (then@ (hide 2) (junk)))))))
+		     (then@ (hide 2) (junk))))))
+		(dimensions-sproc q1 q2 size_q1 size_q2 x y z)
+		(then@ (hide 2) (junk)))))))))))
+  "main strategy for SProcedure"
+  "")
+
+(defstrat dimensions-sproc (q1 q2 size_q1 size_q2 x y z)
+  (let ((case1 (concatenate
+		'string q1 "`cols=" size_q1 " and " q1 "`rows=" size_q1))
+	(case2 (concatenate
+		'string q2 "`cols=" size_q2 " and " q2 "`rows=" size_q2))
+	(lem1 (concatenate 'string "q_vect_of_" size_q1 "_scalar_length"))
+	(lem2 (concatenate 'string "q_vect_of_" size_q2 "_scalar_length"))
+	(lem3 (concatenate
+	       'string
+	       "q_vect_of_"
+	       (write-to-string (+ (parse-integer size_q1)
+				   (parse-integer size_q2)))
+	       "_scalar_length"))
+	(compvect1 (reverse (cons x (reverse (extract-Vcomponents x)))))
+	(compvect2 (reverse (cons y (reverse (extract-Vcomponents y)))))
+	(compvect3 (reverse (cons z (reverse (extract-Vcomponents z))))))
+    (branch (case case1)
+	    ((branch (case case2)
+		     ((branch (split)
+			      ((then@ (hide 2) (flatten) (assert))
+			       (then@ (hide 2) (flatten) (assert))
+			       (then@ (hide 2) (flatten) (assert))
+			       (then@ (hide 2) (flatten) (assert))
+			       (then@ (lemma lem1) (instantiate -1 compvect1)
+				      (assert))
+			       (then@ (lemma lem2) (instantiate -1 compvect2)
+				      (assert))
+			       (then@ (lemma lem3) (instantiate -1 compvect3)
+				      (assert))
+			       (then@ (hide 2) (junk))))
+		      (then@ (hide-all-but 1)
+			     (lemma "is_finite_to_float_32")
+			     (lemma "is_finite_to_float_64")
+			     (lemma "proj_float32")
+			     (lemma "proj_float64")
+			     (qmat-dimensions))
+		      (then@ (hide 2) (junk))))
+	     (then@ (hide-all-but 1)
+		    (lemma "is_finite_to_float_32")
+		    (lemma "is_finite_to_float_64")
+		    (lemma "proj_float32")
+		    (lemma "proj_float64")
+		    (qmat-dimensions))
+	     (then@ (hide 2) (junk)))))
+  ""
+  "")
+
+(defstrat dim_block_vect (x y z q1 q2)
+  (let ((lemma_vect1 (concatenate 'string "q_vect_of_" q1 "_scalar_select"))
+	(lemma_vect2 (concatenate 'string "q_vect_of_" q2 "_scalar_select"))
+	(lemma_vect3 (concatenate 'string
+				  "q_vect_of_"
+				  (write-to-string (+ (parse-integer q2)
+						      (parse-integer q1)))
+				  "_scalar_select"))
+	(compvect1 (reverse (cons x (reverse (extract-Vcomponents x)))))
+	(compvect2 (reverse (cons y (reverse (extract-Vcomponents y)))))
+	(compvect3 (reverse (cons z (reverse (extract-Vcomponents z))))))
+    (then@ (hide -1 2)
+	   (lemma lemma_vect3)
+	   (instantiate -1 compvect3)
+	   (lemma lemma_vect1)
+	   (instantiate -1 compvect1)
+	   (lemma lemma_vect2)
+	   (instantiate -1 compvect2)
+	   (flatten -1 -2 -3)
+	   (expand "Vector_select")
+	   (branch (decompose-equality)
+		   ((let ((size (+ (parse-integer q2) (parse-integer q1))))
+		      (custom_for_2 size size))
+		    (then@ (hide 2) (junk))))))
+  ""
+  "")
+
+
+(defun upto (n)
+  ;; returns the list of integers from 1 to n
+  (reverse (aux6 n ())))
+
+(defun prepare-theorem (n)
+  (aux7 (mapcar #'(lambda (x) (format nil "n=~d" (- x 1))) (upto n)) ""))
+
+(defstrat custom_for (n N x y)
+  (if (<= n 0)
+      (let ((hide-list (cons -1 (upto N)))
+	    (theorem (format nil "FORALL (n:nat) : n<~d implies (~a)"
+		       N (prepare-theorem N))))
+	(then@ (typepred "x!1")
+	       (hide-all-but hide-list)
+	       (lemma "is_finite_to_float_32")
+	       (lemma "is_finite_to_float_64")
+	       (lemma "proj_float32")
+	       (lemma "proj_float64")
+	       (branch (case theorem)
+		       ((then@ (inst -1 "x!1")
+			       (assert))
+			(then@ (induct "n")
+			       (skosimp*)
+			       (assert))))))
+      (let ((m (- n 1)))
+	(let ((str (format nil "x!1=~d"  m)))
+	  (branch (case str)
+		  (;;(try (assert) (treat_memory x y) (treat_memory x y))
+		   (then@ (repeat (assert))
+			  (treat_memory y m))
+		   (custom_for m N x y ))))))
+  "Repeats step n times"
+  "")
+
+(defstrat treat_memory (y m)
+  ;; In some cases it is necessary to prove that 2
+  ;; pointers point to different locations
+  ;; The sequent looks something like:
+  ;; [-1] y`vect(m) = memory WITH
+  ;;             [some_pointer_location |-> some_value] (other_pointer_location)
+  ;; |------
+  ;; [1] y`vect(m)= memory (other_pointer_location)
+  ;; pointer locations look like "shift( var_name, some_integer)"
+  (let ((subst_mem (access-Vcomponent y m)))
+    ;; what we call subst_mem here is the
+    ;; "memory WITH [...] (other_pointer_location)" part
+    (let (( orig_mem (cl-ppcre::regex-replace-all
+		      "WITH[^\\]]*\\]" subst_mem "")))
+      ;; orig_mem is obtained by removing the "WITH [...]" from subst_mem
+      (let ((case1 (format nil "~a= ~a" subst_mem orig_mem)))
+	;; when other_pointer and some_pointer are the same, PVS solves the
+	;; situation itself so we assume they are different here, which means
+	;; the "WITH" part doesn't change anything to the location accessed,
+	;;  hence case 1, which solves the current sequent and introduces a
+	;; new one looking like:
+	;; |--------
+	;; memory WITH
+	;; [some_pointer_location |-> some_value] (other_pointer_location) =
+	;;             memory (other_pointer_location)
+	(branch
+	 (case case1)
+	 ((then@ (replace -1 *) (assert)) ;;solving for initial sequent
+	  (let ((wrong_ptr (cl-ppcre::regex-replace-all
+			    ".*\\]\\)"
+			    subst_mem ""))
+		(ptr (cl-ppcre::regex-replace-all
+		      ".*\\["
+		      (cl-ppcre::regex-replace-all "\\|.*"
+						   subst_mem
+						   "")
+		      "")))
+	    ;; wrong_addr extracts "some_pointer_location" and addr
+	    ;; extracts "other_pointer_location"
+	    (let ((case2 (format nil "~a /= ~a" wrong_ptr ptr))
+		  (wrong_addr (strip_parens (access-Scomponent wrong_ptr 0)))
+		  (wrong_int (access-Scomponent wrong_ptr 1))
+		  (addr (strip_parens (access-Scomponent ptr 0)))
+		  (int (access-Scomponent ptr 1)))
+	      ;; proving wrong_addr is different from addr will validate
+	      ;; the new sequent
+	      (branch
+	       (case case2)
+	       ((assert)
+		(then@
+		 (hide-all-but 1)
+		 ;; starting here the sequent is
+		 ;; |-----
+		 ;; [1] wrong_ptr /= ptr
+		 ;; that is
+		 ;; [1] shift(wrong_addr,wrong_int) /= shift(addr,int)
+		 ;; We now look in the hidden formulas for the one that says the
+		 ;; 2 pointers are separated
+		 (let
+		     ((hidden-antecedent
+		       (aux1
+			(map 'list
+			     #'filter-antecedent
+			     (neg-s-forms*
+			      (hidden-s-forms (current-goal *ps*))))
+			(cl-ppcre::create-scanner
+			 (format
+			  nil
+			  "separated\\s*\\(\\s*(~a|~a|~a|~a)\\s*,\\s*\\d+\\s*,\\s*(~a|~a|~a|~a)\\s*,\\s*\\d+\\s*\\)"
+			  wrong_addr addr (format nil "shift\\(~a,\\s*0\\)" wrong_addr) (format nil "shift\\(~a,\\s*0\\)" addr)
+			  wrong_addr addr (format nil "shift\\(~a,\\s*0\\)" wrong_addr) (format nil "shift\\(~a,\\s*0\\)" addr)))
+			(length
+			 (neg-s-forms* (hidden-s-forms (current-goal *ps*))))
+			1
+			()))
+		      ( test (format
+			  nil
+			  "separated\\s*\\(\\s*(~a|~a|~a|~a)\\s*,\\s*\\d+\\s*,\\s*(~a|~a|~a|~a)\\s*,\\s*\\d+\\s*\\)"
+			  wrong_addr addr (format nil "shift\\(~a,\\s*0\\)" wrong_addr) (format nil "shift\\(~a,\\s*0\\)" addr)
+			  wrong_addr addr (format nil "shift\\(~a,\\s*0\\)" wrong_addr) (format nil "shift\\(~a,\\s*0\\)" addr))))
+		   (then@
+		    (skip-msg test)
+		    (reveal hidden-antecedent)
+		    (let ((separated_form
+			   (unparse
+			    (formula
+			     (car (n-sforms (current-goal *ps*))))
+			    :string t :pretty nil )))
+		      (let ((matched_form
+			     (cadr
+			      (multiple-value-list
+			       (cl-ppcre::scan-to-strings
+				(format nil
+					"separated\\s*\\(\\s*(shift\\()?(~a|~a)\\s*(,\\s*0\\))?,\\s*(\\d+)\\s*,\\s*(shift\\()?(~a|~a)\\s*(,\\s*0\\))?,\\s*(\\d+)\\s*\\)"
+					wrong_addr addr 
+					wrong_addr addr)
+					separated_form)))))
+			;; for ordering purposes we need to see which
+			;; pointer is which in the separated predicate
+			;; also we need to know the size of both memory
+			;; spaces allocated for the poiner
+			(let ((left_base (strip_parens (aref matched_form 1)))
+			      (left_addr (if (aref matched_form 0)
+					     (format nil "shift(~a,0)" left_base)
+					   left_base))
+			      (left_size (aref matched_form 3))
+			      (right_base (strip_parens (aref matched_form 5)))
+			      (right_addr (if (aref matched_form 4)
+					      (format nil "shift(~a,0)" right_base)
+					      right_base))
+			      (right_size (aref matched_form 7)))
+			  (then@
+			   (lemma "separated_1")
+			   (skip-msg left_addr)
+			   (skip-msg right_addr)
+			   (skip-msg wrong_addr)
+			   (skip-msg addr)
+			   (if (equal wrong_addr left_base)
+			       (let ((left_offset
+				      (format nil
+					      "offset(~a)+~a"
+					      left_addr wrong_int))
+				     (right_offset
+				      (format nil
+					      "offset(~a)+~a" right_addr int)))
+				 (then@
+				  (skip-msg right_offset)
+				  (skip-msg left_offset)
+				  (skip-msg left_size)
+				  (skip-msg right_size)
+				  (inst -1 left_addr right_addr left_size
+				       right_size left_offset right_offset)))
+			     (let ((left_offset
+				    (format nil "offset(~a)+~a" left_addr int))
+				   (right_offset
+				    (format nil
+					    "offset(~a)+~a"
+					    right_addr wrong_int)))
+			       (inst -1 left_addr right_addr left_size
+				     right_size left_offset right_offset)))
+			   (expand "shift")
+			   (expand "base")
+			   (expand "offset")
+			   (assert))))))))
+		(then@ (hide 2) (junk))))))
+	  (then@ (hide 2) (junk)))))))
+  ""
+  "")
+
+
+(defstrat custom_for_2 (n )
+  (if (<= n 0)
+      (then@ (typepred "x!1") (assert))
+    (let ((m (- n 1)))
+      (let ((str (concatenate 'string "x!1="  (write-to-string m))))
+	(branch (case str) ((assert) (custom_for_2 m))))))
+  "Repeats step n times"
+  "")
+
+
+(defstrat custom_for_id_outer (m N)
+  (if (<= m 0)
+      (let ((hide-list (cons -1 (upto N)))
+	    (theorem (format nil "FORALL (n:nat) : n<~d implies (~a)"
+		       N (prepare-theorem N))))
+	(then@ (typepred "x!1")
+	       (hide-all-but hide-list)
+	       (lemma "is_finite_to_float_32")
+	       (lemma "is_finite_to_float_64")
+	       (lemma "proj_float32")
+	       (lemma "proj_float64")
+	       (branch (case theorem)
+		       ((then@ (inst -1 "x!1")
+			       (assert))
+			(then@ (induct "n")
+			       (skosimp*)
+			       (assert))))))
+      (let ((k (- m 1)))
+	(let ((str (format nil "x!1=~d"  k)))
+	  (branch (case str)
+		  ((custom_for_id_inner N N)
+		   (custom_for_id_outer k N))))))
+  "Repeats step m times"
+  "")
+
+(defstrat custom_for_id_inner (n N)
+  (if (<= n 0)
+      (let ((hide-list (cons -1 (upto N)))
+	    (theorem (format nil "FORALL (n:nat) : n<~d implies (~a)"
+		       N (prepare-theorem N))))
+	(then@ (typepred "x!2")
+	       (hide-all-but hide-list)
+	       (lemma "is_finite_to_float_32")
+	       (lemma "is_finite_to_float_64")
+	       (lemma "proj_float32")
+	       (lemma "proj_float64")
+	       (branch (case theorem)
+		       ((then@ (inst -1 "x!2")
+			       (assert))
+			(then@ (induct "n")
+			       (skosimp*)
+			       (assert))))))
+      (let ((l (- n 1)))
+	(let ((str (format nil "x!2=~d"  l)))
+	  (branch (case str)
+		  ((repeat (assert))
+		   (custom_for_id_inner l N))))))
+  "Repeats step n times"
+  "")
+
+(defstep tcc ()
+  (then@
+   (try (then@ (expand "*")
+	       (expand "Vector_mult")
+	       (expand "Matrix_mult")
+	       (expand "Block_ti")
+	       (expand "Block2M")
+	       (expand "M2Block")
+	       (expand "Matrix_select")
+	       (expand "Vector_select")
+	       (expand "V2Ml")
+	       (expand "transpose")
+	       (expand "Zero_mat_ti")
+	       (expand "Zero_mat")
+	       (skosimp*)
+	       (assert))
+	(fail)
+	(skip))
+   (try (then@ (expand "Matrix_select")
+	       (expand "I")
+	       (expand "Block_ti")
+	       (expand "Block2M")
+	       (expand "M2Block")
+	       (expand "Zero_mat_ti")
+	       (expand "Zero_mat")
+	       (skosimp*)
+	       (then (bddsimp) (assert)))
+	(fail)
+	(skip))
+   (try (then@ (skeep)
+	       (skeep)
+	       (assert)
+	       (expand in_ellipsoid_Q?)
+	       (expand semidefpos?)
+	       (expand square?)
+	       (assert)
+	       (expand Block_ti)
+	       (assert)
+	       (expand Block2M 1 (2 3))
+	       (expand M2Block 1 (2 3 4 5))
+	       (assert)
+	       (replace -1)
+	       (replace -2)
+	       (bddsimp))
+	(fail)
+	(skip))
+   (try (then@ (skosimp*)
+	       (assert)
+	       (expand in_ellipsoid_Q?)
+	       (expand semidefpos?)
+	       (expand square?)
+	       (expand Block_ti)
+	       (assert)
+	       (expand Block2M -3 (1 2))
+	       (expand M2Block -3 (1 2 3 4))
+	       (assert)
+	       (replace -1)
+		     (replace -2)
+		     (flatten -4)
+		     (split -3))
+	(fail)
+	(skip))
+   (try (junk)
+	(fail)
+	(skip))
+   (try (then@ (skeep) (assert) (assert)) (fail) (skip))
+   (try (then@ (lemma "is_finite_to_float_32")
+	       (lemma "is_finite_to_float_64")
+	       (lemma "proj_float32")
+	       (lemma "proj_float64")
+	       (assert))
+	(fail)
+	(skip))
+   (try (then@ (lemma "div_mod")
+	       (skeep)
+	       (inst -1 "n" "d")
+	       (assert))
+	(fail)
+	(skip))
+   (try (then@ (skeep)
+	       (then (split)
+		     (then@  (bddsimp)
+			     (assert)
+			     (expand div)
+			     (expand abs)
+			     (expand sgn)
+			     (then (if (resolve* (pc-parse "n" 'expr) 'expr nil)
+				       (case "n=0")
+				     (skip))
+				   (assert)))))
+	(fail)
+	(skip))
+   (try (then@ (skeep)
+	       (lemma "div_mod")
+	       (inst-cp -1 "n" "d")
+	       (inst-cp -1 "-n" "d")
+	       (inst-cp -1 "n" "-d")
+	       (inst -1 "-n" "-d")
+	       (expand div)
+	       (expand abs)
+	       (expand sgn)
+	       (then (split 1)
+		     (then@  (bddsimp 1)
+			     (assert)
+			     (branch
+			      (if (resolve* (pc-parse "n" 'expr) 'expr nil)
+				  (case "n=0")
+				(skip))
+			      ((then@ (replace -1)
+				      (assert))
+			       (assert))))))
+	(fail)
+	(skip))
+   (try (then@ (skeep)
+	       (lemma "mod_sign_neg")
+	       (inst -1 "n" "d")
+	       (lemma "mod_sign_pos")
+	       (inst -1 "n" "d")
+	       (lemma "div_sign_neg")
+	       (inst -1 "n" "d")
+	       (lemma "div_sign_pos")
+	       (inst -1 "n" "d")
+	       (lemma "mod_bound")
+	       (inst -1 "n" "d")
+	       (lemma "div_bound")
+	       (inst -1 "n" "d")
+	       (then (split 1)
+		     (bddsimp 1)
+		     (then@ (assert) (flatten) (expand abs) (assert))))
+	      (fail)
+	      (skip))
+   (try (then@ (skeep)
+	       (lemma "sqrt_less")
+	       (then (inst -1 "x") (assert)))
+	(fail)
+	(skip))
+   (try (then@ (skeep)
+	       (lemma "sqrt_more")
+	       (then (inst -1 "x") (assert)))
+	      (fail)
+	      (skip))
+   (try (then@ (skeep)
+	       (expand "abs1")
+	       (then (if (resolve* (pc-parse "x" 'expr) 'expr nil)
+			 (case "x>=0")
+		       (skip))
+		     (bddsimp)
+		     (assert)))
+	(fail)
+	(skip))
+   (try (then@ (skeep)
+	       (expand abs1)
+	       (then (if (resolve* (pc-parse "x" 'expr) 'expr nil)
+			 (case "x>=0")
+		       (skip))
+		     (if (resolve* (pc-parse "y" 'expr) 'expr nil)
+			 (case "y>=0")
+		       (skip))
+		     (if (and (resolve* (pc-parse "x" 'expr) 'expr nil)
+			      (resolve* (pc-parse "y" 'expr) 'expr nil))
+			 (case "x+y>=0")
+		       (skip))
+			   (assert)))
+	(fail)
+	(skip))
+   (try (then@ (skeep)
+	       (lemma "abs_mult")
+	       (inst -1 "x" "y")
+	       (expand abs)
+	       (expand abs1)
+	       (then (if (resolve* (pc-parse "x" 'expr) 'expr nil)
+			 (case "x>=0")
+		       (skip))
+		     (if (resolve* (pc-parse "y" 'expr) 'expr nil)
+			 (case "y>=0")
+		       (skip))
+		     (if (and (resolve* (pc-parse "x" 'expr) 'expr nil)
+			      (resolve* (pc-parse "y" 'expr) 'expr nil))
+			 (case "x*y>=0")
+		       (skip))
+		     (assert)))
+	(fail)
+	(skip))
+
+   (try (then@ (skeep)
+	       (expand abs1)
+	       (then (if (and (resolve* (pc-parse "x" 'expr) 'expr nil)
+			      (resolve* (pc-parse "z" 'expr) 'expr nil))
+			 (case "x-z>=0")
+		       (skip))
+		     (if (and (resolve* (pc-parse "x" 'expr) 'expr nil)
+			      (resolve* (pc-parse "y" 'expr) 'expr nil))
+			 (case "x-y>=0")
+		       (skip))
+		     (if (and (resolve* (pc-parse "z" 'expr) 'expr nil)
+			      (resolve* (pc-parse "y" 'expr) 'expr nil))
+			 (case "y-z>=0")
+		       (skip))
+		     (assert)))
+	(fail)
+	(skip))
+   (try (grind)
+	(fail)
+	(skip)))
+  ""
+  "")
+
+(defstrat for (n step)
+  (if (<= n 0)
+      (skip)
+    (let ((m (- n 1)))
+      (then@ step (for m step))))
+  "Repeats step n times"
+  "")
+
+(defstrat simple_test (n)
+     (let ((x (format nil "test_~d" n))) (skip-msg x))
+ "is a test"
+ "")
+
+(defstrat test_2 ()
+  (let ((s  (formula (car (select-seq (s-forms *goal*) 1)))))
+  (skip-msg s))
+ "is a test"
+ "")
+
+
+(defstrat qmat-dimensions ()
+  (let ((qmat (cl-ppcre::scan-to-strings
+	       "l_qmat_[0-9]+"
+	       (unparse (formula (car (select-seq (s-forms *goal*) 1)))
+			:string t :pretty nil))))
+    (then@
+     (expand qmat)
+     (let ((goal (unparse (formula (car (select-seq (s-forms *goal*) 1)))
+			  :string t :pretty nil)))
+       (if (cl-ppcre::scan-to-strings "Block_ti"  goal)
+	   (let ((q1 (cl-ppcre::scan-to-strings "l_qmat_[0-9]+" goal))
+		 (sizes (mat_sizes "([0-9]+)[^0-9,]*,[^0-9,]*([0-9]+)"
+				   (find_variables goal "Zero_mat_ti\\("))))
+	     (let ((q2 (cl-ppcre::scan-to-strings
+			"l_qmat_[0-9]+"
+			(cl-ppcre::regex-replace-all q1 goal "")))
+		   (size_q1 (car sizes))
+		   (size_q2 (cadr  sizes)))
+	       (let ((case3 (concatenate 'string
+					 q1 "`rows=" size_q1 " and "
+					 q1 "`cols=" size_q1))
+		     (case4 (concatenate 'string
+					 q2 "`rows=" size_q2 " and "
+					 q2 "`cols=" size_q2)))
+		 (branch
+		  (case case3)
+		  ((branch
+		    (case case4)
+		    ((then@ (flatten)
+			    (expand Block_ti)
+			    (expand Zero_mat_ti)
+			    (expand Zero_mat)
+			    (expand *)
+			    (assert)
+			    (expand Block2M)
+			    (expand M2Block)
+			    (assert))
+		     (then@ (hide 2) (qmat-dimensions))
+		     (then@ (hide 2) (junk))))
+		   (then@ (hide 2) (qmat-dimensions))
+		   (then@ (hide 2) (junk)))))))
+	 (if (cl-ppcre::scan-to-strings "l_qmat_[0-9]+" goal)
+	     (if (cl-ppcre::scan-to-strings "l_mat_of_[0-9]+x[0-9]+_scalar" goal)
+		 (let ((Mlist (mat_sizes "l_mat_of_([0-9]+)x([0-9]+)_scalar" goal))
+		       (subqmat (cl-ppcre::scan-to-strings "l_qmat_[0-9]+" goal)))
+		   (let ((Mr (parse-integer (car Mlist)))
+			 (Mc (parse-integer (cadr Mlist))))
+		     (let ((M (find_variables
+			       goal
+			       "l_mat_of_([0-9]+)x([0-9]+)_scalar\\("))
+			   (Mc_string (write-to-string Mc))
+			   (Mr_string (write-to-string Mr)))
+		       (let ((case1
+			      (concatenate
+			       'string
+			   M "`rows=" Mr_string " and " M "`cols=" Mc_string
+			   " and " subqmat "`rows=" Mc_string " and "
+			   subqmat "`cols=" Mc_string)))
+			 (branch
+			  (case case1)
+		      ((then@
+			(flatten)
+			(expand "Matrix_mult")
+			(assert)
+			(expand "transpose")
+			(assert)
+			(expand "*")
+			(assert))
+		       (let ((lem1 (concatenate 'string
+						"q_mat_of_" Mr_string "x"
+						Mc_string  "_scalar_row"))
+			     (lem2 (concatenate 'string
+						"q_mat_of_" Mr_string "x"
+						Mc_string  "_scalar_col"))
+			     (compmat (reverse
+				       (cons M
+					     (reverse
+					      (extract-Mcomponents M)))))
+			     (case2 (concatenate
+				     'string
+				     subqmat "`rows=" Mc_string
+				     " and " subqmat "`cols=" Mc_string)))
+			 (then@
+			  (hide 2)
+			  (branch
+			   (case case2)
+			   ((branch
+			     (split)
+			     ((then@ (lemma lem1)
+				     (instantiate -1 compmat) (assert))
+			      (then@ (hide 2)
+				     (lemma lem2)
+				     (instantiate -1 compmat) (assert))
+			      (then@ (hide 2) (flatten) (assert))
+			      (then@ (hide 2) (flatten) (assert))
+			      (then@ (hide 2) (junk))))
+			    (then@ (hide 2) (qmat-dimensions))
+			    (then@ (hide 2) (junk))))))
+		       (then@ (hide 2) (junk))))))))
+	       (qmat-dimensions))
+	   (let ((Mlist (mat_sizes "l_mat_of_([0-9]+)x([0-9]+)_scalar" goal))
+		 (subqmat (cl-ppcre::scan-to-strings "l_qmat_[0-9]+" goal)))
+	     (let ((Mr (parse-integer (car Mlist)))
+		   (Mc (parse-integer (cadr Mlist))))
+	       (let ((M (find_variables
+			 goal
+			 "l_mat_of_([0-9]+)x([0-9]+)_scalar\\(")))
+		 (let ((lem1 (concatenate 'string
+					  "q_mat_of_" (write-to-string Mr) "x"
+					  (write-to-string Mc)  "_scalar_row"))
+		       (lem2 (concatenate 'string
+					  "q_mat_of_" (write-to-string Mr) "x"
+					  (write-to-string Mc)  "_scalar_col"))
+		       (compmat (reverse
+				 (cons M
+				       (reverse
+					(extract-Mcomponents M))))))
+		   (then@ (lemma lem1)
+			  (instantiate -1 compmat)
+			  (assert)
+			  (lemma lem2)
+			  (instantiate -1 compmat) (assert)))))))))))
+  ""
+  "")
+
+
+(defun aux1-eq (list lsize n result)
+  (if (> n lsize)
+      result
+    (if (equation? (argument (formula (car list))))
+	(aux1-eq (cdr list) lsize (+ 1 n) (cons (- n) result))
+      (aux1-eq (cdr list) lsize (+ 1 n) result))))
+
+(defun aux1 (list scanner lsize n result)
+  (if (> n  lsize)
+      result
+    (let ((match (cl-ppcre::scan scanner (car list))))
+      (if match
+	  (aux1 (cdr list) scanner lsize (+ n 1) (cons (- n) result))
+	(aux1 (cdr list) scanner lsize (+ n 1) result)
+	))))
+
+(defun aux2 (s counter index)
+  (if (or (= counter -1) (= (length s) 0))
+      index
+    (if (equal "(" (subseq s 0 1))
+	(aux2 (subseq s 1) (+ counter 1) (+ index 1))
+      (if (equal ")" (subseq s 0 1))
+	  (aux2 (subseq s 1) (- counter 1) (+ index 1))
+	(aux2 (subseq s 1) counter (+ index 1))))))
+
+(defun aux3 (s index)
+  (let ((i (aux2 (subseq s  index) 0 0)))
+    (+ index i)))
+
+(defun aux4 (pcounter string index)
+  (if (or
+       (and (equal "," (subseq string 0 1))
+	    (= pcounter 0))
+       (= (length string) 1))
+      index
+    (if (equal "(" (subseq string 0 1))
+	(aux4 (+ 1 pcounter) (subseq string 1) (+ 1 index))
+      (if (equal ")" (subseq string 0 1))
+	  (aux4 (- pcounter 1) (subseq string 1) (+ 1 index))
+	(aux4 pcounter (subseq string 1) (+ 1 index))))))
+
+(defun aux5 (string result)
+  (if (= 0 (length string))
+      result
+    (let ((i (aux4 0 string 0)))
+      (if (= i (- (length string) 1))
+	  (cons string result)
+	(aux5 (subseq string (+ i 1)) (cons (subseq string 0 i) result))))))
+
+
+(defun aux6 (n l)
+  (if (<= n 0)
+      l
+    (aux6 (- n 1) (cons n l))))
+
+
+(defun aux7 (l1 string)
+  (if (= 1 (length l1))
+      (concatenate 'string string (car l1))
+    (aux7 (cdr l1) (format nil "~a OR ~a" (car l1) string))))
+
+
+(defun aux8 (list)
+  (if (= 0 (length list))
+      ""
+    (if (cl-ppcre::scan-to-strings "WITH" (car list))
+	(car list)
+      (aux8 (cdr list)))))
+
+
+(defun aux9 (n list)
+  (if (= 0 n)
+      (car list)
+    (aux9 (- n 1) (cdr list))))
+
+(defun extract-components (string)
+  (reverse (aux5 string ()))
+  )
+
+
+(defun extract-Vcomponents (string)
+  (let (( subs1 (cl-ppcre::regex-replace-all
+		 "l_vect_of_([0-9]+)_scalar\\(" string "")))
+    (let (( l (length subs1)))
+      (extract-components (subseq subs1 0 (- l 1))))))
+
+(defun extract-Mcomponents (string)
+  (let (( subs1 (cl-ppcre::regex-replace-all
+		 "l_mat_of_([0-9]+)x([0-9]+)_scalar\\(" string "")))
+    (let (( l (length subs1)))
+      (extract-components (subseq subs1 0 (- l 1))))))
+
+(defun extract-shift-components (string)
+  (let (( subs1 (cl-ppcre::regex-replace-all
+		 "(\\(shift\\(|\\)+\\s*$)" string "")))
+      (extract-components subs1 )))
+
+
+(defun access-Vcomponent (x n)
+  (aux9 n (extract-Vcomponents x)))
+
+(defun access-Scomponent (shift-string n)
+  (aux9 n (extract-shift-components shift-string)))
+
+(defun find_variables (orig_string pattern)
+  (multiple-value-bind (init end) (cl-ppcre::scan pattern orig_string)
+    (let ((real_end (aux3 orig_string end)))
+      (subseq orig_string init real_end))))
+
+(defun build-sproc-regexp (q1 q2 s1 s2 z)
+  (let ((list (reverse (extract-Vcomponents z))))
+    (let ((el_lists (aux-sproc-1 () () list s1 s2)))
+      (let ((list1 (car el_lists))
+	    (list2 (car (cdr el_lists))))
+	(cons
+	 (format nil
+		 "(?x:~a\\s*,\\s*l_vect_of_~d_scalar\\s*\\(~{\\s*~A\\s*~^,~})"
+		 q1
+		 s1
+		 (map 'list #'pregexp-quote-spec list1))
+	 (cons
+	  (format
+	   nil
+	   "(?x:~a\\s*,\\s*l_vect_of_~d_scalar\\s*\\(~{\\s*~A\\s*~^,~}\\))"
+	   q2
+	   s2
+	   (map 'list #'pregexp-quote-spec list2))
+	  ()))))))
+
+(defun aux-sproc-1 (reg1 reg2 list s1 s2)
+  (if (and (= 0 s1) (= 0 s2))
+      (cons reg1 (cons reg2 nil))
+    (if (= 0 s2)
+	(aux-sproc-1 (cons (car list) reg1) reg2 (cdr list) (- s1 1) 0)
+      (aux-sproc-1 reg1 (cons (car list) reg2) (cdr list) s1 (- s2 1)))))
+
+(defun pregexp-quote-spec (s)
+  (let ((i (- (length s) 1)) (r '()))
+    (loop
+     (when (< i 0) (return (concatenate 'string r)))
+     (let ((c (char s i)))
+       (cond ((member c '(#\ )) (push #\* r)
+	                        (push #\s r)
+				(push #\\ r))
+	     (t (push c r)
+	        (when (member c '(#\\ #\. #\? #\* #\+ #\| #\^ #\$
+				  #\[ #\] #\{ #\} #\( #\)))
+		  (push #\\ r))))
+       (setq i (- i 1))))))
+
+(defun filter-antecedent (x)
+  (if (implication? (slot-value (formula x) 'argument))
+      ""
+    (unparse (formula x) :string t :pretty nil)))
+
+(defun mat_sizes (pattern goal)
+  (multiple-value-bind
+	       (M_list M_array)
+	       (cl-ppcre::scan-to-strings
+		pattern
+		goal) (cons (aref M_array 0) (cons (aref M_array 1) ()))))
+(defun strip_parens (s)
+  (setq flag nil)
+  (setq index 0)
+  (loop
+   (when (or flag (> index (- (length s) 1)))
+     (return))
+   (if (char-equal (aref s index) #\( )
+       (setq index (+ index 1))
+     (setq flag t)))
+  (subseq s index (- (length s) index)))
+
+
+    
+	   

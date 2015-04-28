@@ -1,0 +1,355 @@
+/*@  axiomatic ellipsoids_proof_tactics {
+ @   type ellipsoids_tactics = Intuition | AffineEllipsoid | SProcedure | Identity | PosDef | SectBoundSat | SProcSat | EllipsoidBound;
+ @   predicate use_strategy (ellipsoids_tactics t);
+ @ }
+ @ axiomatic matrices {
+ @  type matrix;
+ @  type vector;
+ @  logic real mat_select(matrix A, integer i, integer j);
+ @  logic real vect_select(vector x,integer i);
+ @  logic integer vect_length(vector x);
+ @  logic integer mat_row(matrix A);
+ @  logic integer mat_col(matrix A);
+ @  
+ @  logic matrix block_m (matrix a11, matrix a12, matrix a21, matrix a22);
+ @  logic matrix block_m_ext (matrix a11, matrix a12, matrix a21, matrix a22);
+ @  axiom block_m_ext:
+ @    \forall matrix A11, A12, A21, A22;
+ @    mat_row(A11) != mat_row(A12) ||
+ @    mat_col(A11) != mat_col(A21) ||
+ @    mat_row(A22) != mat_row(A21) ||
+ @    mat_col(A22) != mat_col(A12) ==>
+ @    block_m(A11, A12,A21,A22) == block_m_ext(A11, A12,A21,A22);
+ @  axiom block_m_select:
+ @    \forall matrix A11, A12, A21, A22;
+ @    mat_row(A11) == mat_row(A12) ==>
+ @    mat_col(A11) == mat_col(A21) ==>
+ @    mat_row(A22) == mat_row(A21) ==>
+ @    mat_col(A22) == mat_col(A12) ==>     
+ @    \forall integer i, j;
+ @    (0 <= i < mat_row(A11) ==>
+ @    0 <= j < mat_col(A11) ==>
+ @    mat_select(block_m(A11, A12,A21,A22),i, j) ==
+ @      mat_select(A11, i, j))
+ @      && (mat_row(A11)<= i < mat_row(A11)+ mat_row(A21) ==>
+ @      0<= j <mat_col(A11) ==>
+ @      mat_select(block_m(A11,A12,A21,A22),i,j) ==
+ @        mat_select(A21,i-mat_row(A11),j))
+ @        && (0 <= i < mat_row(A11) ==>
+ @        mat_col(A11) <= j < mat_col(A11)+mat_col(A12) ==>
+ @        mat_select(block_m(A11,A12,A21,A22),i,j) ==
+ @          mat_select(A12,i, j-mat_col(A11)))
+ @          && (mat_row(A11)<= i < mat_row(A11)+ mat_row(A21) ==>
+ @          mat_col(A11) <= j < mat_col(A11)+mat_col(A12) ==>
+ @          mat_select(block_m(A11,A12,A21,A22),i,j) ==
+ @            mat_select(A22,i-mat_row(A11),j-mat_col(A11)));
+ @  axiom block_m_row:
+ @    \forall matrix A11, A12, A21, A22;
+ @    mat_row(A11) == mat_row(A12) ==>
+ @    mat_col(A11) == mat_col(A21) ==>
+ @    mat_row(A22) == mat_row(A21) ==>
+ @    mat_col(A22) == mat_col(A12) ==>     
+ @    mat_row(block_m(A11,A12,A21,A22)) == mat_row(A11)+mat_row(A21);
+ @  axiom block_m_col:
+ @    \forall matrix A11, A12, A21, A22;
+ @    mat_row(A11) == mat_row(A12) ==>
+ @    mat_col(A11) == mat_col(A21) ==>
+ @    mat_row(A22) == mat_row(A21) ==>
+ @    mat_col(A22) == mat_col(A12) ==>     
+ @    mat_col(block_m(A11,A12,A21,A22)) == mat_col(A11)+mat_col(A12);
+ @
+ @  logic vector block_v (vector v1, vector v2);
+ @  axiom block_v_select:
+ @    \forall vector v1, v2;
+ @    \forall integer i;
+ @    (0 <= i < vect_length(v1) ==>
+ @    vect_select(block_v(v1, v2),i) ==
+ @      vect_select(v1, i))
+ @      && (vect_length(v1)<= i < vect_length(v1)+ vect_length(v2) ==>
+ @      vect_select(block_v(v1,v2),i) ==
+ @        vect_select(v2,i-vect_length(v1)));
+ @  axiom block_v_length:
+ @    \forall vector v1, v2;
+ @    vect_length(block_v(v1,v2)) == vect_length(v1)+vect_length(v2);
+ @    
+ @  logic matrix zeros(integer row, integer col);
+ @  logic matrix zeros_ext(integer row, integer col);
+ @  axiom zero_ext:
+ @    \forall int row, col;
+ @    row<=0 || col<=0 ==> zeros(row,col) == zeros_ext(row,col);
+ @  axiom zero_select:
+ @    \forall int row, col, i, j;
+ @    0<= i <row ==>
+ @    0<= j <col ==>
+ @    mat_select(zeros(row,col),i,j) == 0;
+ @  axiom zero_row:
+ @    \forall int row, col;
+ @    0 <row ==>
+ @    0 <col ==>
+ @    mat_row(zeros(row,col))==row;
+ @  axiom zero_col:
+ @    \forall int row, col;
+ @    0 <row ==>
+ @    0 <col ==>
+ @    mat_col(zeros(row,col))==col;
+ @    
+ @  logic matrix mat_scalar_mult (real a, matrix A);
+ @  axiom mat_scalar_mult_select:
+ @    \forall real a, matrix A, int i,j;
+ @    0<= i < mat_row(A) ==>
+ @    0<= j < mat_col(A) ==>
+ @    mat_select(mat_scalar_mult(a,A),i,j) == a* mat_select(A,i,j);
+ @  axiom mat_scalar_mult_row:
+ @    \forall real a, matrix A;
+ @    mat_row(mat_scalar_mult(a,A)) == mat_row(A);
+ @  axiom mat_scalar_mult_col:
+ @    \forall real a, matrix A;
+ @    mat_col(mat_scalar_mult(a,A)) == mat_col(A);
+ @    
+ @  logic vector vect_scalar_mult (real a, vector v);
+ @  axiom vect_scalar_mult_select:
+ @    \forall real a, vector v, int i;
+ @    0<= i < vect_length(v) ==>
+ @    vect_select(vect_scalar_mult(a,v),i) == a* vect_select(v,i);
+ @  axiom vect_scalar_mult_length:
+ @    \forall real a, vector v;
+ @    vect_length(vect_scalar_mult(a,v)) == vect_length(v);
+ @    
+ @  logic matrix mat_add(matrix A, matrix B);
+ @  logic matrix mat_add_ext(matrix A, matrix B);
+ @  axiom mat_add_ext:
+ @    \forall matrix A, matrix B;
+ @    mat_row(A) != mat_row(B) ||
+ @    mat_col(A) != mat_col(B) ==>
+ @    mat_add(A,B) == mat_add_ext(A,B);
+ @  axiom mat_add_select:
+ @    \forall matrix A, B;
+ @    mat_row(A) == mat_row(B) ==>
+ @    mat_col(A) == mat_col(B) ==>
+ @    \forall integer i, j;
+ @    0 <= i < mat_row(mat_add(A, B)) ==>
+ @    0 <= j < mat_col(mat_add(A, B)) ==>
+ @    mat_select(mat_add(A, B), i, j) ==
+ @      mat_select(A, i, j) + mat_select(B, i, j);
+ @  axiom mat_add_row:
+ @    \forall matrix A, B;
+ @    mat_row(A) == mat_row(B) ==>
+ @    mat_col(A) == mat_col(B) ==>
+ @    mat_row(mat_add(A, B)) == mat_row(A);
+ @  axiom mat_add_col:
+ @    \forall matrix A, B;
+ @    mat_row(A) == mat_row(B) ==>
+ @    mat_col(A) == mat_col(B) ==>
+ @    mat_col(mat_add(A, B)) == mat_col(A);
+ @    
+ @  logic matrix mat_mult(matrix A, matrix B);
+ @  logic matrix mat_mult_ext(matrix A, matrix B);
+ @  axiom mat_mult_ext:
+ @    \forall matrix A, matrix B;
+ @    mat_col(A) != mat_row(B) ==>
+ @    mat_mult(A,B) == mat_mult_ext(A,B);  
+ @  logic real mat_mult_aux(matrix A, matrix B,
+ @  integer i, integer j, integer k);
+ @  axiom mat_mult_aux_below_zero:
+ @    \forall matrix A, B; \forall integer i, j, k;
+ @    k < 0 ==> mat_mult_aux(A, B, i, j, k) == 0;
+ @  axiom mat_mult_aux_below_ind:
+ @    \forall matrix A, B; \forall integer i, j, k;
+ @    k >= 0 ==> mat_mult_aux(A, B, i, j, k) ==
+ @      mat_mult_aux(A, B, i, j, k-1)+mat_select(A, i, k)*mat_select(B, k, j);
+ @  axiom mat_mult_select:
+ @    \forall matrix A, B; mat_col(A) == mat_row(B) ==>
+ @    \forall integer i, j;
+ @    0 <= i < mat_row(mat_mult(A, B)) ==>
+ @    0 <= j < mat_col(mat_mult(A, B)) ==>
+ @    mat_select(mat_mult(A, B), i, j) ==
+ @      mat_mult_aux(A, B, i, j, mat_col(A)-1);
+ @  axiom mat_mult_row:
+ @    \forall matrix A, B; mat_col(A) == mat_row(B) ==>
+ @    mat_row(mat_mult(A, B)) == mat_row(A);
+ @  axiom mat_mult_col:
+ @    \forall matrix A, B; mat_col(A) == mat_row(B) ==>
+ @    mat_col(mat_mult(A, B)) == mat_col(B);
+ @    
+ @  logic vector vect_mult(matrix A, vector x);
+ @  logic vector vect_mult_ext(matrix A, vector x);
+ @  axiom vect_mult_ext:
+ @    \forall matrix A, vector x;
+ @    vect_length(x)!=mat_col(A) ==> vect_mult(A,x) == vect_mult_ext(A,x);
+ @  logic real vect_mult_aux(matrix A, vector x, integer i, integer k);
+ @  axiom vect_mult_aux_below_zero:
+ @    \forall matrix A, vector x; \forall integer i, k;
+ @    k < 0 ==> vect_mult_aux(A, x, i, k) == 0;
+ @  axiom vect_mult_aux_below_ind:
+ @    \forall matrix A, vector x; \forall integer i, k;
+ @    k >= 0 ==> vect_mult_aux(A, x, i, k) ==
+ @      vect_mult_aux(A, x, i, k-1)+mat_select(A, i, k)*vect_select(x, k);
+ @  axiom vect_mult_select:
+ @    \forall matrix A, vector x, int i;
+ @    mat_col(A) == vect_length(x) ==>
+ @    0< i < mat_row(A) ==>
+ @    vect_select(vect_mult(A,x),i) == vect_mult_aux(A,x,i,vect_length(x)-1);
+ @  axiom vect_mult_length:
+ @    \forall matrix A, vector x;
+ @    mat_col(A) == vect_length(x) ==>
+ @    vect_length(vect_mult(A,x)) == mat_row(A);
+ @    
+ @  logic matrix eye(integer i);
+ @  logic matrix eye_ext(integer i);
+ @  axiom eye_ext:
+ @    \forall integer i;
+ @    i<=0 ==> eye(i) == eye_ext(i);
+ @  axiom eye_select:
+ @    \forall integer n, integer i, integer j;
+ @    n>0 ==>
+ @    (((0<=i<n && 0<=j<n && i==j) ==> mat_select(eye(n),i,j) == 1)
+ @    && ((0<=i<n && 0<=j<n && i!=j) ==> mat_select(eye(n),i,j) == 0));
+ @  axiom eye_row:
+ @    \forall integer n;
+ @    n>0 ==>
+ @    mat_row(eye(n)) == n;
+ @  axiom eye_col:
+ @    \forall integer n;
+ @    n>0 ==>
+ @    mat_col(eye(n)) == n;
+ @    
+ @  logic matrix transpose(matrix A);
+ @  axiom transpose_select:
+ @    \forall matrix A; \forall integer i, j;
+ @    0 <= i < mat_row(transpose(A)) ==>
+ @    0 <= j < mat_col(transpose(A)) ==>
+ @    mat_select(transpose(A), i, j) == mat_select(A, j, i);
+ @  axiom mat_transpose_row:
+ @    \forall matrix A; mat_row(transpose(A)) == mat_col(A);
+ @  axiom mat_transpose_col:
+ @    \forall matrix A; mat_col(transpose(A)) == mat_row(A);
+ @    
+ @  logic matrix mat_of_array{L}(float *A, integer row, integer col);
+ @  axiom mat_of_array_select:
+ @    \forall float *A; \forall integer i, j, k, l;
+ @    mat_select(mat_of_array(A, k, l), i, j) == A[l*i+j];
+ @  axiom mat_of_array_size:
+ @    \forall float *A; \forall integer i,j;
+ @    mat_row(mat_of_array(A,i,j))==i &&
+ @    mat_col(mat_of_array(A,i,j))==j;
+ @    
+ @  logic vector vect_of_array{L}(float *x, integer length);
+ @  axiom vect_of_array_select:
+ @    \forall float *x; \forall integer n,i;
+ @    vect_select(vect_of_array(x,n),i) == x[i];
+ @  axiom vect_of_array_length:
+ @    \forall float *x; \forall integer i;
+ @    vect_length(vect_of_array(x,i))==i;
+ @    
+ @  logic real dot_prod (vector x, vector y);
+ @  logic real dot_prod_ext (vector x, vector y);
+ @  axiom dot_prod_ext:
+ @    \forall vector x, vector y;
+ @    vect_length(x)!= vect_length(y) ==> dot_prod(x,y) == dot_prod_ext(x,y);
+ @  logic real dot_prod_aux (vector x, vector y, integer i);
+ @  axiom dot_prod_below_0:
+ @    \forall vector x, y, int i;
+ @    vect_length(x)==vect_length(y) ==>
+ @    i < 0 ==>
+ @    dot_prod_aux(x,y,i) ==0;
+ @  axiom dot_prod_ind:
+ @    \forall vector x,y,int i;
+ @    vect_length(x)==vect_length(y) ==>
+ @    i>=0 ==>
+ @    dot_prod_aux(x,y,i) == dot_prod_aux(x,y,i-1)+vect_select(x,i)*vect_select(y,i);
+ @  axiom dot_prod_val:
+ @    \forall vector x,y;
+ @    vect_length(x)==vect_length(y) ==>
+ @    dot_prod(x,y) == dot_prod_aux(x,y,vect_length(x)-1);
+ @
+ @ predicate square( matrix P);
+ @  axiom square_def:
+ @    \forall matrix P;
+ @    square(P) <==> mat_row(P)==mat_col(P);
+ @
+ @  predicate invertible(matrix P);
+ @  axiom inv_def:
+ @    \forall matrix P;
+ @    invertible(P) <==> square(P) &&
+ @    \exists matrix Q;
+ @    mat_row(Q) == mat_row(P) &&
+ @    mat_col(Q) == mat_col(P) &&
+ @    mat_mult(Q,P) == eye(mat_row(P)) &&
+ @    mat_mult(P,Q) == eye(mat_col(P));
+ @    
+ @  logic matrix inverse(matrix P);
+ @  logic matrix inverse_ext(matrix P);
+ @  axiom inverse_def:
+ @    \forall matrix P;
+ @    invertible(P) ==> mat_mult(P,inverse(P)) == eye(mat_row(P)) &&
+ @    mat_mult(inverse(P),P) == eye(mat_col(P));
+ @  axiom inverse_row:
+ @    \forall matrix P;
+ @    invertible(P) ==> mat_row(inverse(P)) == mat_row(P);
+ @  axiom inverse_col:
+ @    \forall matrix P;
+ @    invertible(P) ==> mat_col(inverse(P)) == mat_col(P);
+ @  axiom inverse_ext :
+ @    \forall matrix P;
+ @    !invertible(P) ==> inverse(P) == inverse_ext(P);
+ @   
+ @  predicate symmetric (matrix P);
+ @  axiom sym_def:
+ @    \forall matrix P;
+ @    (square(P) && 
+ @    transpose(P)==P) <==>
+ @    symmetric(P);
+ @    
+ @  predicate semidefpos (matrix P);
+ @  predicate semidefpos_ext(matrix P);
+ @  axiom semidefpos_ext:
+ @    \forall matrix P;
+ @    !square(P) ==> (semidefpos(P) <==> semidefpos_ext(P));
+ @  axiom semidefpos_def:
+ @    \forall matrix P;
+ @    square(P) ==>
+ @    (\forall vector x;
+ @    (vect_length(x)==mat_row(P) ==>
+ @    dot_prod(x,vect_mult(P,x))>=0)) <==> semidefpos(P);
+ @    
+ @  logic matrix V2Ml(vector x);
+ @  axiom V2Ml_select:
+ @    \forall vector x, integer j;
+ @    0<=j<vect_length(x) ==>
+ @    mat_select(V2Ml(x),0,j) == vect_select(x,j);
+ @  axiom V2Ml_row:
+ @    \forall vector x;
+ @    mat_row(V2Ml(x))==1;
+ @  axiom V2Ml_col:
+ @    \forall vector x;
+ @    mat_col(V2Ml(x)) == vect_length(x);
+ @    
+ @  predicate in_ellipsoidQ(matrix Q, vector x);
+ @  predicate in_ellipsoidQ_ext(matrix Q, vector x);
+ @  axiom in_ellipsoidQ_ext:
+ @    \forall matrix Q, vector x;
+ @      vect_length(x)!=mat_col(Q) ||
+ @      mat_col(Q)!=mat_row(Q) ==>
+ @      (in_ellipsoidQ(Q,x) <==> in_ellipsoidQ_ext( Q,  x));
+ @  axiom in_ellipsoidQ:
+ @    \forall matrix Q, vector x;
+ @      vect_length(x)==mat_col(Q) &&
+ @      mat_col(Q)==mat_row(Q) ==>
+ @    ((symmetric(Q) && semidefpos(Q) && 
+ @    semidefpos(block_m(eye(1),V2Ml(x),transpose(V2Ml(x)),Q))) <==>
+ @    in_ellipsoidQ(Q, x));
+ @    
+ @    predicate neg_quad(matrix G, vector x);
+ @    predicate neg_quad_ext(matrix G, vector x);
+ @    axiom neg_quad_ext:
+ @      \forall matrix G, vector x;
+ @      vect_length(x)!=mat_col(G) ||
+ @      mat_col(G)!=mat_row(G) ==>
+ @      neg_quad(G,x) <==> neg_quad_ext(G,x);
+ @  axiom neg_quad:
+ @    \forall matrix G, vector x;
+ @    vect_length(x)==mat_col(G) &&
+ @      mat_col(G)==mat_row(G) ==>
+ @      neg_quad(G,x) <==> dot_prod(x,vect_mult(G,x)) <= 0;
+ @      
+

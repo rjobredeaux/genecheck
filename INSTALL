@@ -1,0 +1,32 @@
+INSTALLATION INSTRUCTIONS
+
+THESE INSTRUCTIONS NEED TO BE FOLLOWED IN THE ORDER IN WHICH THEY APPEAR.
+
+(Optional tip: Why3 and Frama-C have quite a few dependencies. 
+On Ubuntu >= Lucid Lynx 10.04, before running the install steps, you may run:
+sudo apt-get install frama-c
+This will *NOT* install the right version of frama-c, however it will
+get most of the dependencies out the way. After that run
+sudo apt-get remove frama-c
+and proceed with the following instructions)
+
+- Install PVS 6.0 ( find it at http://pvs.csl.sri.com/download.shtml ).
+- Do not forget to run the relocate script provided with PVS ( see install file ).
+- Add the PVS directory to your PATH variable. 
+- Install the PVS nasalib ( find it at 
+http://shemesh.larc.nasa.gov/fm/ftp/larc/PVS-library/installation.html ). 
+Version at time of this release was 6.0.8.
+- Do not forget to run the script called "install-scripts" as per 
+installation instructions.
+- Add to the environment variable PVS_LIBRARY_PATH the path to
+the nasalib folder (usually YOUR_PVS_PATH/nasalib)
+- Install Why3 , version 0.83. (find it at 
+https://gforge.inria.fr/frs/?group_id=2990 )
+Typically missing dependencies: 
+	  liblablgtk2-ocaml-dev
+	  liblablgtksourceview2-ocaml-dev
+	  libzarith-ocaml-dev	
+- Do not forget to run why3config
+- Install Frama-c Neon ( find it at http://frama-c.com/download.html )
+- run ./configure && make && sudo make install.
+

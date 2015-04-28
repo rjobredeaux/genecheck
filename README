@@ -1,0 +1,14 @@
+Installation instructions are in the INSTALL file.
+
+In order to use:
+
+- generate the C code for a controller using Gene-Auto+.
+- run genecheck toto.c , where toto.c is the main C file generated.
+
+Warning: the process takes time, and the output is somewhat long.
+Each ACSL contract will be converted to a PVS theorem and automatically
+verified. In the folder working_dir_pvs you will find the converted theorems,
+as well as the proof file you can use to replay the proof in PVS.
+The last line of output will give a summary of the proofs that were made 
+successfully.
+

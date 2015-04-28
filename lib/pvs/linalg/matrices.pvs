@@ -1,0 +1,464 @@
+matrices: THEORY
+BEGIN
+
+IMPORTING vectors@vectors, vect_of_vect, reals@sigma_below,reals@sigma_swap %permutations,
+           %more_list_props
+
+% A preliminary lemma for sum conversions
+sigma_trick: LEMMA FORALL (n:posnat, high:{high:nat|high<n}, low:{low:nat|low<=high}, F:[below(n)->real]):
+	     sigma[below(n)](low,high,F) = sigma[nat](low,high,LAMBDA (i:nat): IF (i>=n) THEN 0 ELSE F(i) ENDIF) ;
+
+
+
+ conversion- b2n
+ n, m,e: VAR nat
+ pn, pm: VAR posnat
+ c, r, s: VAR real
+
+conversion- b2n
+
+ % Similar to the definition for finite_sequences
+ % Should look into ways of mapping field names (not easy):
+ % Vector: TYPE = finseq[real] %{{size := dim, seq := vector}}
+ % Vect(n): TYPE = {V: Vector | V`length = n}
+ % Vector_of_Vectors(n: posnat): TYPE = finseq[Vector]
+ % Vect_of_Vect(n): TYPE = {V: Vector_of_Vectors | V`length = n}
+ % Homogeneous - all inner vectors have the same length
+ % H_Vector_of_Vectors: TYPE
+ %   = {V: Vector_of_Vectors
+ %       | V`length > 0 & V`seq(0)`length > 0 &
+ %         FORALL (i: below(V`length)):
+ %              V`seq(i)`length = V`seq(0)`length}
+ % H_Vect_of_Vect(m, n): TYPE
+ %   = {V: H_Vector_of_Vectors
+ %       | V`length = m and
+ %         FORALL (i: below(m)): V`seq(i)`length = n}
+
+ Matrix: TYPE = [# rows: posnat, cols: posnat,
+                   matrix: [below(rows), below(cols) -> real] #]
+ Mat(m, n): TYPE = {M: Matrix | M`rows = m and M`cols = n}
+
+ % V, V1, V2: VAR Vector
+ % VV, VV1, VV2: VAR Vector_of_Vectors
+ M, N, P: VAR Matrix
+
+ % *(c, V): Vect(V`length) =
+ %   (# length := V`length,
+ %      seq := lambda (i: below(V`length)): c * V`seq(i) #);
+
+ % +(V1: Vector, V2: Vect(V1`length)): Vect(V1`length) =
+ %   (# length := V1`length,
+ %      seq := lambda (i: below(V1`length)): V1`seq(i) + V2`seq(i) #)
+
+ rowV(M)(i: below(M`rows)): Vector[M`cols] =
+   lambda (j: below(M`cols)): M`matrix(i, j)
+
+ colV(M)(j: below(M`cols)): Vector[M`rows] =
+   lambda (i: below(M`rows)): M`matrix(i, j)
+
+ rowM(M)(i: below(M`rows)): Matrix =
+   (# rows := 1, cols := M`cols,
+      matrix := lambda (k: below(1), j: below(M`cols)): M`matrix(i, j) #)
+
+ colM(M)(j: below(M`cols)): Matrix =
+   (# rows := M`rows, cols := 1,
+      matrix := lambda (i: below(M`rows), k: below(1)): M`matrix(i, j) #)
+
+ cols(M): Vector_of_Vectors[M`rows, M`cols] =
+   lambda (i: below(M`cols)):
+     lambda (j: below(M`rows)): M`matrix(j, i)
+
+ % cols_alt(M): {C: finseq[{V: Vector | V`length = M`rows}] | C`length = M`cols} =
+ %   (# length := M`cols,
+ %      seq := lambda (i: below(M`cols)):
+ %              (# length := M`rows,
+ %                 seq := lambda (j: below(M`rows)): M`matrix(j, i) #) #)
+
+ rows(M): Vector_of_Vectors[M`cols, M`rows] =
+   lambda (i: below(M`rows)):
+     lambda (j: below(M`cols)): M`matrix(i, j)
+
+ % V2Mc(V: Vector | V`length > 0): Matrix =
+ %   (# rows := 1, cols := V`length,
+ %      matrix := lambda (k: below(1), j: below(V`length)): V`seq(j) #)
+
+ %V2Mr(V: Vector | V`length > 0): Matrix =
+ %   (# rows := V`length, cols := 1,
+ %      matrix := lambda (j: below(V`length), k: below(1)): V`seq(j) #)
+
+ Mr2V(M: Matrix | M`rows = 1): Vector[M`cols] =
+   lambda (j: below(M`cols)): M`matrix(0, j)
+
+ Mc2V(M: Matrix | M`cols = 1): Vector[M`rows] =
+   lambda (j: below(M`rows)): M`matrix(j, 0)
+
+ % This is just cols(M)
+ % matrix2vectors(M): {VS: finseq[Vector] | VS`length = M`cols}
+ %  = (# length := M`cols,
+ %       seq := lambda (i: below(M`cols)): cols(M) #)
+
+ vectors2matrix(pn, pm)(V2: Vector_of_Vectors[pn, pm]): Matrix = 
+   (# cols := pm, rows := pn,
+      matrix := lambda (i: below(pn), j: below(pm)): V2(j)(i) #)
+
+ conversion+ vectors2matrix, cols
+	
+ transpose(M): Matrix =
+   (# rows := M`cols, cols := M`rows,
+      matrix := lambda (i: below(M`cols), j: below(M`rows)): M`matrix(j, i) #)
+
+ square?(M): bool = M`rows = M`cols
+ 
+ 
+
+ Square: TYPE = (square?)
+
+ squareMat?(n: posnat)(M: Square): bool = M`rows = n
+
+ SquareMat(n: posnat): TYPE = (squareMat?(n))
+
+ zero?(M): bool =
+   FORALL (i: below(M`rows), j: below(M`cols)): M`matrix(i, j) = 0
+
+ nonzero?(M): bool = not zero?(M)
+
+ Zero: TYPE = (zero?)
+
+ delta(i, j: nat): MACRO nat = if i = j then 1 else 0 endif
+
+ identity?(M: Matrix): bool =
+   square?(M) and
+   FORALL (i, j: below(M`rows)):
+     M`matrix(i, j) = delta(i, j)
+
+ I(n: posnat): (identity?)
+    = (# rows := n, cols := n,
+         matrix := lambda (i, j: below(n)): delta(i, j) #)
+
+Zero_mat(m:posnat,n:posnat): Zero
+    = (# rows := m, cols := n,
+         matrix := lambda (i:below(m), j: below(n)): 0 #)
+
+
+ upper_triangular?(M): bool = square?(M)
+   AND FORALL (i, j: below(M`rows)): i > j => M`matrix(i,j) = 0
+
+ lower_triangular?(M): bool = square?(M)
+   AND FORALL (i, j: below(M`rows)): i < j => M`matrix(i,j) = 0
+
+ diagonal?(M): bool = square?(M)
+   AND FORALL (i, j: below(M`rows)): i /= j => M`matrix(i,j) = 0;
+
+ -(M): Matrix =
+    M WITH [`matrix := LAMBDA (i: below(M`rows), j: below(M`cols)): -M`matrix(i, j)]
+
+ symmetric?(M): bool = square?(M) AND transpose(M) = M
+
+ skew_symmetric?(M): bool = square?(M) AND transpose(M) = -M 
+
+ transpose2: LEMMA transpose(transpose(M)) = M
+ 
+ same_dim?(M, N): macro bool = M`rows = N`rows AND M`cols = N`cols
+
+ same_dim?(M)(N): macro bool = M`rows = N`rows AND M`cols = N`cols;
+
+ +(M, (N: (same_dim?(M)))): Matrix =
+   M WITH [ `matrix := LAMBDA (i: below(M`rows), j: below(M`cols)):
+                       M`matrix(i, j) + N`matrix(i, j) ];
+
+ -(M, (N: (same_dim?(M)))): Matrix =
+   M WITH [ `matrix := LAMBDA (i: below(M`rows), j: below(M`cols)):
+                       M`matrix(i, j) - N`matrix(i, j) ];
+
+ plus_assoc: LEMMA
+   FORALL (M, (N, P: (same_dim?(M)))): M + (N + P) = (M + N) + P;
+
+ plus_comm: LEMMA
+   FORALL (M, (N: (same_dim?(M)))): M + N = N + M;
+
+ minuses: LEMMA
+ FORALL (M, (N: (same_dim?(M)))): M + (-N) = M - N;	
+
+ zero_left_ident: LEMMA
+   FORALL (Z: Zero, M: (same_dim?(Z))): Z + M = M;
+
+ zero_right_ident: LEMMA
+   FORALL (Z: Zero, M: (same_dim?(Z))): M + Z = M;
+
+ *(r, M): Matrix =
+    M WITH [`matrix := LAMBDA (i: below(M`rows), j: below(M`cols)):
+                        r * M`matrix(i, j)];
+
+ *(M, r): Matrix = r * M;
+
+ *(M, (N: Matrix | M`cols = N`rows)): Matrix =
+   (# rows := M`rows, cols := N`cols,
+      matrix := lambda (i: below(M`rows), j: below(N`cols)):
+                  sigma[below(M`cols)](0, M`cols-1, lambda (k: below(M`cols)):
+                                     M`matrix(i, k) * N`matrix(k, j)) #);
+
+ *(M, (v:Vector[M`cols])): Vector[M`rows] = lambda (i: below(M`rows)):
+                  sigma[below(M`cols)](0, M`cols-1, lambda (k: below(M`cols)):
+                                     M`matrix(i, k) * v(k)); 
+
+add_dim_row: LEMMA FORALL (A:Matrix, B:Matrix | A`rows=B`rows AND A`cols = B`cols):
+	     (A+B)`rows = A`rows
+add_dim_col: LEMMA FORALL (A:Matrix, B:Matrix | A`rows=B`rows AND A`cols = B`cols):
+	     (A+B)`cols = A`cols
+
+
+minus_scal : LEMMA -M = (-1)*M
+
+mult_dim: LEMMA FORALL (A:Matrix, B:Matrix | A`cols=B`rows):
+ 	   (A*B)`rows=A`rows AND (A*B)`cols = B`cols
+
+mult_dim_row: LEMMA FORALL (A:Matrix, B:Matrix | A`cols=B`rows):
+ 	   (A*B)`rows=A`rows
+mult_dim_col: LEMMA FORALL (A:Matrix, B:Matrix | A`cols=B`rows):
+ 	   (A*B)`cols = B`cols
+ 
+ zero_times_left: LEMMA
+   FORALL (M, (Z: Zero | Z`cols = M`rows)): zero?(Z * M)
+
+ zero_times_right: LEMMA
+   FORALL (Z: Zero, (M | M`cols = Z`rows)): zero?(M * Z)
+
+zero_neg_id : LEMMA FORALL (M:Matrix) : zero?(M-M)
+
+zero_times_left_1: LEMMA
+   FORALL (M:Matrix): Zero_mat(pn,M`rows) * M = Zero_mat(pn,M`cols)
+
+zero_times_right_1: LEMMA
+    FORALL (M:Matrix):  M * Zero_mat(M`cols,pn) = Zero_mat(M`rows,pn)
+
+
+ sigma_lem: LEMMA
+   FORALL (n: posnat, j: below(n), r: real):
+    sigma[below(n)](0, n - 1, (lambda (k: below(n)): 0) WITH [(j) := r]) = r
+
+ right_mult_ident: LEMMA
+   FORALL (M, (I: Matrix | identity?(I) AND M`cols = I`rows)):
+               M * I = M
+
+ left_mult_ident: LEMMA
+   FORALL (M, (I: Matrix | identity?(I) AND M`rows = I`cols)):
+               I * M = M
+
+ right_mult_ident_1: LEMMA
+               M * I(M`cols) = M
+
+ left_mult_ident_1: LEMMA
+               I(M`rows) * M = M
+
+
+
+ ident_vect:LEMMA FORALL (I:Matrix|identity?(I)): FORALL (x:Vector[I`cols]):I*x=x 
+
+ ident_trans:LEMMA transpose(I(pn))=I(pn)
+
+zero_trans: LEMMA FORALL (m,n:posnat): transpose(Zero_mat(m,n))=Zero_mat(n,m);
+
+trans_scal : LEMMA FORALL (x:real):
+	   transpose(x*M) = x*transpose(M)
+  
+trans_sum : LEMMA FORALL (M,(N |same_dim?(M)(N))):
+	  transpose(M) + transpose(N) = transpose(N+M)
+
+
+
+ sigma_prop: LEMMA
+   FORALL (m, n: posint, f: [below(m) -> real], g: [below(m), below(n) -> real]):
+    sigma[below(m)](0, m-1, lambda (i: below(m)):
+                    f(i) * sigma[below(n)](0, n-1, lambda (j: below(n)): g(i,j)))
+     = sigma[below(m)](0, m-1, lambda (i: below(m)):
+                       sigma[below(n)](0, n-1, lambda(j: below(n)): f(i) * g(i,j)))
+
+ sigma_comm: LEMMA
+   FORALL (m, n: posnat, f: [below(m), below(n) -> real]):
+     sigma[below(m)](0, m-1, lambda (i: below(m)):
+                     sigma[below(n)](0, n-1, lambda (j: below(n)): f(i, j)))
+      = sigma[below(n)](0, n-1, lambda (j: below(n)):
+                     sigma[below(m)](0, m-1, lambda (i: below(m)): f(i, j)))
+
+ mult_assoc: LEMMA
+   FORALL (M, (N | M`cols = N`rows), (P | N`cols = P`rows)):
+    M * (N * P) = (M * N) * P
+
+right_scal_shift: LEMMA
+  FORALL (M,(N | M`cols = N`rows), x:real):
+   M*(x*N) = x*(M*N)
+
+left_scal_shift: LEMMA
+  FORALL (M,(N | M`cols = N`rows), x:real):
+   (x*M)*N = x*(M*N)
+
+ mult_assoc_vect: LEMMA FORALL (M, (N | M`cols = N`rows), V:Vector[N`cols]): (M * N) * V = M * (N * V)
+
+left_scal_shift_vect: LEMMA FORALL (M:Matrix, V:Vector[M`cols], x:real): (x*M) * V = x*(M *V)
+
+right_scal_shift_vect: LEMMA FORALL (M:Matrix, V:Vector[M`cols], x:real): M* (x*V) = x*(M * V)
+
+scal_assoc : LEMMA FORALL (M:Matrix, x,y:real) : x*(y*M) = (x*y)*M
+
+ left_distributive: LEMMA
+   FORALL (M, (N | M`cols = N`rows), (P: (same_dim?(N)))):
+    M * (N + P) = (M * N) + (M * P)
+
+ right_distributive: LEMMA
+   FORALL (M, (N: (same_dim?(M))), (P | M`cols = P`rows)):
+    (M + N) * P = (M * P) + (N * P)
+
+left_distributive_add_vect: LEMMA FORALL (A:Mat(m,n),B:(same_dim?(A)),v:Vector[n]): (A+B)*v = A*v+B*v;
+
+left_distributive_min_vect: LEMMA FORALL (A,B:Mat(m,n), v:Vector[n]): (A-B)*v = A*v - B*v
+
+ left_distributive_vect:  LEMMA FORALL (M, (v1, v2:Vector[M`cols])):  M * v1 - M * v2 = M * (v1 - v2)
+ 
+scal_dist : LEMMA FORALL (A,B:Mat(m,n), x:real): x*A+x*B = x*(A+B)
+
+scal_dist_left : LEMMA FORALL(x,y:real,A:Mat(m,n)) : (x+y)*A = x*A + y*A
+
+zero_scal : LEMMA 0*M = Zero_mat(M`rows,M`cols)
+
+ transpose_product: LEMMA
+   FORALL (M, (N | M`cols = N`rows)):
+    transpose(M * N) = transpose(N) * transpose(M)
+
+ trans_mat_scal: LEMMA FORALL (A:Matrix, x:Vector[A`rows], y:Vector[A`cols]): x * (A * y) = (transpose(A) * x) * y   
+
+trans_dim: LEMMA FORALL (A:Matrix) : A`cols=transpose(A)`rows AND A`rows=transpose(A)`cols
+
+trans_eq : LEMMA FORALL(M, (N: (same_dim?(M)))): transpose(M)=transpose(N) IFF M = N
+
+ inverse?(M: Square)(N: Square | N`rows = M`rows): bool =
+   M * N = I(M`rows) and N * M = I(M`rows)
+
+ invertible?(M: Square): bool = EXISTS (N: (inverse?(M))): inverse?(M)(N)
+
+ inverse_unique: lemma
+   FORALL (M: (invertible?), N, P: (inverse?(M))): N = P
+
+ inverse(M: (invertible?)): {N: Square | N`rows = M`rows}
+   = the! (N: Square | N`rows = M`rows): inverse?(M)(N)
+
+ invertible_product: lemma
+   FORALL (M: (invertible?), N: (invertible?) | N`rows = M`rows):
+     invertible?(M * N)
+
+ product_inverse: lemma
+   FORALL (M: (invertible?), N: (invertible?) | N`rows = M`rows):
+     inverse(M * N) = inverse(N) * inverse(M)
+
+
+
+ trace(M: Square): real = sigma[below(M`rows)](0, M`rows-1, lambda (k: below(M`rows)): M`matrix(k, k))
+
+tr_symm: LEMMA FORALL (A,B : Matrix): A`cols = B`rows AND A`rows = B`cols IMPLIES trace(A*B) = trace(B*A) 
+
+tr_sim: LEMMA FORALL (A: Square, B: (same_dim?(A))): invertible?(B) IMPLIES trace(inverse(B)*A*B) = trace(A)
+
+
+ortho?(N:Matrix):bool= N*transpose(N)=I(N`rows)
+ 
+
+symmetric_part(M: Square): (symmetric?) =
+  1/2 * (M + transpose(M))
+
+skew_symmetric_part(M: Square): (skew_symmetric?) =
+  1/2 * (M - transpose(M))
+
+square_decomp: LEMMA
+  FORALL (M: Square): M = symmetric_part(M) + skew_symmetric_part(M)
+
+
+ square_matrix_induct: LEMMA
+   forall (p: pred[Square]):
+    (forall (M: Square):
+      (forall (N: Square): N`rows < M`rows implies p(N)) implies p(M))
+    implies (forall (M: Square): p(M))
+
+zero_vect_mult: LEMMA FORALL (V:Vector[pn]): Zero_mat(pm,pn)*V = vectors[pm].zero;
+
+symmetric_scal: LEMMA FORALL (a:real): symmetric?(M) IMPLIES symmetric?(a*M);
+
+symmetric_sum: LEMMA FORALL (N:(same_dim?(M))): symmetric?(M) AND symmetric?(N) IMPLIES symmetric?(M+N)
+
+symmetric_prod_1: LEMMA symmetric?(M*transpose(M))
+symmetric_prod_2: LEMMA symmetric?(transpose(M)*M)
+
+concat_V(M:Matrix,N:{N:Matrix|M`cols=N`cols}): Matrix = (# rows:= M`rows+N`rows, cols:= M`cols, 
+			      matrix := LAMBDA (i:below(M`rows+N`rows),j:below(M`cols)):
+			                 IF (i<M`rows) THEN M`matrix(i,j) ELSE N`matrix(i-M`rows,j) ENDIF #)
+
+concat_v_row: LEMMA FORALL (M:Matrix,N:{N:Matrix|M`cols=N`cols}): concat_V(M,N)`rows = M`rows+N`rows;
+concat_v_col: LEMMA FORALL (M:Matrix,N:{N:Matrix|M`cols=N`cols}): concat_V(M,N)`cols = M`cols;
+
+eye_row: LEMMA I(pn)`rows = pn
+eye_col: LEMMA I(pn)`cols = pn
+
+zero_row: LEMMA Zero_mat(pn,pm)`rows = pn
+zero_col: LEMMA Zero_mat(pn,pm)`cols = pm
+
+mult_scal_dim_row: LEMMA (c*M)`rows = M`rows
+mult_scal_dim_col: LEMMA (c*M)`cols = M`cols
+
+transp_row : LEMMA transpose(M)`rows = M`cols
+transp_col : LEMMA transpose(M)`cols = M`rows
+
+left_scal_id : LEMMA FORALL (x:real):
+	     M * (x * I(M`cols)) = x*M
+
+
+right_scal_id : LEMMA FORALL (x:real):
+	     (x * I(M`rows)) * M = x*M
+
+
+V2Mc(n:posnat, V: Vector[n]): Matrix =
+    (# rows := n, cols := 1,
+
+         matrix := lambda (k: below(n),j: below(1)): V(k) #)
+
+V2Ml(n:posnat, V: Vector[n]): Matrix =
+    (# rows := 1, cols := n,
+
+         matrix := lambda (k: below(1),j: below(n)): V(j) #)
+
+
+v2ml_row :LEMMA FORALL (V:Vector[n]): V2Ml(n,V)`rows = 1;
+v2ml_col :LEMMA FORALL (V:Vector[n]): V2Ml(n,V)`cols = n;
+
+
+v2ml_quad : LEMMA FORALL (n:posnat, MM:Mat(n,n), v:Vector[n]):  V2Ml(n,v)*(MM*transpose(V2Ml(n,v))) = (v*(MM*v)) * I(1)
+v2ml_quad_2: LEMMA FORALL (n:posnat, MM:Mat(n,n), v,w:Vector[n]):  V2Ml(n,v)*(MM*transpose(V2Ml(n,w))) = (v*(MM*w)) * I(1)
+
+
+conv_vect_mat: LEMMA FORALL (m,n:posnat, M:Mat(m,n), V:Vector[n]): V2Mc(m,M*V) = M*V2Mc(n,V)
+
+v2ml_scal : LEMMA FORALL (n:posnat, v:Vector[n], a:real): V2Ml(n,a*v) = a*V2Ml(n,v)
+v2ml_sum:LEMMA FORALL (n:posnat, v1,v2:Vector[n]) : V2Ml(n,v1+v2) = V2Ml(n,v1)+V2Ml(n,v2)
+v2ml_dot : LEMMA FORALL (x,y:Vector[n]): (V2Ml(n,x)*y)(0) = x*y
+
+AUTO_REWRITE+ zero_times_right_1
+AUTO_REWRITE+ zero_times_left_1
+AUTO_REWRITE+ zero_left_ident
+AUTO_REWRITE+ zero_right_ident
+AUTO_REWRITE+ right_mult_ident_1
+AUTO_REWRITE+ left_mult_ident_1
+AUTO_REWRITE+ ident_trans
+AUTO_REWRITE+ zero_trans
+AUTO_REWRITE+ eye_row
+AUTO_REWRITE+ eye_col
+AUTO_REWRITE+ zero_row
+AUTO_REWRITE+ zero_col
+AUTO_REWRITE+ add_dim_row
+AUTO_REWRITE+ add_dim_col
+AUTO_REWRITE+ mult_dim_row
+AUTO_REWRITE+ mult_dim_col
+AUTO_REWRITE+ mult_scal_dim_row
+AUTO_REWRITE+ mult_scal_dim_col
+AUTO_REWRITE+ transp_row
+AUTO_REWRITE+ transp_col
+AUTO_REWRITE+ concat_v_row
+AUTO_REWRITE+ concat_v_col
+
+END matrices

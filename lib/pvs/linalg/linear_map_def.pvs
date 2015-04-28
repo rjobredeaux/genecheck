@@ -1,0 +1,140 @@
+
+% --------------------------------------------------------------
+%  File Name: linear_map_def
+%  Author Name: Heber Herencia-Zapana 
+%
+% ---------------------------------------------------------------
+% This PVS theory defines a linear map on vector spaces. See [SA] Chapter 3 and 
+%  Chapter 2 of [FIS] for an a detailed account of the concepts.  
+% 
+% --------------------------------------------------------------
+%  This file is a single componet of a library of linear 
+%  algebra theories. 
+%
+
+% ------------------------------------------------------------  
+
+%  --------------------------------------------------------------
+%  For the most part, we follow the treatmet in the following texts
+%
+% [FIS] Linear Algebra, S. Friedburg, A.  Insel, and L. Spense, 3rd edition, Prentice-Hall.
+%
+% [SA]  Linear Algebra Done Right,  S. Axler. 2nd Edition. Springer-Verlag. 
+%
+%   [D]  Topology,  J. Dungundji, Allen and Bacon Co.
+%
+%   [K]  Introductory Functional Analysis,  Kreysizg, Wiley.
+%
+%   [R]  Convex Analysis, R. Rockafellar, Princeton University Press
+%
+%   [J]   A Lecture or the S-Procedure, U. Jonsson
+%
+%
+%  When appropriate each definiton, theorem, and lemma will is  annotated wih 
+%  a corresponding page number and refernece number.
+%-------------------------------------------------------------
+
+
+
+linear_map_def: theory
+begin
+
+
+importing vectors@vectors,reals@sigma_below,linear_map,reals@sigma
+importing structures@function_image_bis,structures@function_props_aux,linear_algebra@sigma_vector, sigma_lemmas
+
+f,g,h,k: VAR Maping
+
+n,m,l,p:VAR posnat
+a:VAR real
+
+
+
+% --------------------------------------------------------------------------
+% We now define the base of an n-dimensional vector space as the "standard 
+% base" that is eact ith element of the base is a row of 0s with the exception
+% that the ith entry is 1.
+% So base e(i)(i) = 1 and e(i)(j) =0 if i /= j
+% --------------------------------------------------------------------------
+unit?(n)(e:[below[n]->Vector[n]]):bool=FORALL (i:below[n]):e(i)*e(i)=1
+ortho?(n)(e:[below[n]->Vector[n]]):bool=FORALL (i,j:below[n]): (i/=j IMPLIES e(i)*e(j)=0)
+vec_expan?(n)(e:[below[n]->Vector[n]]):bool=FORALL (x:Vector[n]):x=SigmaV(0,n-1,x*e)
+base?(n)(e:[below[n]->Vector[n]]):bool=unit?(n)(e) and ortho?(n)(e) and vec_expan?(n)(e)
+e(n):[below[n]->Vector[n]]=LAMBDA(j:below[n]): lambda(i:below[n]):IF (i=j) THEN 1 ELSE 0 ENDIF
+
+
+% --------------------------------------------------------------------------
+%  A vector can be represented as a combination of the itself and 
+%  the standard bases.  So element i is the sum of the terms
+%  of the vecor multiplied by the ith column of the standard bases. 
+% --------------------------------------------------------------------------
+
+vec_repre_bases:LEMMA forall(x:Vector[n]):  x= SigmaV(0,n-1,x*e(n))
+
+
+cano_base:LEMMA base?(n)(e(n))
+
+
+
+
+% --------------------------------------------------------------------------
+linear_map_e?(h,l,n,m): bool =h`dom=n and h`codom=m and FORALL( x:Vector[l],F:[below[l]->Vector[n]]):  
+   h`mp(SigmaV[below[l],n](0,l-1,x*F))=SigmaV[below[l],m](0,l-1,x*(h`mp o F));
+
+linear_map_e?(n,m)(h):bool = forall(l):linear_map_e?(h,l,n,m)
+
+Map_linear(n,m):TYPE ={h:Map(n,m)|linear_map_e?(n,m)(h) }
+
+
+% --------------------------------------------------------------------------
+% if h is a linaer map then h applied to the vector x equals the sum of 
+% the vector x multiplied by h composed with the standard bases.
+% --------------------------------------------------------------------------
+%vec_repre_base_map:LEMMA linear_map_e?(h) implies h(x)=sigmaV(0,n-1,x*(h o e));
+
+% --------------------------------------------------------------------------
+
+
+% ------------------------------------------------------------------------------------------- 
+% If f and g are linear maps, then their compositon is a linear map.  
+% -------------------------------------------------------------------------------------------  
+linear_map_e_comp: LEMMA FORALL (f:Map(m,p),g:Map(n,m)): linear_map_e?(m,p)(f)  AND 
+                      linear_map_e?(n,m)(g) 
+                      IMPLIES
+                      linear_map_e?(n,p)(f o g)
+
+
+% --------------------------------------------------------------------------
+
+% --------------------------------------------------------------------------
+% If functions k and j are equal and h is bijective, then k is bijective. 
+% --------------------------------------------------------------------------
+bijecti_fun_equa: LEMMA FORALL (k,h:Map(n,n)):k=h AND bijective?(n)(h) 
+                  IMPLIES 
+                  bijective?(n)(k)
+
+%--------------------------------------------------------------------------
+
+% If functions h and k are equal and both are bijective, then their inverses
+% are also equal. 
+% --------------------------------------------------------------------------
+%inverse_func:LEMMA  FORALL (k,h:Map(n,n)):h=k AND bijective?(n)(h) AND bijective?(n)(k) 
+%                   IMPLIES inverse(n)(h)=inverse(n)(k)
+
+
+% --------------------------------------------------------------------------
+%  If h and k are both linear maps and h and k applied to the standard bases is
+% then same, then the maps are equal
+% --------------------------------------------------------------------------
+
+equa_basis_n: LEMMA  forall(h,k:Map_linear(n,m)): 
+                     h`mp o e(n)=k`mp o e(n) 
+                    IMPLIES 
+                     h=k
+
+
+
+end linear_map_def
+
+
+

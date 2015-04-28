@@ -1,0 +1,6 @@
+To install:
+gcc -c posdef_stubs.c -I /usr/local/lib/ocaml/ -fpic
+ar rcs libposdef_stubs.a posdef_stubs.o
+ocamlopt -a  posdef.mli posdef.ml -cclib -lposdef_stubs -o posdef.cmxa
+make
+sudo make install

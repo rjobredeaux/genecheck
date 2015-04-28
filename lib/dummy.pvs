@@ -1,0 +1,6 @@
+dummy: THEORY
+BEGIN
+ IMPORTING linalg@vect_of_vect
+ dumdum: lemma
+ 1+1 = 2
+END dummy

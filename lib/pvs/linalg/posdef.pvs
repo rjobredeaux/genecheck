@@ -1,0 +1,98 @@
+posdef:THEORY
+
+BEGIN
+
+IMPORTING matrices,reals@sigma_below_sub, reals@sigma_swap, matrix_lemmas, block_matrices	
+
+symetric_qua_trans:LEMMA FORALL(A:(square?),M:{M:Matrix|M`cols=A`rows}):symmetric?(A)IMPLIES symmetric?(M*A*transpose(M))
+
+skewsym_quad_zero : LEMMA FORALL(A:(skew_symmetric?), x:Vector[A`cols]): x*(A*x) = 0 
+
+quad_scal: LEMMA FORALL(A:(square?), a:real,x:Vector[A`cols]): x*((a*A)*x) =a*(x*(A*x))
+
+quad_sum: LEMMA FORALL (A:(square?),B:(same_dim?(A)), x:Vector[A`cols]): x*((A+B)*x) = x*(A*x)+x*(B*x)
+
+sym_block_quad_expr : LEMMA FORALL (m,n:posnat, A:Mat(m,m), B:Mat(n,m), D:Mat(n,n), x:Vector[m], y:Vector[n], G: Mat(m+n,m+n), z:Vector[n+m]):
+		    z = Block2V(V2Block(m,n)(x,y)) AND
+		    G = Block2M(M2Block(m,n,m,n)(A,B,transpose(B),D)) IMPLIES
+		    z*(G*z) = x*(A*x) + 2*(y*(B*x)) + y*(D*y)
+
+%------------
+% Definitions
+%------------
+
+semidef_pos?(A: (square?)): bool = FORALL (x: Vector[A`rows]): x*(A*x) >= 0
+
+def_pos?(A: (square?)): bool = FORALL (x: Vector[A`rows]): (NOT x=zero[A`rows]) IMPLIES x*(A*x) > 0
+
+def_pos_id: LEMMA FORALL (n:posnat) : def_pos?(I(n))
+
+semidef_pos_sym : LEMMA FORALL (A:(square?)): semidef_pos?(A) iff semidef_pos?(symmetric_part(A))
+
+def_pos_sym : LEMMA FORALL (A:(square?)): def_pos?(A) iff def_pos?(symmetric_part(A))
+
+def_pos_semidef_pos : LEMMA FORALL (A:(square?)): def_pos?(A) IMPLIES semidef_pos?(A)
+
+posdef_inv : THEOREM FORALL (n:posnat,P:SquareMat(n)):
+	   invertible?(P) AND symmetric?(P) IMPLIES (def_pos?(P) IMPLIES def_pos?(inverse(P)))
+
+posdef_inveq: THEOREM FORALL (n:posnat,P:SquareMat(n)):
+	   invertible?(P) AND symmetric?(P) IMPLIES (def_pos?(P) IFF def_pos?(inverse(P))) 
+
+semidef_qua_trans:LEMMA FORALL(A:(square?),M:{M:Matrix|M`cols=A`rows}): semidef_pos?(A) IMPLIES semidef_pos?(M*A*transpose(M))
+
+semidef_sum: LEMMA FORALL (A:(square?), B:(same_dim?(A))): semidef_pos?(A) AND semidef_pos?(B) IMPLIES semidef_pos?(A+B);
+
+semidef_scal: LEMMA FORALL (a:nnreal, A:(semidef_pos?)): semidef_pos?(a*A);
+defpos_scal : LEMMA FORALL (a:posreal, A:(def_pos?)): def_pos?(a*A);
+
+block_semidef: LEMMA FORALL (M:(Bdiag_square?)): semidef_pos?(Block2M(M)) IMPLIES semidef_pos?(Block2M1(M)) AND semidef_pos?(Block2M4(M))
+
+diag_block_semidef: LEMMA FORALL (m,n:posnat, A:Mat(m,m), B:Mat(n,n)):
+		    semidef_pos?(A) AND semidef_pos?(B) IMPLIES
+		    semidef_pos?(Block2M(M2Block(m,n,m,n)
+			(A,Zero_mat(n,m),Zero_mat(m,n),
+			 B)))
+
+chol_step1 : LEMMA FORALL(n:posnat,alpha:real, v:Vector[n], B:Mat(n,n)) : 
+	   alpha=0 AND
+	   semidef_pos?(Block2M(M2Block(1,n,1,n)(alpha*I(1), transpose(V2Ml(n,v)),V2Ml(n,v),B)))
+	   IMPLIES v= zero[n]
+
+chol_step2 : LEMMA FORALL (n:posnat, alpha:nzreal, v:Vector[n], B:Mat(n,n)):
+	   LET C = B - (1/alpha)*(transpose(V2Ml(n,v))*V2Ml(n,v)) in
+	   semidef_pos?(Block2M(M2Block(1,n,1,n)(alpha*I(1), transpose(V2Ml(n,v)),V2Ml(n,v),B))) IMPLIES
+	   semidef_pos?(C)
+
+cholesky_semidef: LEMMA FORALL (MM:(square?)):
+		  symmetric?(MM) AND semidef_pos?(MM) IMPLIES
+		  EXISTS (R:Mat(MM`rows,MM`cols)): MM = transpose(R)*R
+
+cholesky_rev : LEMMA FORALL (MM:(square?)): 
+	     (EXISTS (R:Mat(MM`rows,MM`cols)): MM = transpose(R)*R) IMPLIES
+	     symmetric?(MM) AND semidef_pos?(MM)
+
+semidefpos_inv_defpos: LEMMA FORALL (A:(invertible?)): symmetric?(A) AND semidef_pos?(A) IMPLIES def_pos?(A)
+
+schur_semidef_1: LEMMA FORALL (n,m:posnat, A:Mat(n,n),B:Mat(n,m),D:Mat(m,m)):
+		 invertible?(A) AND symmetric?(A) AND symmetric?(D) IMPLIES
+		 (semidef_pos?(Block2M(M2Block(n,m,n,m)(A,transpose(B),B,D))) IFF
+		  def_pos?(A) AND semidef_pos?(D-transpose(B)*inverse(A)*B))
+
+schur_semidef_2 : LEMMA FORALL (n,m:posnat, A:Mat(n,n),B:Mat(n,m),D:Mat(m,m)):
+		 invertible?(D) AND symmetric?(A) AND symmetric?(D) IMPLIES
+		 (semidef_pos?(Block2M(M2Block(n,m,n,m)(A,transpose(B),B,D))) IFF
+		  def_pos?(D) AND semidef_pos?(A-B*inverse(D)*transpose(B)))
+
+
+IMPORTING reals@quadratic
+
+posdef22 : LEMMA FORALL (p11,p22:posreal, p12:real, MM:Mat(2,2)):
+ 	 MM = (# cols := 2, rows :=2, 
+ matrix:= LAMBDA(i,j:below(2)) : COND
+(i=0 AND j=0) -> p11, (i=0 AND j=1) -> p12,
+(i=1 AND j=0) -> p12, (i=1 AND j=1) -> p22
+ENDCOND #) AND p11*p22-p12^2 > 0 IMPLIES
+ 	 def_pos?(MM);
+
+END posdef

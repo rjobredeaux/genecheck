@@ -1,0 +1,76 @@
+% --------------------------------------------------------------
+%  File Name: linear_map.pvs
+%  Author Name:  Heber Herencia-Zapana
+%
+% ----------------------------------------------------------------
+%   This theory defines the map and matrix operators.   
+% 
+% --------------------------------------------------------------
+%  This file is a single componet of a library of linear 
+%  algebra theories. 
+%  --------------------------------------------------------------
+%  For the most part, we follow the treatmet in the following texts
+%
+% [FIS] Linear Algebra, S. Friedburg, A.  Insel, and L. Spense, 3rd edition, Prentice-Hall.
+%
+% [SA]  Linear Algebra Done Right,  S. Axler. 2nd Edition. Springer-Verlag. 
+%
+%   [D]  Topology,  J. Dungundji, Allen and Bacon Co.
+%
+%   [K]  Introductory Functional Analysis,  Kreysizg, Wiley.
+%
+%   [R]  Convex Analysis, R. Rockafellar, Princeton University Press.   
+%
+%   [J]   A Lecture or the S-Procedure, U. Jonsson.
+
+
+%  When appropriate each definiton, theorem, and lemma is annotated wih 
+%  a text ref and page number and refernece number.
+
+%-------------------------------------------------------------
+
+
+
+linear_map: theory
+
+begin
+
+
+
+importing vectors@vectors,reals@sigma_below
+importing orders@isomorphism
+n,m :VAR posnat 
+
+% -----------------------------------------------------------------------
+% A map from an n dimensional vector space  to an m
+% dimensional vecotor space takes a n-dimensional vector to 
+% an m-dimensional vector.
+%------------------------------------------------------------------------
+Maping:TYPE =[#dom:posnat,codom:posnat,mp:[Vector[dom]->Vector[codom]]#]
+Map(n,m): TYPE={f:Maping|f`dom=n and f`codom=m}
+
+% -----------------------------------------------------------------------
+% A matrix maps i- row and j- colum to a real.
+%  -----------------------------------------------------------------------
+%matrix(n,m): type=[[i: below[n],j: below[m]]->real]
+%subset(n):TYPE=set[Vector[n]]
+f,g:Maping
+same_dim?(f:Maping)(g:Maping):bool= f`dom=g`dom and f`codom=g`codom;
+same?(f:Maping)(g:Maping):bool = f`dom=g`codom; 
++(f:Maping,(g:(same_dim?(f)))):Maping=f WITH [`mp:=lambda (x: Vector[f`dom]): f`mp(x)+g`mp(x)];	
+*(a:real, f:Maping):Maping=f WITH [`mp:=lambda(x:Vector[f`dom]):a*f`mp(x)];
+o(f:Maping,(g:(same?(f)))): Maping =  (#dom:=g`dom,codom:=f`codom,mp:=f`mp o g`mp#)	
+%o: [[f:Maping,(g:(same?(f)))]-> Maping]=(lambda (f,g: Maping): (#dom:=g`dom,codom:=f`codom,mp:=f`mp o g`mp#));
+bijective?(n)(f:Map(n,n)): bool= bijective?[Vector[n],Vector[n]](f`mp);
+%bijective?(f:Maping):bool= bijective?[Vector[f`dom],Vector[f`codom]](f`mp);
+inverse(n)(f:Map(n,n)):Maping=(#dom:=n,codom:=n,mp:=inverse[Vector[n],Vector[n]](f`mp)#)
+id(n):Maping=(#dom:=n,codom:=n,mp:=lambda(x:Vector[n]):x#)
+% -----------------------------------------------------------------------
+
+% map_i is the set of bijective maps. 
+% -----------------------------------------------------------------------
+%map_i:TYPE ={f:Maping|bijective?(f`mp)}
+
+
+
+end linear_map

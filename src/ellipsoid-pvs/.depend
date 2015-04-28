@@ -1,0 +1,12 @@
+utils.cmo :
+utils.cmx :
+matrix.cmo : utils.cmo matrix.cmi
+matrix.cmx : utils.cmx matrix.cmi
+trivialPVS.cmo :
+trivialPVS.cmx :
+ellipsoid_pvs.cmo : utils.cmo trivialPVSParser.cmi trivialPVS.cmo posdef.cmi \
+    matrix.cmi
+ellipsoid_pvs.cmx : utils.cmx trivialPVSParser.cmi trivialPVS.cmx posdef.cmx \
+    matrix.cmx
+matrix.cmi :
+trivialPVSParser.cmi : trivialPVS.cmo

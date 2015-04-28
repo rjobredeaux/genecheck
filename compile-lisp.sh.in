@@ -1,0 +1,3 @@
+#!/bin/sh
+export PVS_LIBRARY_PATH=$PVS_LIBRARY_PATH:@abs_top_builddir@/lib/pvs
+proveit -q lib/dummy.pvs

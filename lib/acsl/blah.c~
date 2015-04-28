@@ -1,0 +1,15 @@
+/*@ logic matrix eye(integer i);
+  @ logic matrix zeros(integer row, integer col);
+  @ logic matrix block_m (matrix a11, matrix a12, 
+  @                       matrix a21, matrix a22);
+  @ logic vector block_v (vector v1, vector v2);
+  @ logic matrix mat_of_2x2_scalar(real x0000, 
+  @         real x0001, real x0100, real x0101);
+ 
+
+*/
+/*@ logic vector vect_scalar_mult (real a, vector v);
+  @ logic matrix mat_scalar_mult (real a, matrix A);
+  @ logic matrix mat_add(matrix A, matrix B);
+  @ logic vector vect_mult(matrix A, vector x);
+  @ logic matrix mat_mult(matrix A, matrix B);*/

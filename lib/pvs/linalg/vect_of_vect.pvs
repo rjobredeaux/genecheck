@@ -1,0 +1,5 @@
+vect_of_vect[n, m: posnat]: THEORY
+BEGIN
+ IMPORTING vectors@vectors
+ Vector_of_Vectors: TYPE = [below(m) -> Vector[n]]
+END vect_of_vect

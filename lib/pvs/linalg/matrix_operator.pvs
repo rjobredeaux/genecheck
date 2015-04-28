@@ -1,0 +1,258 @@
+
+
+% --------------------------------------------------------------
+%  File Name: matrix_operator.pvs
+%  Author Name: Heber Herencia-Zapana
+%
+% ---------------------------------------------------------------
+%
+%       File Contents
+%-----------------------------------------------------------------
+% This theory give a one to one relation between maps and matrices
+%The inverse of a matrix is defined using the inverse of a map
+%This theory gives basic properties of  inverse of a matrix
+%
+% --------------------------------------------------------------
+%  This file is a single componet of a library of linear 
+%  algebra theories. 
+%  --------------------------------------------------------------
+%  For the most part, we follow the treatmet in the following texts
+%
+% [FIS] Linear Algebra, S. Friedburg, A.  Insel, and L. Spense, 3rd edition, Prentice-Hall.
+% 
+% [SA]  Linear Algebra Done Right,  S. Axler. 2nd Edition. Springer-Verlag. 
+%
+%   [D]  Topology,  J. Dungundji, Allen and Bacon Co.
+%
+%   [K]  Introductory Functional Analysis,  Kreysizg, Wiley.
+%
+%   [R]  Convex Analysis, R. Rockafellar, Princeton University Press.   
+%
+%   [J]   A Lecture or the S-Procedure, U. Jonsson.
+
+
+%  When appropriate each definiton, theorem, and lemma will is  annotated wih 
+%  a corresponding page number and refernece number.
+% --------------------------------------------------------------
+
+
+
+
+matrix_operator: theory
+begin
+importing orders@isomorphism,reals@sigma_below,reals@sigma
+importing matrices,linear_algebra@sigma_vector
+importing linear_map_def,linear_map,structures@function_props_aux
+
+A,B,C,D,Q: VAR Matrix
+M,N:VAR Square
+f,g,h: VAR Maping
+
+n,m,l,p:var posnat
+
+
+% ------------------------------------------------------------------------------------------  
+% Defines an operator L that given standard bases e and operator L and a linear map f,
+% produces the matrix represention of f. See pg 74[FIS].
+% ------------------------------------------------------------------------------------------  
+L(n,m): [Map_linear(n,m)->Mat(m,n)]=(lambda (f: Map_linear(n,m)): 
+                 (#rows:=m,cols:=n,matrix:=lambda (j: below[m],i:below[n]): f`mp(e(n)(i))(j)#))
+
+
+linear_matrix:LEMMA forall(A:Mat(n,m),F:[below[l]->[Vector[m]]]): A*SigmaV(0,l-1,F)=SigmaV(0,l-1,lambda(i:below[l]):A*F(i))
+
+% ------------------------------------------------------------------------------------------- 
+% Defines a operator M that given an n x n  square matrix A produces a linear map on the n
+% dimensional vector space. 
+% -------------------------------------------------------------------------------------------
+T(n,m): [Mat(m,n)->Map_linear(n,m)]=(lambda (A: Mat(m,n)):(#dom:=n, codom:=m, mp:=lambda (x:Vector[n]): lambda(j:below[m]): 
+                                                            sigma(0,A`cols-1,lambda(i:below[A`cols]):A`matrix(j,i)*x(i))#))  
+
+
+% -------------------------------------------------------------------------------------------
+
+% -------------------------------------------------------------------------------------------  
+
+
+T_matr: LEMMA forall (A:Mat(m,n),x:Vector[n]): (T(n,m)(A))`mp(x)= A*x; 
+
+
+
+% -------------------------------------------------------------------------------------------  
+% The map produced by T is a linear map. 
+% -------------------------------------------------------------------------------------------  
+linear_map_T:LEMMA  forall (A:Mat(m,n)):linear_map_e?(n,m)(T(n,m)(A));
+ 
+linear_inverse_map_n: LEMMA  FORALL (f:Map_linear(n,n)): bijective?(n)(f)  IMPLIES linear_map_e?(n,n)(inverse(n)(f))
+
+% -------------------------------------------------------------------------------------------  
+% There is bijection between L and T.  
+% -------------------------------------------------------------------------------------------  
+map_matrix_bij: LEMMA   forall(A:Mat(m,n)):L(n,m)(T(n,m)(A))=A
+
+
+% -------------------------------------------------------------------------------------------  
+% IF f and g are equal, then  the matrices produced by applying L to them are also 
+% equal.
+% -------------------------------------------------------------------------------------------  
+
+operator: LEMMA forall (f,g:Map_linear(n,m)):f=g 
+                IMPLIES 
+                L(f`dom,f`codom)(f)=L(g`dom,g`codom)(g)              
+
+% -------------------------------------------------------------------------------------------  
+%  The operator L is bijective 
+% -------------------------------------------------------------------------------------------  
+
+Iso   : LEMMA  bijective?(L(n,m))
+
+% -------------------------------------------------------------------------------------------  
+% If the linear map f is bijective, then applying T to L to f yields f
+% -------------------------------------------------------------------------------------------  
+iso_map: LEMMA forall(f:Map_linear(n,m)):
+
+               T(n,m)(L(n,m)(f)) = f 
+
+   
+%iso_add:  LEMMA  n=m AND linear_map_e?(f) AND linear_map_e?(g)
+%                 IMPLIES 
+%                 L(e)((f+g))=L(e)(f)+L(e)(g)%NO
+
+L_inverse: LEMMA inverse(L(n,m))=T(n,m)
+
+Iso_T : LEMMA bijective?(T(n,m))
+
+% -------------------------------------------------------------------------------------------
+
+% -------------------------------------------------------------------------------------------  
+% If f and g are bijective, then L(e) distributes over the composition of f and g. 
+% ------------------------------------------------------------------------------------------- 
+
+linear_comp: LEMMA FORALL (n,m,l:posnat,g: Map_linear(n,m),f:Map_linear(m,l)):
+                   linear_map_e?(n,l)(f o g)
+ 
+
+mult_comp: LEMMA FORALL (A: Mat(p,m),B: Mat(m,n)): T(n,p)(A*B)=T(m,p)(A) o T(n,m)(B)
+
+
+
+comp_mult:   LEMMA FORALL(g:Map_linear(n,m),f:Map_linear(m,p)): 
+                      L(n,p)(f o g)=L(m,p)(f)*L(n,m)(g)
+
+% -------------------------------------------------------------------------------------------  
+%  Applying L to the indetiy map yields the identiy matrix. 
+% -------------------------------------------------------------------------------------------  
+iso_ide_L:  LEMMA  L(n,n)(id(n))= I(n)
+iso_ide_T: LEMMA T(n,n)(I(n))=id(n)
+
+% -------------------------------------------------------------------------------------------  
+%  Defines the set of all square  matrices where the T operator applied to them is bijective.
+% -------------------------------------------------------------------------------------------  
+Matrix_inv(n):type= {A:Square|squareMat?(n)(A) and bijective?(n)(T(n,n)(A))}
+
+% ------------------------------------------------------------------------------------------- 
+% Define the inverse of an invertable matrix A  by  applying L to the inverse of the
+% map produced by T(A).  See page 94 of [FIS]
+% -------------------------------------------------------------------------------------------  
+
+inverse_invertible: LEMMA square?(A) AND squareMat?(n)(A) AND 
+                    bijective?(n)(T(n,n)(A)) 
+                    IMPLIES squareMat?(n)(L(n, n)(inverse(n)(T(n, n)(A)))) AND
+                    bijective?(n)(T(n, n)(L(n, n)(inverse(n)(T(n, n)(A)))))
+
+inv(n):[Matrix_inv(n)->Matrix_inv(n)]=(lambda (A:Matrix_inv(n)):L(n,n)(inverse(n)(T(n,n)(A))))
+
+
+% -------------------------------------------------------------------------------------------  
+% The product of the  inverse of a matrix A and A is the identity matrix. 
+% See Page 94 of [FIS]
+% -------------------------------------------------------------------------------------------  
+
+iso_inv:  LEMMA  squareMat?(n)(M) AND bijective?(n)(T(n,n)(M))  
+                 IMPLIES  
+                 inv(n)(M)*M =I(n) AND M*inv(n)(M)=I(n)
+
+inver_bijective: LEMMA  squareMat?(n)(M) and squareMat?(n)(N) and 
+                       inverse?(M)(N)                
+                      IMPLIES 
+                       bijective?(n)(T(n,n)(M)) 
+
+
+inv:            LEMMA squareMat?(n)(M) AND  
+                      bijective?(n)(T(n,n)(M)) 
+                      IMPLIES    
+                      inverse?(M)(inv(n)(M))
+
+
+inv_inv: LEMMA  squareMat?(n)(M) AND  
+                      bijective?(n)(T(n,n)(M)) 
+                      IMPLIES    
+                      inv(n)(inv(n)(M))= M
+
+equa_inv:LEMMA FORALL(f,g,h:Map(n,n)):(f o g)`mp = id(n)`mp and (h o f)`mp = id(n)`mp
+               IMPLIES
+               bijective?(n)(f)                     
+
+inv_uni:LEMMA FORALL(f,g,h:Map(n,n)):(f o g)`mp = id(n)`mp and (h o f)`mp = id(n)`mp
+               IMPLIES
+                inverse(n)(f)=g and inverse(n)(f)=h 
+
+
+
+bijec_prod: LEMMA square?(A) AND squareMat?(n)(A) AND bijective?(n)(T(n,n)(A)) AND
+                  square?(M) AND squareMat?(n)(M) AND bijective?(n)(T(n,n)(M)) 
+                  IMPLIES 
+                  bijective?(n)(T(n,n)(A*M))
+
+
+
+map_matrix_bij_inv: LEMMA   forall(A:Matrix_inv(n)): inverse(n)(T(n,n)(A))=T(n,n)(inv(n)(A))
+
+
+tran_inv:LEMMA square?(A) and squareMat?(n)(A) and bijective?(n)(T(n,n)(A))
+               IMPLIES 
+                inverse?(transpose(A))(transpose(inv(n)(A)))  
+               
+
+bijec_transpose: LEMMA square?(A) AND squareMat?(n)(A) AND 
+                       bijective?(n)(T(n,n)(A)) 
+                       IMPLIES 
+                       bijective?(n)(T(n,n)(transpose(A)))
+
+
+
+tran_inv_oper: LEMMA square?(A) and squareMat?(n)(A) and bijective?(n)(T(n,n)(A))
+               IMPLIES 
+                inv(n)(transpose(A))=transpose(inv(n)(A))
+
+prod_inv:LEMMA square?(A) and squareMat?(n)(A) and bijective?(n)(T(n,n)(A)) AND
+               square?(B) and squareMat?(n)(B) and bijective?(n)(T(n,n)(B))
+               IMPLIES 
+               inverse?(A*B)(inv(n)(B)*inv(n)(A))
+
+prod_inv_oper:LEMMA square?(A) and squareMat?(n)(A) and bijective?(n)(T(n,n)(A)) AND
+               square?(B) and squareMat?(n)(B) and bijective?(n)(T(n,n)(B))
+               IMPLIES 
+               inv(n)(A*B)=inv(n)(B)*inv(n)(A)
+
+
+equa_sol: LEMMA FORALL(x,y,b:Vector[n]): square?(M) AND 
+                squareMat?(n)(M) and 
+                y=M*x+b and 
+                bijective?(n)(T(n,n)(M)) 
+                IMPLIES 
+                x=inv(n)(M)*(y-b) 
+
+ zero_times_vect_right: LEMMA
+   FORALL (M: Matrix): M * vectors[M`cols].zero = vectors[M`rows].zero
+
+inv_dim: LEMMA square?(A) and squareMat?(n)(A) and bijective?(n)(T(n,n)(A))
+               IMPLIES 
+               inv(n)(A)`cols=A`cols AND inv(n)(A)`rows=A`rows
+
+
+ 
+
+
+
+end matrix_operator
