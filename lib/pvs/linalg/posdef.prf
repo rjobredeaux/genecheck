@@ -1673,6 +1673,104 @@
     (semidef_pos? const-decl "bool" posdef nil))
    shostak))
  (posdef_inv 0
+  (posdef_inv-2 "blah" 3639934983
+   ("" (skeep)
+    (("" (expand def_pos?)
+      (("" (skeep)
+        (("" (hide -2)
+          (("" (inst -2 "inverse(P)*x")
+            (("1" (bddsimp -2)
+              (("1" (case "P* (inverse(P) * x) = P*zero[P`rows]")
+                (("1" (lemma mult_assoc_vect)
+                  (("1" (inst -1 P "inverse(P)" x)
+                    (("1" (replace -1 -2 rl)
+                      (("1" (rewrite ident_inverse)
+                        (("1" (assert)
+                          (("1" (lemma ident_mat_prod)
+                            (("1" (inst -1 "P`rows" x)
+                              (("1"
+                                (replace -1)
+                                (("1"
+                                  (lemma matrix_prod_zero)
+                                  (("1"
+                                    (inst -1 P)
+                                    (("1"
+                                      (typepred P)
+                                      (("1"
+                                        (expand square?)
+                                        (("1"
+                                          (replace -1 :actuals? t)
+                                          (("1"
+                                            (replace -3)
+                                            (("1"
+                                              (lemma inverse_rows)
+                                              (("1"
+                                                (inst -1 P)
+                                                (("1"
+                                                  (replace
+                                                   -1
+                                                   :actuals?
+                                                   t)
+                                                  (("1"
+                                                    (replace
+                                                     -2
+                                                     :actuals?
+                                                     t)
+                                                    (("1"
+                                                      (propax)
+                                                      nil
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil)
+                               ("2"
+                                (rewrite inverse_rows)
+                                (("2" (assert) nil nil))
+                                nil))
+                              nil))
+                            nil))
+                          nil))
+                        nil))
+                      nil)
+                     ("2" (rewrite inverse_rows)
+                      (("2" (typepred P)
+                        (("2" (expand square?) (("2" (assert) nil nil))
+                          nil))
+                        nil))
+                      nil))
+                    nil))
+                  nil)
+                 ("2" (replace -1) (("2" (propax) nil nil)) nil)
+                 ("3" (typepred P)
+                  (("3" (expand square?)
+                    (("3" (replace -1) (("3" (assert) nil nil)) nil))
+                    nil))
+                  nil)
+                 ("4" (rewrite inverse_rows)
+                  (("4" (typepred P)
+                    (("4" (expand square?)
+                      (("4" (replace -1) (("4" (assert) nil nil)) nil))
+                      nil))
+                    nil))
+                  nil))
+                nil)
+               ("2" (typepred P) (("2" (postpone) nil nil)) nil))
+              nil)
+             ("2" (postpone) nil nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   nil shostak)
   (posdef_inv-1 nil 3637168475
    ("" (skeep)
     (("" (expand def_pos?)
@@ -1839,8 +1937,7 @@
     (inverse_rows formula-decl nil matrix_lemmas nil)
     (ident_mat_prod formula-decl nil matrix_lemmas nil)
     (ident_inverse formula-decl nil matrix_lemmas nil)
-    (zero const-decl "Vector" vectors "vectors/")
-    (conv_prod_int formula-decl nil matrix_lemmas nil)
+    (zero const-decl "Vector" vectors "vectors/") nil
     (transp_inv formula-decl nil matrix_lemmas nil)
     (symmetric? const-decl "bool" matrices nil)
     (eye_row formula-decl nil matrices nil)
@@ -1879,10 +1976,8 @@
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
     (nonneg_int nonempty-type-eq-decl nil integers nil)
     (> const-decl "bool" reals nil)
-    (squareMat? const-decl "bool" matrices nil)
-    (n skolem-const-decl "posnat" posdef nil)
-    (SquareMat type-eq-decl nil matrices nil)
-    (P skolem-const-decl "SquareMat(n)" posdef nil))
+    (squareMat? const-decl "bool" matrices nil) nil
+    (SquareMat type-eq-decl nil matrices nil) nil)
    shostak))
  (posdef_inveq 0
   (posdef_inveq-1 nil 3637168785
