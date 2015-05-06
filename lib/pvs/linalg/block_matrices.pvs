@@ -1,3 +1,11 @@
+% --------------------------------------------------------------
+%  File Name: block_matrices
+%  Author Names: Romain Jobredeaux & Heber Herencia-Zapana 
+%
+% ---------------------------------------------------------------
+% This theory introduces block matrices and useful results on them,
+% such as rank one update inverse and proof by induction.
+
 block_matrices: THEORY
 
 
@@ -145,7 +153,7 @@ trans_conv: LEMMA FORALL (M: Block_Matrix): transpose(Block2M(M)) = (Block2M(Btr
 
  transpose_eq: LEMMA FORALL (M:Block_Matrix): Btranspose(M) =transpose(Block2M(M));
 
- *(M: (Bdiag_square?),V: Block_Vect(M`cols1,M`cols2)): Block_Vector2 = 
+ *(M: Block_Matrix,V: Block_Vect(M`cols1,M`cols2)): Block_Vector2 = 
 (# comp1 := M`rows1, comp2 := M`rows2,vector1 := Block2M1(M)*Block2V1(V) + Block2M3(M)*Block2V2(V), 
  vector2 := Block2M2(M)*Block2V1(V) + Block2M4(M)*Block2V2(V)#)
 

@@ -63,12 +63,14 @@
    shostak))
  (minus_rows 0
   (minus_rows-1 nil 3543731935 ("" (skeep) (("" (grind) nil nil)) nil)
-   ((real_minus_real_is_real application-judgement "real" reals nil))
+   ((real_minus_real_is_real application-judgement "real" reals nil)
+    (- const-decl "Matrix" matrices nil))
    shostak))
  (minus_cols 0
   (minus_cols-1 nil 3543735462
    ("" (skosimp) (("" (grind) nil nil)) nil)
-   ((real_minus_real_is_real application-judgement "real" reals nil))
+   ((real_minus_real_is_real application-judgement "real" reals nil)
+    (- const-decl "Matrix" matrices nil))
    shostak))
  (transpose_rows 0
   (transpose_rows-1 nil 3542467523
@@ -84,18 +86,20 @@
  (product_rows 0
   (product_rows-1 nil 3542479864
    ("" (skosimp) (("" (grind) nil nil)) nil)
-   ((real_times_real_is_real application-judgement "real" reals nil)
+   ((* const-decl "Matrix" matrices nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil))
    shostak))
  (product_cols 0
   (product_cols-1 nil 3542480056
    ("" (skosimp) (("" (grind) nil nil)) nil)
-   ((real_times_real_is_real application-judgement "real" reals nil)
+   ((* const-decl "Matrix" matrices nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil))
    shostak))
  (product_rows2_TCC1 0
-  (product_rows2_TCC1-1 nil 3543297472 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (product_rows2_TCC1-1 nil 3543297472 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)) nil))
  (product_rows2 0
   (product_rows2-1 nil 3543297499
    ("" (skosimp)
@@ -122,6 +126,7 @@
       nil))
     nil)
    ((product_rows formula-decl nil matrix_lemmas nil)
+    (* const-decl "Matrix" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
@@ -149,6 +154,7 @@
       nil))
     nil)
    ((product_cols formula-decl nil matrix_lemmas nil)
+    (* const-decl "Matrix" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
@@ -159,8 +165,8 @@
     (mult_dim_col formula-decl nil matrices nil))
    shostak))
  (product_rows3_TCC1 0
-  (product_rows3_TCC1-1 nil 3543414339 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (product_rows3_TCC1-1 nil 3543414339 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)) nil))
  (product_rows3 0
   (product_rows3-1 nil 3543414344
    ("" (skosimp)
@@ -188,6 +194,7 @@
     nil)
    ((product_rows2 formula-decl nil matrix_lemmas nil)
     (product_rows formula-decl nil matrix_lemmas nil)
+    (* const-decl "Matrix" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
@@ -212,6 +219,7 @@
       nil))
     nil)
    ((product_cols2 formula-decl nil matrix_lemmas nil)
+    (* const-decl "Matrix" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
@@ -222,8 +230,8 @@
     (mult_dim_col formula-decl nil matrices nil))
    shostak))
  (product_rows4_TCC1 0
-  (product_rows4_TCC1-1 nil 3543414462 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (product_rows4_TCC1-1 nil 3543414462 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)) nil))
  (product_rows4 0
   (product_rows4-1 nil 3543414498
    ("" (skosimp)
@@ -247,6 +255,7 @@
     nil)
    ((product_rows3 formula-decl nil matrix_lemmas nil)
     (product_rows formula-decl nil matrix_lemmas nil)
+    (* const-decl "Matrix" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
@@ -271,6 +280,7 @@
       nil))
     nil)
    ((product_cols3 formula-decl nil matrix_lemmas nil)
+    (* const-decl "Matrix" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (boolean nonempty-type-decl nil booleans nil)
     (number nonempty-type-decl nil numbers nil)
@@ -305,6 +315,7 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (number nonempty-type-decl nil numbers nil)
     (sigma def-decl "real" sigma "reals/")
+    (* const-decl "Matrix" matrices nil)
     (I const-decl "(identity?)" matrices nil)
     (inverse? const-decl "bool" matrices nil)
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
@@ -373,6 +384,7 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (inverse? const-decl "bool" matrices nil)
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
+    (N!1 skolem-const-decl "(invertible?)" matrix_lemmas nil)
     (inverse_unique formula-decl nil matrices nil)
     (set type-eq-decl nil sets nil)
     (singleton? const-decl "bool" sets nil)
@@ -403,6 +415,7 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (number nonempty-type-decl nil numbers nil)
     (sigma def-decl "real" sigma "reals/")
+    (* const-decl "Matrix" matrices nil)
     (I const-decl "(identity?)" matrices nil)
     (inverse? const-decl "bool" matrices nil)
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
@@ -471,6 +484,7 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (inverse? const-decl "bool" matrices nil)
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
+    (N!1 skolem-const-decl "(invertible?)" matrix_lemmas nil)
     (inverse_unique formula-decl nil matrices nil)
     (set type-eq-decl nil sets nil)
     (singleton? const-decl "bool" sets nil)
@@ -633,12 +647,15 @@
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
+    (n skolem-const-decl "posnat" matrix_lemmas nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (x!1 skolem-const-decl "below(matrices.I(n)`rows)" matrix_lemmas
+     nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
@@ -871,6 +888,7 @@
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
     (inverse? const-decl "bool" matrices nil)
     (I const-decl "(identity?)" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (sigma def-decl "real" sigma "reals/")
     (invertible? const-decl "bool" matrices nil)
     (Square type-eq-decl nil matrices nil)
@@ -931,6 +949,7 @@
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
     (inverse? const-decl "bool" matrices nil)
     (I const-decl "(identity?)" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (sigma def-decl "real" sigma "reals/")
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil))
@@ -958,6 +977,7 @@
     (inverse_ident formula-decl nil matrix_lemmas nil)
     (ident_inverse formula-decl nil matrix_lemmas nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (N skolem-const-decl "(invertible?)" matrix_lemmas nil)
     (inverse? const-decl "bool" matrices nil)
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
@@ -972,7 +992,9 @@
     (posnat nonempty-type-eq-decl nil integers nil))
    shostak))
  (inverse2_TCC1 0
-  (inverse2_TCC1-1 nil 3636548534 ("" (subtype-tcc) nil nil) nil nil))
+  (inverse2_TCC1-1 nil 3636548534
+   ("" (lemma inverse_invertible) (("" (propax) nil nil)) nil)
+   ((inverse_invertible formula-decl nil matrix_lemmas nil)) nil))
  (inverse2 0
   (inverse2-1 nil 3636548535
    ("" (skeep)
@@ -994,27 +1016,46 @@
         nil))
       nil))
     nil)
-   ((inverse? const-decl "bool" matrices nil)
-    (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
-    (invertible? const-decl "bool" matrices nil)
-    (Square type-eq-decl nil matrices nil)
-    (square? const-decl "bool" matrices nil)
-    (Matrix type-eq-decl nil matrices nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (below type-eq-decl nil naturalnumbers nil)
-    (posnat nonempty-type-eq-decl nil integers nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (number nonempty-type-decl nil numbers nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
-    (ident_inverse formula-decl nil matrix_lemmas nil)
-    (inverse_ident formula-decl nil matrix_lemmas nil)
+   ((inverse_unique formula-decl nil matrices nil)
     (inverse_rows formula-decl nil matrix_lemmas nil)
-    (inverse_unique formula-decl nil matrices nil))
+    (inverse_ident formula-decl nil matrix_lemmas nil)
+    (ident_inverse formula-decl nil matrix_lemmas nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (square? const-decl "bool" matrices nil)
+    (Square type-eq-decl nil matrices nil)
+    (invertible? const-decl "bool" matrices nil)
+    (N skolem-const-decl "(invertible?)" matrix_lemmas nil)
+    (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
+    (inverse? const-decl "bool" matrices nil))
    shostak))
  (invertible_scal_TCC1 0
-  (invertible_scal_TCC1-1 nil 3638551350 ("" (subtype-tcc) nil nil) nil
+  (invertible_scal_TCC1-1 nil 3638551350 ("" (subtype-tcc) nil nil)
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (Square type-eq-decl nil matrices nil)
+    (invertible? const-decl "bool" matrices nil)
+    (number nonempty-type-decl nil numbers nil)
+    (/= const-decl "boolean" notequal nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (nzreal nonempty-type-eq-decl nil reals nil)
+    (* const-decl "Matrix" matrices nil)
+    (square? const-decl "bool" matrices nil))
    nil))
  (invertible_scal 0
   (invertible_scal-1 nil 3638551351
@@ -1177,13 +1218,251 @@
      real_types nil))
    shostak))
  (inverse_scal_TCC1 0
-  (inverse_scal_TCC1-1 nil 3638551350 ("" (subtype-tcc) nil nil) nil
+  (inverse_scal_TCC1-1 nil 3638551350
+   ("" (skeep)
+    (("" (split)
+      (("1" (typepred N) (("1" (hide -2) (("1" (grind) nil nil)) nil))
+        nil)
+       ("2" (rewrite invertible_scal) nil nil))
+      nil))
+    nil)
+   ((real_times_real_is_real application-judgement "real" reals nil)
+    (* const-decl "Matrix" matrices nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (square? const-decl "bool" matrices nil)
+    (Square type-eq-decl nil matrices nil)
+    (invertible? const-decl "bool" matrices nil)
+    (nzreal nonempty-type-eq-decl nil reals nil)
+    (/= const-decl "boolean" notequal nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number nonempty-type-decl nil numbers nil)
+    (invertible_scal formula-decl nil matrix_lemmas nil))
    nil))
  (inverse_scal 0
   (inverse_scal-1 nil 3638551878
-   ("" (skeep) (("" (postpone) nil nil)) nil) nil shostak))
+   ("" (skeep)
+    (("" (lemma inverse_unique)
+      (("" (inst -1 "a*N" "inverse(a*N)" "(1/a)*inverse(N)")
+        (("1" (split)
+          (("1" (hide 2)
+            (("1" (typepred N)
+              (("1" (hide -2)
+                (("1" (grind :exclude inverse)
+                  (("1" (rewrite inverse_rows)
+                    (("1" (rewrite inverse_cols) nil nil)) nil))
+                  nil))
+                nil))
+              nil))
+            nil)
+           ("2" (rewrite inverse_rows) nil nil)
+           ("3" (hide 2)
+            (("3" (expand inverse?)
+              (("3" (expand * 1 (4 8))
+                (("3" (typepred N)
+                  (("3" (expand square?)
+                    (("3" (rewrite left_scal_shift)
+                      (("3" (rewrite right_scal_shift)
+                        (("3" (rewrite scal_assoc)
+                          (("3" (lemma inverse_ident)
+                            (("3" (inst -1 N)
+                              (("3"
+                                (lemma ident_inverse)
+                                (("3"
+                                  (inst -1 N)
+                                  (("3"
+                                    (replace -1)
+                                    (("3"
+                                      (rewrite left_scal_shift)
+                                      (("1"
+                                        (rewrite right_scal_shift)
+                                        (("1"
+                                          (split)
+                                          (("1"
+                                            (hide-all-but 1)
+                                            (("1"
+                                              (grind)
+                                              (("1"
+                                                (apply-extensionality)
+                                                (("1"
+                                                  (case "x!1=x!2")
+                                                  (("1"
+                                                    (assert)
+                                                    nil
+                                                    nil)
+                                                   ("2"
+                                                    (assert)
+                                                    nil
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil)
+                                           ("2"
+                                            (rewrite scal_assoc)
+                                            (("2"
+                                              (replace -2)
+                                              (("2"
+                                                (hide-all-but 1)
+                                                (("2"
+                                                  (grind)
+                                                  (("2"
+                                                    (apply-extensionality
+                                                     1
+                                                     :hide?
+                                                     t)
+                                                    (("2"
+                                                      (case "x!1=x!2")
+                                                      (("1"
+                                                        (assert)
+                                                        nil
+                                                        nil)
+                                                       ("2"
+                                                        (assert)
+                                                        nil
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil)
+                                       ("2"
+                                        (rewrite inverse_cols)
+                                        (("2" (assert) nil nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil))
+                              nil))
+                            nil))
+                          nil))
+                        nil))
+                      nil))
+                    nil))
+                  nil))
+                nil))
+              nil))
+            nil))
+          nil)
+         ("2" (hide 2)
+          (("2" (expand inverse?)
+            (("2" (rewrite inverse_ident)
+              (("1" (rewrite ident_inverse)
+                (("1" (expand *) (("1" (propax) nil nil)) nil)
+                 ("2" (hide 2)
+                  (("2" (rewrite invertible_scal)
+                    (("2" (typepred N)
+                      (("2" (hide -2) (("2" (grind) nil nil)) nil))
+                      nil))
+                    nil))
+                  nil))
+                nil)
+               ("2" (hide 2)
+                (("2" (rewrite invertible_scal)
+                  (("2" (typepred N) (("2" (grind) nil nil)) nil))
+                  nil))
+                nil))
+              nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((inverse_unique formula-decl nil matrices nil)
+    (invertible_scal formula-decl nil matrix_lemmas nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
+    (inverse_cols formula-decl nil matrix_lemmas nil)
+    (inverse_rows formula-decl nil matrix_lemmas nil)
+    (left_scal_shift formula-decl nil matrices nil)
+    (* const-decl "Matrix" matrices nil)
+    (scal_assoc formula-decl nil matrices nil)
+    (nzreal_times_nzreal_is_nzreal application-judgement "nzreal"
+     real_types nil)
+    (I const-decl "(identity?)" matrices nil)
+    (IF const-decl "[boolean, T, T -> T]" if_def nil)
+    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (>= const-decl "bool" reals nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (< const-decl "bool" reals nil)
+    (ident_inverse formula-decl nil matrix_lemmas nil)
+    (inverse_ident formula-decl nil matrix_lemmas nil)
+    (right_scal_shift formula-decl nil matrices nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (a skolem-const-decl "nzreal" matrix_lemmas nil)
+    (N skolem-const-decl "(invertible?)" matrix_lemmas nil)
+    (/ const-decl "[numfield, nznum -> numfield]" number_fields nil)
+    (nznum nonempty-type-eq-decl nil number_fields nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
+    (inverse? const-decl "bool" matrices nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (nzreal nonempty-type-eq-decl nil reals nil)
+    (/= const-decl "boolean" notequal nil)
+    (* const-decl "Matrix" matrices nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number nonempty-type-decl nil numbers nil)
+    (invertible? const-decl "bool" matrices nil)
+    (Square type-eq-decl nil matrices nil)
+    (square? const-decl "bool" matrices nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (mult_scal_dim_row formula-decl nil matrices nil)
+    (nzreal_div_nzreal_is_nzreal application-judgement "nzreal"
+     real_types nil))
+   shostak))
  (inv_prodvect_TCC1 0
-  (inv_prodvect_TCC1-1 nil 3637159873 ("" (subtype-tcc) nil nil) nil
+  (inv_prodvect_TCC1-1 nil 3637159873 ("" (subtype-tcc) nil nil)
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (square? const-decl "bool" matrices nil)
+    (Square type-eq-decl nil matrices nil)
+    (invertible? const-decl "bool" matrices nil)
+    (number nonempty-type-decl nil numbers nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (>= const-decl "bool" reals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (inverse? const-decl "bool" matrices nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil))
    nil))
  (inv_prodvect 0
   (inv_prodvect-1 nil 3637159873
@@ -1303,6 +1582,8 @@
     (nonneg_int nonempty-type-eq-decl nil integers nil)
     (> const-decl "bool" reals nil)
     (matrix_prod_zero formula-decl nil matrix_lemmas nil)
+    (N skolem-const-decl "(inverse?(A))" matrix_lemmas nil)
+    (A skolem-const-decl "(invertible?)" matrix_lemmas nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
@@ -1323,6 +1604,353 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (inverse? const-decl "bool" matrices nil))
    shostak))
+ (tr_sim_TCC1 0
+  (tr_sim_TCC1-1 nil 3639838061 ("" (subtype-tcc) nil nil)
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (Square type-eq-decl nil matrices nil)
+    (number nonempty-type-decl nil numbers nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (square? const-decl "bool" matrices nil))
+   nil))
+ (tr_sim_TCC2 0
+  (tr_sim_TCC2-1 nil 3639838061
+   ("" (skeep)
+    (("" (typepred B)
+      (("" (typepred A)
+        (("" (rewrite inverse_cols)
+          (("" (expand square?) (("" (assert) nil nil)) nil)) nil))
+        nil))
+      nil))
+    nil)
+   ((AND const-decl "[bool, bool -> bool]" booleans nil)
+    (Square type-eq-decl nil matrices nil)
+    (square? const-decl "bool" matrices nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (number nonempty-type-decl nil numbers nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (inverse_cols formula-decl nil matrix_lemmas nil)
+    (invertible? const-decl "bool" matrices nil))
+   nil))
+ (tr_sim_TCC3 0
+  (tr_sim_TCC3-1 nil 3639838061
+   ("" (skeep)
+    (("" (hide -1)
+      (("" (expand *)
+        (("" (typepred B)
+          (("" (typepred A)
+            (("" (expand square?) (("" (assert) nil nil)) nil)) nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((AND const-decl "[bool, bool -> bool]" booleans nil)
+    (Square type-eq-decl nil matrices nil)
+    (square? const-decl "bool" matrices nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (number nonempty-type-decl nil numbers nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (* const-decl "Matrix" matrices nil))
+   nil))
+ (tr_sim_TCC4 0
+  (tr_sim_TCC4-1 nil 3639838061
+   ("" (skeep)
+    (("" (expand square?)
+      (("" (expand *)
+        (("" (rewrite inverse_rows)
+          (("" (typepred B)
+            (("" (typepred A)
+              (("" (expand square?) (("" (assert) nil nil)) nil)) nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((square? const-decl "bool" matrices nil)
+    (inverse_rows formula-decl nil matrix_lemmas nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (Square type-eq-decl nil matrices nil)
+    (invertible? const-decl "bool" matrices nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (* const-decl "Matrix" matrices nil))
+   nil))
+ (tr_sim 0
+  (tr_sim-1 nil 3639838063
+   ("" (skeep)
+    (("" (lemma tr_symm)
+      (("" (inst -1 "inverse(B) * A" "B")
+        (("" (assert)
+          (("" (bddsimp)
+            (("1" (replace -1)
+              (("1" (assert)
+                (("1" (lemma mult_assoc)
+                  (("1" (inst -1 B "inverse(B)" A)
+                    (("1" (assert)
+                      (("1" (replace -1)
+                        (("1" (expand invertible?)
+                          (("1" (skosimp -3)
+                            (("1" (typepred N!1)
+                              (("1"
+                                (expand inverse? -3)
+                                (("1"
+                                  (lemma inverse_unique)
+                                  (("1"
+                                    (inst -1 B N!1 "inverse(B)")
+                                    (("1"
+                                      (replace -1)
+                                      (("1"
+                                        (replace -1 1 rl)
+                                        (("1"
+                                          (replace -1 * rl)
+                                          (("1"
+                                            (flatten)
+                                            (("1"
+                                              (replace -4)
+                                              (("1"
+                                                (assert)
+                                                (("1"
+                                                  (lemma
+                                                   left_mult_ident)
+                                                  (("1"
+                                                    (inst
+                                                     -1
+                                                     A
+                                                     "I(B`rows)")
+                                                    (("1"
+                                                      (assert)
+                                                      nil
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil)
+                                     ("2"
+                                      (lemma inverse_unique)
+                                      (("2"
+                                        (name
+                                         "N2"
+                                         "the! (N: Square | N`rows = B`rows): inverse?(B)(N)")
+                                        (("1"
+                                          (typepred N2)
+                                          (("1"
+                                            (expand inverse? -3)
+                                            (("1"
+                                              (assert)
+                                              (("1"
+                                                (hide 2 3)
+                                                (("1"
+                                                  (expand inverse)
+                                                  (("1"
+                                                    (propax)
+                                                    nil
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil)
+                                         ("2"
+                                          (assert)
+                                          (("2"
+                                            (hide 2)
+                                            (("2"
+                                              (hide -1 -2)
+                                              (("2"
+                                                (typepred B)
+                                                (("2"
+                                                  (typepred A)
+                                                  (("2"
+                                                    (expand square?)
+                                                    (("2"
+                                                      (assert)
+                                                      (("2"
+                                                        (expand
+                                                         singleton?)
+                                                        (("2"
+                                                          (reveal -2)
+                                                          (("2"
+                                                            (skosimp
+                                                             -1)
+                                                            (("2"
+                                                              (typepred
+                                                               N!1)
+                                                              (("2"
+                                                                (inst
+                                                                 1
+                                                                 N!1)
+                                                                (("2"
+                                                                  (lemma
+                                                                   inverse_unique)
+                                                                  (("2"
+                                                                    (skeep
+                                                                     1)
+                                                                    (("2"
+                                                                      (inst
+                                                                       -1
+                                                                       B
+                                                                       N!1
+                                                                       y)
+                                                                      nil
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil))
+                              nil))
+                            nil))
+                          nil))
+                        nil))
+                      nil)
+                     ("2" (typepred A)
+                      (("2" (expand square?) (("2" (assert) nil nil))
+                        nil))
+                      nil))
+                    nil))
+                  nil))
+                nil))
+              nil)
+             ("2" (expand inverse)
+              (("2"
+                (name "N2"
+                      "the! (N: Square | N`rows = B`rows): inverse?(B)(N)")
+                (("1" (replace -1)
+                  (("1" (typepred N2)
+                    (("1" (expand square?)
+                      (("1" (typepred A)
+                        (("1" (expand square?) (("1" (assert) nil nil))
+                          nil))
+                        nil))
+                      nil))
+                    nil))
+                  nil)
+                 ("2" (expand singleton?)
+                  (("2" (expand invertible?)
+                    (("2" (skeep)
+                      (("2" (lemma inverse_unique)
+                        (("2" (typepred B)
+                          (("2" (assert)
+                            (("2" (typepred A)
+                              (("2"
+                                (expand square?)
+                                (("2"
+                                  (typepred B)
+                                  (("2"
+                                    (expand *)
+                                    (("2" (assert) nil nil))
+                                    nil))
+                                  nil))
+                                nil))
+                              nil))
+                            nil))
+                          nil))
+                        nil))
+                      nil))
+                    nil))
+                  nil))
+                nil))
+              nil)
+             ("3" (typepred A)
+              (("3" (typepred B)
+                (("3" (expand square?)
+                  (("3" (hide -4)
+                    (("3" (hide 2) (("3" (assert) nil nil)) nil)) nil))
+                  nil))
+                nil))
+              nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((tr_symm formula-decl nil matrices nil)
+    (mult_dim_col formula-decl nil matrices nil)
+    (mult_dim_row formula-decl nil matrices nil)
+    (mult_assoc formula-decl nil matrices nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (inverse? const-decl "bool" matrices nil)
+    (inverse_unique formula-decl nil matrices nil)
+    (the const-decl "(p)" sets nil)
+    (singleton? const-decl "bool" sets nil)
+    (set type-eq-decl nil sets nil)
+    (left_mult_ident formula-decl nil matrices nil)
+    (I const-decl "(identity?)" matrices nil)
+    (> const-decl "bool" reals nil)
+    (nonneg_int nonempty-type-eq-decl nil integers nil)
+    (>= const-decl "bool" reals nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (identity? const-decl "bool" matrices nil)
+    (eye_col formula-decl nil matrices nil)
+    (B skolem-const-decl
+     "(LAMBDA (N): A`rows = N`rows AND A`cols = N`cols)" matrix_lemmas
+     nil)
+    (A skolem-const-decl "Square" matrix_lemmas nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
+    (invertible? const-decl "bool" matrices nil)
+    (Square type-eq-decl nil matrices nil)
+    (square? const-decl "bool" matrices nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (* const-decl "Matrix" matrices nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (posnat nonempty-type-eq-decl nil integers nil))
+   shostak))
  (invertible22_TCC1 0
   (invertible22_TCC1-1 nil 3637171394 ("" (cond-disjoint-tcc) nil nil)
    nil nil))
@@ -1330,7 +1958,9 @@
   (invertible22_TCC2-1 nil 3637171394 ("" (cond-coverage-tcc) nil nil)
    nil nil))
  (invertible22_TCC3 0
-  (invertible22_TCC3-1 nil 3637171394 ("" (subtype-tcc) nil nil) nil
+  (invertible22_TCC3-1 nil 3637171394 ("" (subtype-tcc) nil nil)
+   ((square? const-decl "bool" matrices nil)
+    (real_times_real_is_real application-judgement "real" reals nil))
    nil))
  (invertible22 0
   (invertible22-1 nil 3637171394
@@ -1625,6 +2255,7 @@
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (* const-decl "Matrix" matrices nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
@@ -1642,19 +2273,52 @@
     (- const-decl "[numfield -> numfield]" number_fields nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (MM skolem-const-decl "Mat(2, 2)" matrix_lemmas nil)
+    (p21 skolem-const-decl "real" matrix_lemmas nil)
+    (p12 skolem-const-decl "real" matrix_lemmas nil)
+    (p22 skolem-const-decl "real" matrix_lemmas nil)
+    (p11 skolem-const-decl "real" matrix_lemmas nil)
     (I const-decl "(identity?)" matrices nil)
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (inverse_mult formula-decl nil number_fields nil)
     (sigma_0_neg formula-decl nil sigma_below "reals/")
     (real_plus_real_is_real application-judgement "real" reals nil)
     (sigma def-decl "real" sigma "reals/")
+    (* const-decl "Matrix" matrices nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
     (real_times_real_is_real application-judgement "real" reals nil))
    shostak))
  (inv22_TCC1 0
-  (inv22_TCC1-1 nil 3637171507 ("" (cond-disjoint-tcc) nil nil) nil
+  (inv22_TCC1-1 nil 3637171507
+   ("" (skeep)
+    (("" (split 2)
+      (("1" (hide 2) (("1" (grind) nil nil)) nil)
+       ("2" (lemma invertible22)
+        (("2" (inst -1 p11 p22 p12 p21 MM) (("2" (assert) nil nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   ((square? const-decl "bool" matrices nil)
+    (number nonempty-type-decl nil numbers nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (Mat type-eq-decl nil matrices nil)
+    (real_minus_real_is_real application-judgement "real" reals nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
+    (invertible22 formula-decl nil matrix_lemmas nil))
    nil))
  (inv22_TCC2 0
   (inv22_TCC2-1 nil 3637171507 ("" (cond-coverage-tcc) nil nil) nil
@@ -1866,6 +2530,7 @@
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (* const-decl "Matrix" matrices nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (/= const-decl "boolean" notequal nil)
     (nznum nonempty-type-eq-decl nil number_fields nil)
@@ -1881,7 +2546,13 @@
     (< const-decl "bool" reals nil)
     (IF const-decl "[boolean, T, T -> T]" if_def nil)
     (- const-decl "[numfield -> numfield]" number_fields nil)
+    (MM skolem-const-decl "Mat(2, 2)" matrix_lemmas nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
+    (p21 skolem-const-decl "real" matrix_lemmas nil)
+    (p12 skolem-const-decl "real" matrix_lemmas nil)
+    (p22 skolem-const-decl "real" matrix_lemmas nil)
+    (p11 skolem-const-decl "real" matrix_lemmas nil)
+    (* const-decl "Matrix" matrices nil)
     (+ const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (inverse_mult formula-decl nil number_fields nil)
     (sigma_0_neg formula-decl nil sigma_below "reals/")
@@ -1987,7 +2658,18 @@
    shostak))
  (transp_invertible_TCC1 0
   (transp_invertible_TCC1-1 nil 3637331038 ("" (subtype-tcc) nil nil)
-   nil nil))
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (Square type-eq-decl nil matrices nil)
+    (invertible? const-decl "bool" matrices nil)
+    (transpose const-decl "Matrix" matrices nil)
+    (square? const-decl "bool" matrices nil))
+   nil))
  (transp_invertible 0
   (transp_invertible-1 nil 3637331118
    ("" (skosimp)
@@ -2175,6 +2857,7 @@
     (transpose const-decl "Matrix" matrices nil)
     (inverse? const-decl "bool" matrices nil)
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
+    (M!1 skolem-const-decl "(invertible?)" matrix_lemmas nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (ident_inverse formula-decl nil matrix_lemmas nil)
     (transpose_product formula-decl nil matrices nil)
@@ -2196,6 +2879,7 @@
     (transpose_rows formula-decl nil matrix_lemmas nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
+    (* const-decl "Matrix" matrices nil)
     (I const-decl "(identity?)" matrices nil)
     (sigma def-decl "real" sigma "reals/"))
    shostak))
@@ -2381,45 +3065,47 @@
         nil))
       nil))
     nil)
-   ((transp_row formula-decl nil matrices nil)
-    (number nonempty-type-decl nil numbers nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (inverse? const-decl "bool" matrices nil)
-    (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (ident_inverse formula-decl nil matrix_lemmas nil)
-    (transpose_product formula-decl nil matrices nil)
-    (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (transp_ident formula-decl nil matrix_lemmas nil)
+   ((transpose const-decl "Matrix" matrices nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (square? const-decl "bool" matrices nil)
+    (Square type-eq-decl nil matrices nil)
+    (invertible? const-decl "bool" matrices nil)
+    (sigma def-decl "real" sigma "reals/")
+    (I const-decl "(identity?)" matrices nil)
+    (* const-decl "Matrix" matrices nil)
+    (int_minus_int_is_int application-judgement "int" integers nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
+    (transpose_rows formula-decl nil matrix_lemmas nil)
+    (transpose_cols formula-decl nil matrix_lemmas nil)
+    (inverse_ident formula-decl nil matrix_lemmas nil)
+    (> const-decl "bool" reals nil)
+    (nonneg_int nonempty-type-eq-decl nil integers nil)
+    (>= const-decl "bool" reals nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (>= const-decl "bool" reals nil)
-    (nonneg_int nonempty-type-eq-decl nil integers nil)
-    (> const-decl "bool" reals nil)
-    (inverse_ident formula-decl nil matrix_lemmas nil)
-    (transpose_cols formula-decl nil matrix_lemmas nil)
-    (transpose_rows formula-decl nil matrix_lemmas nil)
-    (real_times_real_is_real application-judgement "real" reals nil)
-    (int_minus_int_is_int application-judgement "int" integers nil)
-    (I const-decl "(identity?)" matrices nil)
-    (sigma def-decl "real" sigma "reals/")
-    (invertible? const-decl "bool" matrices nil)
-    (Square type-eq-decl nil matrices nil)
-    (square? const-decl "bool" matrices nil)
-    (Matrix type-eq-decl nil matrices nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (below type-eq-decl nil naturalnumbers nil)
-    (posnat nonempty-type-eq-decl nil integers nil)
-    (NOT const-decl "[bool -> bool]" booleans nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (boolean nonempty-type-decl nil booleans nil)
-    (transpose const-decl "Matrix" matrices nil))
+    (transp_ident formula-decl nil matrix_lemmas nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (transpose_product formula-decl nil matrices nil)
+    (ident_inverse formula-decl nil matrix_lemmas nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (M!1 skolem-const-decl "(invertible?)" matrix_lemmas nil)
+    (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
+    (inverse? const-decl "bool" matrices nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (number nonempty-type-decl nil numbers nil)
+    (transp_row formula-decl nil matrices nil))
    shostak)
   (falta "falta" 3542527260
    ("" (skosimp)
@@ -2633,12 +3319,14 @@
     (> const-decl "bool" reals nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (I const-decl "(identity?)" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (sigma def-decl "real" sigma "reals/")
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (ident_inverse formula-decl nil matrix_lemmas nil)
     (inverse_ident formula-decl nil matrix_lemmas nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (M!1 skolem-const-decl "(invertible?)" matrix_lemmas nil)
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
     (inverse? const-decl "bool" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
@@ -3020,6 +3708,7 @@
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
     (inverse? const-decl "bool" matrices nil)
     (I const-decl "(identity?)" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (sigma def-decl "real" sigma "reals/"))
    shostak)
   (skosimp "skosimp" 3541004602
@@ -3041,9 +3730,6 @@
     (Square type-eq-decl nil matrices nil)
     (square? const-decl "bool" matrices nil)
     (Matrix type-eq-decl nil matrices nil))
-   nil))
- (invar_inverse_TCC2 0
-  (invar_inverse_TCC2-1 nil 3637331038 ("" (subtype-tcc) nil nil) nil
    nil))
  (invar_inverse 0
   (thm "finished" 3541251433
@@ -3172,6 +3858,7 @@
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
     (inverse? const-decl "bool" matrices nil)
     (I const-decl "(identity?)" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (sigma def-decl "real" sigma "reals/")
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil))
@@ -3196,9 +3883,6 @@
     (inverse? const-decl "bool" matrices nil)
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil))
    nil))
- (invar_inverse_left_TCC2 0
-  (invar_inverse_left_TCC2-1 nil 3637331038 ("" (subtype-tcc) nil nil)
-   nil nil))
  (invar_inverse_left 0
   (thm "finished" 3541251638
    ("" (skosimp)
@@ -3227,6 +3911,9 @@
    ((ident_inverse formula-decl nil matrix_lemmas nil)
     (left_mult_ident formula-decl nil matrices nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
+    (B!1 skolem-const-decl "Matrix" matrix_lemmas nil)
+    (N!1 skolem-const-decl "{N: (invertible?) | B!1`rows = N`cols}"
+     matrix_lemmas nil)
     (I const-decl "(identity?)" matrices nil)
     (> const-decl "bool" reals nil)
     (nonneg_int nonempty-type-eq-decl nil integers nil)
@@ -3338,6 +4025,7 @@
       nil))
     nil)
    ((sigma def-decl "real" sigma "reals/")
+    (* const-decl "Matrix" matrices nil)
     (I const-decl "(identity?)" matrices nil)
     (inverse? const-decl "bool" matrices nil)
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
@@ -3385,7 +4073,7 @@
    nil))
  (simply1_mat_vect_TCC2 0
   (simply1_mat_vect_TCC2-1 nil 3540814491 ("" (subtype-tcc) nil nil)
-   nil nil))
+   ((* const-decl "Matrix" matrices nil)) nil))
  (simply1_mat_vect 0
   (thm "finished" 3541252853
    ("" (skosimp)
@@ -3448,6 +4136,7 @@
     (invertible? const-decl "bool" matrices nil)
     (number nonempty-type-decl nil numbers nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
+    (* const-decl "Matrix" matrices nil)
     (I const-decl "(identity?)" matrices nil)
     (inverse? const-decl "bool" matrices nil)
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
@@ -3457,7 +4146,7 @@
    nil))
  (simply2_mat_vect_TCC2 0
   (simply2_mat_vect_TCC2-1 nil 3540814491 ("" (subtype-tcc) nil nil)
-   nil nil))
+   ((* const-decl "Matrix" matrices nil)) nil))
  (simply2_mat_vect_TCC3 0
   (thm "finished" 3541011702
    ("" (skosimp)
@@ -3479,6 +4168,7 @@
       nil))
     nil)
    ((sigma def-decl "real" sigma "reals/")
+    (* const-decl "Matrix" matrices nil)
     (I const-decl "(identity?)" matrices nil)
     (inverse? const-decl "bool" matrices nil)
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
@@ -3516,9 +4206,6 @@
     (inverse? const-decl "bool" matrices nil)
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil))
    nil))
- (simply2_mat_vect_TCC4 0
-  (simply2_mat_vect_TCC4-1 nil 3637331038 ("" (subtype-tcc) nil nil)
-   nil nil))
  (simply2_mat_vect 0
   (th "finished" 3541252897
    ("" (skosimp)
@@ -3539,10 +4226,13 @@
     (below type-eq-decl nil naturalnumbers nil)
     (real nonempty-type-from-decl nil reals nil)
     (Matrix type-eq-decl nil matrices nil)
+    (B!1 skolem-const-decl "Matrix" matrix_lemmas nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (square? const-decl "bool" matrices nil)
     (Square type-eq-decl nil matrices nil)
-    (invertible? const-decl "bool" matrices nil))
+    (invertible? const-decl "bool" matrices nil)
+    (N!1 skolem-const-decl "{N: (invertible?) | B!1`rows = N`rows}"
+     matrix_lemmas nil))
    shostak)
   (simply2_mat_vect-1 nil 3540814503
    ("" (skeep)
@@ -3665,6 +4355,9 @@
     (sigma def-decl "real" sigma "reals/")
     (T_high type-eq-decl nil sigma "reals/")
     (T_low type-eq-decl nil sigma "reals/")
+    (B skolem-const-decl
+     "(LAMBDA (N): A`rows = N`rows AND A`cols = N`cols)" matrix_lemmas
+     nil)
     (Index type-eq-decl nil vectors "vectors/")
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
     (integer nonempty-type-from-decl nil integers nil)
@@ -3672,6 +4365,7 @@
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (<= const-decl "bool" reals nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (A skolem-const-decl "Matrix" matrix_lemmas nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -4467,7 +5161,7 @@
    nil shostak))
  (matrix_sum_minus_TCC1 0
   (matrix_sum_minus_TCC1-1 nil 3541853045 ("" (subtype-tcc) nil nil)
-   nil nil))
+   ((- const-decl "Matrix" matrices nil)) nil))
  (matrix_sum_minus 0
   (matrix_sum_minus-1 nil 3541853110
    ("" (skosimp)
@@ -4481,7 +5175,9 @@
     (below type-eq-decl nil naturalnumbers nil)
     (real nonempty-type-from-decl nil reals nil)
     (Matrix type-eq-decl nil matrices nil)
+    (- const-decl "Matrix" matrices nil)
     (+ const-decl "Matrix" matrices nil)
+    (- const-decl "Matrix" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (number nonempty-type-decl nil numbers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
@@ -4495,10 +5191,10 @@
    shostak))
  (matrix_prod_minus_TCC1 0
   (matrix_prod_minus_TCC1-1 nil 3541853488 ("" (subtype-tcc) nil nil)
-   nil nil))
+   ((- const-decl "Matrix" matrices nil)) nil))
  (matrix_prod_minus_TCC2 0
   (matrix_prod_minus_TCC2-1 nil 3541853488 ("" (subtype-tcc) nil nil)
-   nil nil))
+   ((- const-decl "Matrix" matrices nil)) nil))
  (matrix_prod_minus 0
   (matrix_prod_minus-2 "blah" 3636541008
    ("" (expand -)
@@ -4559,6 +5255,7 @@
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (<= const-decl "bool" reals nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (A skolem-const-decl "Matrix" matrix_lemmas nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (minus_real_is_real application-judgement "real" reals nil)
@@ -4572,7 +5269,8 @@
      real_props nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (* const-decl "Vector[M`rows]" matrices nil)
-    (- const-decl "Vector" vectors "vectors/"))
+    (- const-decl "Vector" vectors "vectors/")
+    (- const-decl "Matrix" matrices nil))
    shostak)
   (matrix_prod_minus-1 nil 3541853540
    ("" (skosimp)
@@ -4745,6 +5443,7 @@
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (<= const-decl "bool" reals nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (M skolem-const-decl "Matrix" matrix_lemmas nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (minus_real_is_real application-judgement "real" reals nil)
@@ -4821,11 +5520,11 @@
     (dot_add_right formula-decl nil vectors "vectors/"))
    shostak))
  (distr_esc_dif_TCC1 0
-  (distr_esc_dif_TCC1-1 nil 3541835691 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (distr_esc_dif_TCC1-1 nil 3541835691 ("" (subtype-tcc) nil nil)
+   ((- const-decl "Matrix" matrices nil)) nil))
  (distr_esc_dif_TCC2 0
-  (distr_esc_dif_TCC2-1 nil 3541835691 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (distr_esc_dif_TCC2-1 nil 3541835691 ("" (subtype-tcc) nil nil)
+   ((- const-decl "Matrix" matrices nil)) nil))
  (distr_esc_dif 0
   (teo "fin" 3546579453
    ("" (skosimp)
@@ -5127,7 +5826,9 @@
         nil))
       nil))
     nil)
-   ((+ const-decl "Matrix" matrices nil)
+   ((- const-decl "Matrix" matrices nil)
+    (+ const-decl "Matrix" matrices nil)
+    (- const-decl "Matrix" matrices nil)
     (number nonempty-type-decl nil numbers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
@@ -5153,6 +5854,10 @@
     (dot_neg_left formula-decl nil vectors "vectors/")
     (dot_neg_right formula-decl nil vectors "vectors/")
     (NOT const-decl "[bool -> bool]" booleans nil)
+    (A!1 skolem-const-decl "Matrix" matrix_lemmas nil)
+    (B!1 skolem-const-decl
+     "(LAMBDA (N): A!1`rows = N`rows AND A!1`cols = N`cols)"
+     matrix_lemmas nil)
     (sigma def-decl "real" sigma "reals/")
     (matrix_prod_minus formula-decl nil matrix_lemmas nil)
     (minus_add formula-decl nil number_fields nil)
@@ -7132,6 +7837,9 @@
      "(strict_total_order?[real])" real_props nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
+    (yy skolem-const-decl "[Index[A!1`cols] -> real]" matrix_lemmas
+     nil)
+    (A!1 skolem-const-decl "(square?)" matrix_lemmas nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (dot_add_right formula-decl nil vectors "vectors/")
     (Vector type-eq-decl nil vectors "vectors/")
@@ -7427,14 +8135,14 @@
     nil)
    nil shostak))
  (conv_prod_int_TCC1 0
-  (conv_prod_int_TCC1-1 nil 3541308192 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (conv_prod_int_TCC1-1 nil 3541308192 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)) nil))
  (conv_prod_int_TCC2 0
-  (conv_prod_int_TCC2-1 nil 3541308192 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (conv_prod_int_TCC2-1 nil 3541308192 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)) nil))
  (conv_prod_int_TCC3 0
-  (conv_prod_int_TCC3-1 nil 3541308192 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (conv_prod_int_TCC3-1 nil 3541308192 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)) nil))
  (conv_prod_int_TCC4 0
   (conv_prod_int_TCC4-1 nil 3541308192 ("" (subtype-tcc) nil nil)
    ((transpose const-decl "Matrix" matrices nil)) nil))
@@ -7484,6 +8192,7 @@
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (* const-decl "Matrix" matrices nil)
     (mult_dim_col formula-decl nil matrices nil)
     (mult_assoc_vect formula-decl nil matrices nil)
     (* const-decl "Vector[M`rows]" matrices nil)
@@ -7508,6 +8217,9 @@
     (posnat nonempty-type-eq-decl nil integers nil)
     (below type-eq-decl nil naturalnumbers nil)
     (Matrix type-eq-decl nil matrices nil)
-    (= const-decl "[T, T -> boolean]" equalities nil))
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (B skolem-const-decl "Matrix" matrix_lemmas nil)
+    (A skolem-const-decl "{A: Matrix | B`cols = A`rows}" matrix_lemmas
+     nil))
    shostak)))
 

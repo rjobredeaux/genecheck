@@ -1,8 +1,16 @@
+% --------------------------------------------------------------
+%  File Name: matrices
+%  Author Names: Romain Jobredeaux & Heber Herencia-Zapana 
+%
+% ---------------------------------------------------------------
+% This theory introduces the matrix type and common subtypes,
+% operations, and results on matrices.
+
+
 matrices: THEORY
 BEGIN
 
-IMPORTING vectors@vectors, vect_of_vect, reals@sigma_below,reals@sigma_swap %permutations,
-           %more_list_props
+IMPORTING vectors@vectors, vect_of_vect, reals@sigma_below,reals@sigma_swap
 
 % A preliminary lemma for sum conversions
 sigma_trick: LEMMA FORALL (n:posnat, high:{high:nat|high<n}, low:{low:nat|low<=high}, F:[below(n)->real]):
@@ -17,38 +25,11 @@ sigma_trick: LEMMA FORALL (n:posnat, high:{high:nat|high<n}, low:{low:nat|low<=h
 
 conversion- b2n
 
- % Similar to the definition for finite_sequences
- % Should look into ways of mapping field names (not easy):
- % Vector: TYPE = finseq[real] %{{size := dim, seq := vector}}
- % Vect(n): TYPE = {V: Vector | V`length = n}
- % Vector_of_Vectors(n: posnat): TYPE = finseq[Vector]
- % Vect_of_Vect(n): TYPE = {V: Vector_of_Vectors | V`length = n}
- % Homogeneous - all inner vectors have the same length
- % H_Vector_of_Vectors: TYPE
- %   = {V: Vector_of_Vectors
- %       | V`length > 0 & V`seq(0)`length > 0 &
- %         FORALL (i: below(V`length)):
- %              V`seq(i)`length = V`seq(0)`length}
- % H_Vect_of_Vect(m, n): TYPE
- %   = {V: H_Vector_of_Vectors
- %       | V`length = m and
- %         FORALL (i: below(m)): V`seq(i)`length = n}
-
  Matrix: TYPE = [# rows: posnat, cols: posnat,
                    matrix: [below(rows), below(cols) -> real] #]
  Mat(m, n): TYPE = {M: Matrix | M`rows = m and M`cols = n}
 
- % V, V1, V2: VAR Vector
- % VV, VV1, VV2: VAR Vector_of_Vectors
  M, N, P: VAR Matrix
-
- % *(c, V): Vect(V`length) =
- %   (# length := V`length,
- %      seq := lambda (i: below(V`length)): c * V`seq(i) #);
-
- % +(V1: Vector, V2: Vect(V1`length)): Vect(V1`length) =
- %   (# length := V1`length,
- %      seq := lambda (i: below(V1`length)): V1`seq(i) + V2`seq(i) #)
 
  rowV(M)(i: below(M`rows)): Vector[M`cols] =
    lambda (j: below(M`cols)): M`matrix(i, j)
@@ -68,34 +49,15 @@ conversion- b2n
    lambda (i: below(M`cols)):
      lambda (j: below(M`rows)): M`matrix(j, i)
 
- % cols_alt(M): {C: finseq[{V: Vector | V`length = M`rows}] | C`length = M`cols} =
- %   (# length := M`cols,
- %      seq := lambda (i: below(M`cols)):
- %              (# length := M`rows,
- %                 seq := lambda (j: below(M`rows)): M`matrix(j, i) #) #)
-
  rows(M): Vector_of_Vectors[M`cols, M`rows] =
    lambda (i: below(M`rows)):
      lambda (j: below(M`cols)): M`matrix(i, j)
-
- % V2Mc(V: Vector | V`length > 0): Matrix =
- %   (# rows := 1, cols := V`length,
- %      matrix := lambda (k: below(1), j: below(V`length)): V`seq(j) #)
-
- %V2Mr(V: Vector | V`length > 0): Matrix =
- %   (# rows := V`length, cols := 1,
- %      matrix := lambda (j: below(V`length), k: below(1)): V`seq(j) #)
 
  Mr2V(M: Matrix | M`rows = 1): Vector[M`cols] =
    lambda (j: below(M`cols)): M`matrix(0, j)
 
  Mc2V(M: Matrix | M`cols = 1): Vector[M`rows] =
    lambda (j: below(M`rows)): M`matrix(j, 0)
-
- % This is just cols(M)
- % matrix2vectors(M): {VS: finseq[Vector] | VS`length = M`cols}
- %  = (# length := M`cols,
- %       seq := lambda (i: below(M`cols)): cols(M) #)
 
  vectors2matrix(pn, pm)(V2: Vector_of_Vectors[pn, pm]): Matrix = 
    (# cols := pm, rows := pn,
@@ -340,7 +302,6 @@ trans_eq : LEMMA FORALL(M, (N: (same_dim?(M)))): transpose(M)=transpose(N) IFF M
 
  inverse(M: (invertible?)): {N: Square | N`rows = M`rows}
    = the! (N: Square | N`rows = M`rows): inverse?(M)(N)
-
  invertible_product: lemma
    FORALL (M: (invertible?), N: (invertible?) | N`rows = M`rows):
      invertible?(M * N)
@@ -354,9 +315,6 @@ trans_eq : LEMMA FORALL(M, (N: (same_dim?(M)))): transpose(M)=transpose(N) IFF M
  trace(M: Square): real = sigma[below(M`rows)](0, M`rows-1, lambda (k: below(M`rows)): M`matrix(k, k))
 
 tr_symm: LEMMA FORALL (A,B : Matrix): A`cols = B`rows AND A`rows = B`cols IMPLIES trace(A*B) = trace(B*A) 
-
-tr_sim: LEMMA FORALL (A: Square, B: (same_dim?(A))): invertible?(B) IMPLIES trace(inverse(B)*A*B) = trace(A)
-
 
 ortho?(N:Matrix):bool= N*transpose(N)=I(N`rows)
  
@@ -424,8 +382,8 @@ V2Ml(n:posnat, V: Vector[n]): Matrix =
          matrix := lambda (k: below(1),j: below(n)): V(j) #)
 
 
-v2ml_row :LEMMA FORALL (V:Vector[n]): V2Ml(n,V)`rows = 1;
-v2ml_col :LEMMA FORALL (V:Vector[n]): V2Ml(n,V)`cols = n;
+v2ml_row :LEMMA FORALL (V:Vector[pn]): V2Ml(pn,V)`rows = 1;
+v2ml_col :LEMMA FORALL (V:Vector[pn]): V2Ml(pn,V)`cols = pn;
 
 
 v2ml_quad : LEMMA FORALL (n:posnat, MM:Mat(n,n), v:Vector[n]):  V2Ml(n,v)*(MM*transpose(V2Ml(n,v))) = (v*(MM*v)) * I(1)
@@ -436,7 +394,7 @@ conv_vect_mat: LEMMA FORALL (m,n:posnat, M:Mat(m,n), V:Vector[n]): V2Mc(m,M*V) =
 
 v2ml_scal : LEMMA FORALL (n:posnat, v:Vector[n], a:real): V2Ml(n,a*v) = a*V2Ml(n,v)
 v2ml_sum:LEMMA FORALL (n:posnat, v1,v2:Vector[n]) : V2Ml(n,v1+v2) = V2Ml(n,v1)+V2Ml(n,v2)
-v2ml_dot : LEMMA FORALL (x,y:Vector[n]): (V2Ml(n,x)*y)(0) = x*y
+v2ml_dot : LEMMA FORALL (x,y:Vector[pn]): (V2Ml(pn,x)*y)(0) = x*y
 
 AUTO_REWRITE+ zero_times_right_1
 AUTO_REWRITE+ zero_times_left_1

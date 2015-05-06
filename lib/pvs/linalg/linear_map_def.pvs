@@ -41,7 +41,7 @@ begin
 
 
 importing vectors@vectors,reals@sigma_below,linear_map,reals@sigma
-importing structures@function_image_bis,structures@function_props_aux,linear_algebra@sigma_vector, sigma_lemmas
+importing structures@function_image_bis,structures@function_props_aux,sigma_vector, sigma_lemmas
 
 f,g,h,k: VAR Maping
 

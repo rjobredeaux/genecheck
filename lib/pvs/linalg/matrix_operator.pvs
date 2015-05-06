@@ -41,7 +41,7 @@
 matrix_operator: theory
 begin
 importing orders@isomorphism,reals@sigma_below,reals@sigma
-importing matrices,linear_algebra@sigma_vector
+importing matrices,sigma_vector
 importing linear_map_def,linear_map,structures@function_props_aux
 
 A,B,C,D,Q: VAR Matrix

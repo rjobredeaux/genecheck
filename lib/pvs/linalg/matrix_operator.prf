@@ -70,7 +70,7 @@
         nil))
       nil))
     nil)
-   ((SigmaV const-decl "Vector[n]" sigma_vector "linear_algebra/")
+   ((SigmaV const-decl "Vector[n]" sigma_vector nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
@@ -364,8 +364,8 @@
         (O const-decl "T3" function_props nil)
         (* const-decl
            "[[T -> real], [T -> Vector[n]] -> [T -> Vector[n]]]"
-           sigma_vector "linear_algebra/")
-        (SigmaV const-decl "Vector[n]" sigma_vector "linear_algebra/")
+           sigma_vector nil)
+        (SigmaV const-decl "Vector[n]" sigma_vector nil)
         (Vector type-eq-decl nil vectors "vectors/")
         (Index type-eq-decl nil vectors "vectors/")
         (* const-decl "[numfield, numfield -> numfield]" number_fields
@@ -747,11 +747,11 @@
     (<= const-decl "bool" reals nil)
     (T_low type-eq-decl nil sigma "reals/")
     (T_high type-eq-decl nil sigma "reals/")
-    (SigmaV const-decl "Vector[n]" sigma_vector "linear_algebra/")
+    (SigmaV const-decl "Vector[n]" sigma_vector nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (* const-decl "[[T -> real], [T -> Vector[n]] -> [T -> Vector[n]]]"
-       sigma_vector "linear_algebra/")
+       sigma_vector nil)
     (linear_matrix formula-decl nil matrix_operator nil)
     (sigma_eq formula-decl nil sigma "reals/")
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
@@ -1749,11 +1749,11 @@
     (<= const-decl "bool" reals nil)
     (T_low type-eq-decl nil sigma "reals/")
     (T_high type-eq-decl nil sigma "reals/")
-    (SigmaV const-decl "Vector[n]" sigma_vector "linear_algebra/")
+    (SigmaV const-decl "Vector[n]" sigma_vector nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (* const-decl "[[T -> real], [T -> Vector[n]] -> [T -> Vector[n]]]"
-       sigma_vector "linear_algebra/")
+       sigma_vector nil)
     (O const-decl "T3" function_props nil)
     (pred type-eq-decl nil defined_types nil)
     (epsilon const-decl "T" epsilons nil)
@@ -4433,10 +4433,10 @@
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (linear_map_e? const-decl "bool" linear_map_def nil)
-    (SigmaV const-decl "Vector[n]" sigma_vector "linear_algebra/")
+    (SigmaV const-decl "Vector[n]" sigma_vector nil)
     (* const-decl "Vector" vectors "vectors/")
     (* const-decl "[[T -> real], [T -> Vector[n]] -> [T -> Vector[n]]]"
-       sigma_vector "linear_algebra/")
+       sigma_vector nil)
     (even_minus_odd_is_odd application-judgement "odd_int" integers
      nil)
     (sigma_zero formula-decl nil sigma "reals/")
@@ -5708,10 +5708,10 @@
          "(strict_total_order?[real])" real_props nil)
         (sigma_nat application-judgement "nat" vectors "vectors/")
         (sigma_zero formula-decl nil sigma "reals/")
-        (SigmaV const-decl "Vector[n]" sigma_vector "linear_algebra/")
+        (SigmaV const-decl "Vector[n]" sigma_vector nil)
         (* const-decl
            "[[T -> real], [T -> Vector[n]] -> [T -> Vector[n]]]"
-           sigma_vector "linear_algebra/")
+           sigma_vector nil)
         (linear_map_e? const-decl "bool" linear_map_def nil))
        shostak)
   (L_inverse_TCC1-1 nil 3520675612 ("" (existence-tcc) nil nil) nil
@@ -6056,7 +6056,7 @@
     (L const-decl "[Map_linear(n, m) -> Mat(m, n)]" matrix_operator
      nil)
     (* const-decl "[[T -> real], [T -> Vector[n]] -> [T -> Vector[n]]]"
-       sigma_vector "linear_algebra/")
+       sigma_vector nil)
     (sigma_zero formula-decl nil sigma "reals/")
     (below type-eq-decl nil nat_types nil)
     (<= const-decl "bool" reals nil)
@@ -6077,7 +6077,7 @@
     (sigma_nat application-judgement "nat" vectors "vectors/")
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (SigmaV const-decl "Vector[n]" sigma_vector "linear_algebra/")
+    (SigmaV const-decl "Vector[n]" sigma_vector nil)
     (scal_zero formula-decl nil vectors "vectors/")
     (int_minus_int_is_int application-judgement "int" integers nil)
     (O const-decl "T3" function_props nil)
@@ -6287,13 +6287,13 @@
     (nat nonempty-type-eq-decl nil naturalnumbers nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    (SigmaV const-decl "Vector[n]" sigma_vector "linear_algebra/")
+    (SigmaV const-decl "Vector[n]" sigma_vector nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (sigma def-decl "real" sigma "reals/")
     (* const-decl "Vector" vectors "vectors/")
     (* const-decl "[[T -> real], [T -> Vector[n]] -> [T -> Vector[n]]]"
-       sigma_vector "linear_algebra/")
+       sigma_vector nil)
     (l!2 skolem-const-decl "posnat" matrix_operator nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (n!1 skolem-const-decl "posnat" matrix_operator nil)
@@ -6854,13 +6854,13 @@
         (T_low type-eq-decl nil sigma "reals/")
         (T_high type-eq-decl nil sigma "reals/")
         (Vector type-eq-decl nil vectors "vectors/")
-        (SigmaV const-decl "Vector[n]" sigma_vector "linear_algebra/")
+        (SigmaV const-decl "Vector[n]" sigma_vector nil)
         (numfield nonempty-type-eq-decl nil number_fields nil)
         (- const-decl "[numfield, numfield -> numfield]" number_fields
            nil)
         (* const-decl
            "[[T -> real], [T -> Vector[n]] -> [T -> Vector[n]]]"
-           sigma_vector "linear_algebra/")
+           sigma_vector nil)
         (Maping type-eq-decl nil linear_map nil)
         (real_gt_is_strict_total_order name-judgement
          "(strict_total_order?[real])" real_props nil)
@@ -8190,7 +8190,6 @@
     (Maping type-eq-decl nil linear_map nil)
     (Vector type-eq-decl nil vectors "vectors/")
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
-    (Maping type-eq-decl nil linear_map "linear_algebra/")
     (id const-decl "Maping" linear_map nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil)
@@ -10634,7 +10633,6 @@
     (inverse const-decl "Maping" linear_map nil)
     (I const-decl "(bijective?[T, T])" identity nil)
     (mult_comp formula-decl nil matrix_operator nil)
-    (Maping type-eq-decl nil linear_map "linear_algebra/")
     (O const-decl "Maping" linear_map nil)
     (same? const-decl "bool" linear_map nil)
     (* const-decl "Matrix" matrices nil)

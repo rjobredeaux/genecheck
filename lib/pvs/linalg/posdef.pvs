@@ -1,3 +1,15 @@
+% --------------------------------------------------------------
+%  File Name: posdef
+%  Author Names: Romain Jobredeaux 
+%
+% ---------------------------------------------------------------
+% This theory proves results on quadratic forms defined by a
+% matrix, and results on positive-definite, and semi positive-
+% definite matrices. Particular results of interest include
+% the existence of a Cholesky decomposition for semi positive-
+% definite matrices, as well as results involving Schur's
+% complement.
+
 posdef:THEORY
 
 BEGIN
@@ -28,8 +40,6 @@ def_pos?(A: (square?)): bool = FORALL (x: Vector[A`rows]): (NOT x=zero[A`rows]) 
 def_pos_id: LEMMA FORALL (n:posnat) : def_pos?(I(n))
 
 semidef_pos_sym : LEMMA FORALL (A:(square?)): semidef_pos?(A) iff semidef_pos?(symmetric_part(A))
-
-def_pos_sym : LEMMA FORALL (A:(square?)): def_pos?(A) iff def_pos?(symmetric_part(A))
 
 def_pos_semidef_pos : LEMMA FORALL (A:(square?)): def_pos?(A) IMPLIES semidef_pos?(A)
 
@@ -74,6 +84,8 @@ cholesky_rev : LEMMA FORALL (MM:(square?)):
 
 semidefpos_inv_defpos: LEMMA FORALL (A:(invertible?)): symmetric?(A) AND semidef_pos?(A) IMPLIES def_pos?(A)
 
+def_pos_sym : LEMMA FORALL (A:(square?)): def_pos?(A) iff def_pos?(symmetric_part(A))
+
 schur_semidef_1: LEMMA FORALL (n,m:posnat, A:Mat(n,n),B:Mat(n,m),D:Mat(m,m)):
 		 invertible?(A) AND symmetric?(A) AND symmetric?(D) IMPLIES
 		 (semidef_pos?(Block2M(M2Block(n,m,n,m)(A,transpose(B),B,D))) IFF
@@ -81,7 +93,7 @@ schur_semidef_1: LEMMA FORALL (n,m:posnat, A:Mat(n,n),B:Mat(n,m),D:Mat(m,m)):
 
 schur_semidef_2 : LEMMA FORALL (n,m:posnat, A:Mat(n,n),B:Mat(n,m),D:Mat(m,m)):
 		 invertible?(D) AND symmetric?(A) AND symmetric?(D) IMPLIES
-		 (semidef_pos?(Block2M(M2Block(n,m,n,m)(A,transpose(B),B,D))) IFF
+(semidef_pos?(Block2M(M2Block(n,m,n,m)(A,transpose(B),B,D))) IFF
 		  def_pos?(D) AND semidef_pos?(A-B*inverse(D)*transpose(B)))
 
 

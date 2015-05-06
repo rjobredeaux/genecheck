@@ -1,24 +1,44 @@
 (matrices
  (sigma_trick_TCC1 0
-  (sigma_trick_TCC1-1 nil 3637158559 ("" (subtype-tcc) nil nil) nil
+  (sigma_trick_TCC1-1 nil 3637158559 ("" (subtype-tcc) nil nil)
+   ((real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil))
    nil))
  (sigma_trick_TCC2 0
-  (sigma_trick_TCC2-1 nil 3637158559 ("" (subtype-tcc) nil nil) nil
+  (sigma_trick_TCC2-1 nil 3637158559 ("" (subtype-tcc) nil nil)
+   ((real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil))
    nil))
  (sigma_trick_TCC3 0
-  (sigma_trick_TCC3-1 nil 3637158559 ("" (assuming-tcc) nil nil) nil
+  (sigma_trick_TCC3-1 nil 3637158559 ("" (assuming-tcc) nil nil)
+   ((real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil))
    nil))
  (sigma_trick_TCC4 0
-  (sigma_trick_TCC4-1 nil 3637158559 ("" (subtype-tcc) nil nil) nil
+  (sigma_trick_TCC4-1 nil 3637158559 ("" (subtype-tcc) nil nil)
+   ((real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil))
    nil))
  (sigma_trick_TCC5 0
-  (sigma_trick_TCC5-1 nil 3637158559 ("" (subtype-tcc) nil nil) nil
+  (sigma_trick_TCC5-1 nil 3637158559 ("" (subtype-tcc) nil nil)
+   ((real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil))
    nil))
  (sigma_trick_TCC6 0
-  (sigma_trick_TCC6-1 nil 3637158559 ("" (subtype-tcc) nil nil) nil
+  (sigma_trick_TCC6-1 nil 3637158559 ("" (subtype-tcc) nil nil)
+   ((real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil))
    nil))
  (sigma_trick_TCC7 0
-  (sigma_trick_TCC7-1 nil 3637158559 ("" (assuming-tcc) nil nil) nil
+  (sigma_trick_TCC7-1 nil 3637158559 ("" (assuming-tcc) nil nil)
+   ((real_le_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil))
    nil))
  (sigma_trick 0
   (sigma_trick-1 nil 3637158560
@@ -142,6 +162,9 @@
     (NOT const-decl "[bool -> bool]" booleans nil)
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
     (minus_odd_is_odd application-judgement "odd_int" integers nil)
+    (low!1 skolem-const-decl "{low: nat | low <= high!1}" matrices nil)
+    (high!1 skolem-const-decl "{high: nat | high < n!1}" matrices nil)
+    (n!1 skolem-const-decl "posnat" matrices nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
@@ -264,17 +287,24 @@
     (nat nonempty-type-eq-decl nil naturalnumbers nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (< const-decl "bool" reals nil)
+    (M!1 skolem-const-decl "Matrix" matrices nil)
+    (N!1 skolem-const-decl
+     "(LAMBDA (N): M!1`rows = N`rows AND M!1`cols = N`cols)" matrices
+     nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (+ const-decl "Matrix" matrices nil))
    shostak))
  (minuses_TCC1 0
-  (minuses_TCC1-1 nil 3637251267 ("" (subtype-tcc) nil nil) nil nil))
+  (minuses_TCC1-1 nil 3637251267 ("" (subtype-tcc) nil nil)
+   ((- const-decl "Matrix" matrices nil)) nil))
  (minuses 0
   (minuses-1 nil 3637251267
    ("" (skeep)
     (("" (expand -) (("" (expand +) (("" (assert) nil nil)) nil)) nil))
     nil)
-   ((minus_real_is_real application-judgement "real" reals nil)
+   ((- const-decl "Matrix" matrices nil)
+    (- const-decl "Matrix" matrices nil)
+    (minus_real_is_real application-judgement "real" reals nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (+ const-decl "Matrix" matrices nil))
@@ -307,6 +337,10 @@
     (nat nonempty-type-eq-decl nil naturalnumbers nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (< const-decl "bool" reals nil)
+    (Z!1 skolem-const-decl "Zero" matrices nil)
+    (M!1 skolem-const-decl
+     "(LAMBDA (N): Z!1`rows = N`rows AND Z!1`cols = N`cols)" matrices
+     nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (+ const-decl "Matrix" matrices nil))
    shostak))
@@ -363,17 +397,16 @@
    nil))
  (times_TCC4 0
   (times_TCC4-1 nil 3498283619 ("" (assuming-tcc) nil nil)
-   ((real_le_is_total_order name-judgement "(total_order?[real])"
-     real_props nil)
+   ((real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil))
    nil))
  (times_TCC5 0
   (times_TCC5-1 nil 3519735992 ("" (subtype-tcc) nil nil)
-   ((real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil)
-    (real_ge_is_total_order name-judgement "(total_order?[real])"
-     real_props nil))
+   ((real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (int_minus_int_is_int application-judgement "int" integers nil))
    nil))
  (add_dim_row 0
   (add_dim_row-1 nil 3599326526
@@ -385,13 +418,14 @@
    ((+ const-decl "Matrix" matrices nil)) shostak))
  (minus_scal 0
   (minus_scal-1 nil 3637315881 ("" (grind) nil nil)
-   ((minus_real_is_real application-judgement "real" reals nil)
-    (real_times_real_is_real application-judgement "real" reals nil))
+   ((- const-decl "Matrix" matrices nil)
+    (* const-decl "Matrix" matrices nil)
+    (minus_odd_is_odd application-judgement "odd_int" integers nil))
    shostak))
  (mult_dim 0
   (mult_dim-1 nil 3598878311
-   ("" (skeep) (("" (expand *) (("" (propax) nil nil)) nil)) nil) nil
-   shostak))
+   ("" (skeep) (("" (expand *) (("" (propax) nil nil)) nil)) nil)
+   ((* const-decl "Matrix" matrices nil)) shostak))
  (mult_dim_row 0
   (mult_dim_row-1 nil 3599326494
    ("" (lemma mult_dim)
@@ -455,8 +489,7 @@
      nil)
     (mult_divides1 application-judgement "(divides(n))" divides nil)
     (mult_divides2 application-judgement "(divides(m))" divides nil)
-    (sigma_nnreal application-judgement "nnreal" vectors "vectors/")
-    (sigma_nat application-judgement "nat" vectors "vectors/")
+    (sigma_nat application-judgement "nat" sigma_swap "reals/")
     (int_plus_int_is_int application-judgement "int" integers nil)
     (T_low type-eq-decl nil sigma "reals/")
     (T_high type-eq-decl nil sigma "reals/")
@@ -495,7 +528,8 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
-    (zero? const-decl "bool" matrices nil))
+    (zero? const-decl "bool" matrices nil)
+    (* const-decl "Matrix" matrices nil))
    shostak))
  (zero_times_right_TCC1 0
   (zero_times_right_TCC1-1 nil 3460559888 ("" (subtype-tcc) nil nil)
@@ -530,8 +564,7 @@
     (T_high type-eq-decl nil sigma "reals/")
     (T_low type-eq-decl nil sigma "reals/")
     (int_plus_int_is_int application-judgement "int" integers nil)
-    (sigma_nat application-judgement "nat" vectors "vectors/")
-    (sigma_nnreal application-judgement "nnreal" vectors "vectors/")
+    (sigma_nat application-judgement "nat" sigma_swap "reals/")
     (mult_divides2 application-judgement "(divides(m))" divides nil)
     (mult_divides1 application-judgement "(divides(n))" divides nil)
     (int_times_even_is_even application-judgement "even_int" integers
@@ -568,11 +601,14 @@
     (= const-decl "[T, T -> boolean]" equalities nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
-    (zero? const-decl "bool" matrices nil))
+    (zero? const-decl "bool" matrices nil)
+    (* const-decl "Matrix" matrices nil))
    shostak))
  (zero_neg_id 0
   (zero_neg_id-1 nil 3637314644 ("" (grind) nil nil)
-   ((zero? const-decl "bool" matrices nil)) shostak))
+   ((- const-decl "Matrix" matrices nil)
+    (zero? const-decl "bool" matrices nil))
+   shostak))
  (zero_times_left_1_TCC1 0
   (zero_times_left_1_TCC1-1 nil 3599326147 ("" (subtype-tcc) nil nil)
    ((Zero_mat const-decl "Zero" matrices nil)) nil))
@@ -606,14 +642,14 @@
         nil))
       nil))
     nil)
-   ((real_times_real_is_real application-judgement "real" reals nil)
+   ((* const-decl "Matrix" matrices nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (sigma_zero formula-decl nil sigma "reals/")
-    (sigma_nnreal application-judgement "nnreal" vectors "vectors/")
-    (sigma_nat application-judgement "nat" vectors "vectors/")
+    (sigma_nat application-judgement "nat" sigma_swap "reals/")
     (number nonempty-type-decl nil numbers nil)
     (boolean nonempty-type-decl nil booleans nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
@@ -644,6 +680,8 @@
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (pn skolem-const-decl "posnat" matrices nil)
+    (M skolem-const-decl "Matrix" matrices nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -673,7 +711,7 @@
     nil)
    ((Zero_mat const-decl "Zero" matrices nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
-    (sigma_nat application-judgement "nat" vectors "vectors/")
+    (sigma_nat application-judgement "nat" sigma_swap "reals/")
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (sigma_zero formula-decl nil sigma "reals/")
@@ -703,12 +741,15 @@
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (M skolem-const-decl "Matrix" matrices nil)
+    (pn skolem-const-decl "posnat" matrices nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
+     "(strict_total_order?[real])" real_props nil)
+    (* const-decl "Matrix" matrices nil))
    shostak))
  (sigma_lem_TCC1 0
   (sigma_lem_TCC1-1 nil 3460351676 ("" (subtype-tcc) nil nil)
@@ -760,8 +801,7 @@
      "(strict_total_order?[real])" real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
-    (sigma_nat application-judgement "nat" vectors "vectors/")
-    (sigma_nnreal application-judgement "nnreal" vectors "vectors/")
+    (sigma_nat application-judgement "nat" sigma_swap "reals/")
     (T_low type-eq-decl nil sigma "reals/")
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
@@ -840,19 +880,24 @@
         nil))
       nil))
     nil)
-   ((real_le_is_total_order name-judgement "(total_order?[real])"
+   ((* const-decl "Matrix" matrices nil)
+    (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (x!2 skolem-const-decl "below(I!1`cols)" matrices nil)
     (sigma_lem formula-decl nil matrices nil)
     (IF const-decl "[boolean, T, T -> T]" if_def nil)
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
     (square? const-decl "bool" matrices nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
+    (M!1 skolem-const-decl "Matrix" matrices nil)
+    (I!1 skolem-const-decl
+     "{I: Matrix | identity?(I) AND M!1`cols = I`rows}" matrices nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
@@ -964,23 +1009,28 @@
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (<= const-decl "bool" reals nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (I!1 skolem-const-decl
+     "{I: Matrix | identity?(I) AND M!1`rows = I`cols}" matrices nil)
+    (M!1 skolem-const-decl "Matrix" matrices nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil)
+    (x!3 skolem-const-decl "below(I!1`cols)" matrices nil)
     (sigma_lem formula-decl nil matrices nil)
+    (x!1 skolem-const-decl "below(I!1`rows)" matrices nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (square? const-decl "bool" matrices nil)
     (nnint_plus_nnint_is_nnint application-judgement "nonneg_int"
      integers nil)
-    (sigma_nnreal application-judgement "nnreal" vectors "vectors/")
-    (sigma_nat application-judgement "nat" vectors "vectors/")
+    (sigma_nat application-judgement "nat" sigma_swap "reals/")
     (IF const-decl "[boolean, T, T -> T]" if_def nil)
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (* const-decl "Matrix" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (number nonempty-type-decl nil numbers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
@@ -1006,7 +1056,8 @@
         nil))
       nil))
     nil)
-   ((I const-decl "(identity?)" matrices nil)
+   ((M skolem-const-decl "Matrix" matrices nil)
+    (I const-decl "(identity?)" matrices nil)
     (> const-decl "bool" reals nil)
     (nonneg_int nonempty-type-eq-decl nil integers nil)
     (>= const-decl "bool" reals nil)
@@ -1043,7 +1094,8 @@
         nil))
       nil))
     nil)
-   ((I const-decl "(identity?)" matrices nil)
+   ((M skolem-const-decl "Matrix" matrices nil)
+    (I const-decl "(identity?)" matrices nil)
     (> const-decl "bool" reals nil)
     (nonneg_int nonempty-type-eq-decl nil integers nil)
     (>= const-decl "bool" reals nil)
@@ -1088,6 +1140,8 @@
     (integer_pred const-decl "[rational -> boolean]" integers nil)
     (int nonempty-type-eq-decl nil integers nil)
     (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (I!1 skolem-const-decl "{I: Matrix | identity?(I)}" matrices nil)
+    (x2!1 skolem-const-decl "nat" matrices nil)
     (< const-decl "bool" reals nil)
     (square? const-decl "bool" matrices nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
@@ -1279,6 +1333,7 @@
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (I!1 skolem-const-decl "{I: Matrix | identity?(I)}" matrices nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
@@ -1294,8 +1349,7 @@
     (sigma_zero formula-decl nil sigma "reals/")
     (sigma_eq formula-decl nil sigma "reals/")
     (subrange type-eq-decl nil integers nil)
-    (sigma_nat application-judgement "nat" vectors "vectors/")
-    (sigma_nnreal application-judgement "nnreal" vectors "vectors/")
+    (sigma_nat application-judgement "nat" sigma_swap "reals/")
     (posint_plus_nnint_is_posint application-judgement "posint"
      integers nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
@@ -1431,7 +1485,10 @@
     (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (IFF const-decl "[bool, bool -> bool]" booleans nil))
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (x skolem-const-decl "real" matrices nil)
+    (M skolem-const-decl "Matrix" matrices nil)
+    (* const-decl "Matrix" matrices nil))
    shostak))
  (trans_sum_TCC1 0
   (trans_sum_TCC1-1 nil 3636306271 ("" (subtype-tcc) nil nil)
@@ -1460,6 +1517,9 @@
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
+    (N skolem-const-decl "{N | M`rows = N`rows AND M`cols = N`cols}"
+     matrices nil)
+    (M skolem-const-decl "Matrix" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
@@ -1668,11 +1728,11 @@
     (pred type-eq-decl nil defined_types nil))
    shostak))
  (mult_assoc_TCC1 0
-  (mult_assoc_TCC1-1 nil 3460573525 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (mult_assoc_TCC1-1 nil 3460573525 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)) nil))
  (mult_assoc_TCC2 0
-  (mult_assoc_TCC2-1 nil 3460573525 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (mult_assoc_TCC2-1 nil 3460573525 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)) nil))
  (mult_assoc 0
   (mult_assoc-1 nil 3460573526
    ("" (skolem-typepred)
@@ -1699,7 +1759,8 @@
         nil))
       nil))
     nil)
-   ((sigma_prop formula-decl nil matrices nil)
+   ((* const-decl "Matrix" matrices nil)
+    (sigma_prop formula-decl nil matrices nil)
     (sigma_comm formula-decl nil matrices nil)
     (nonneg_int nonempty-type-eq-decl nil integers nil)
     (> const-decl "bool" reals nil)
@@ -1712,6 +1773,9 @@
     (int_minus_int_is_int application-judgement "int" integers nil)
     (<= const-decl "bool" reals nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (P!1 skolem-const-decl "{P | N!1`cols = P`rows}" matrices nil)
+    (N!1 skolem-const-decl "{N | M!1`cols = N`rows}" matrices nil)
+    (M!1 skolem-const-decl "Matrix" matrices nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
@@ -1742,7 +1806,7 @@
    shostak))
  (right_scal_shift_TCC1 0
   (right_scal_shift_TCC1-1 nil 3631528417 ("" (subtype-tcc) nil nil)
-   nil nil))
+   ((* const-decl "Matrix" matrices nil)) nil))
  (right_scal_shift 0
   (right_scal_shift-1 nil 3631528418
    ("" (skeep)
@@ -1756,6 +1820,8 @@
       nil))
     nil)
    ((real_times_real_is_real application-judgement "real" reals nil)
+    (* const-decl "Matrix" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (sigma_scal formula-decl nil sigma "reals/")
@@ -1785,6 +1851,8 @@
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (M skolem-const-decl "Matrix" matrices nil)
+    (N skolem-const-decl "{N | M`cols = N`rows}" matrices nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
@@ -1794,8 +1862,8 @@
      "(strict_total_order?[real])" real_props nil))
    shostak))
  (left_scal_shift_TCC1 0
-  (left_scal_shift_TCC1-1 nil 3631528417 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (left_scal_shift_TCC1-1 nil 3631528417 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)) nil))
  (left_scal_shift 0
   (left_scal_shift-1 nil 3631528689
    ("" (skeep)
@@ -1809,6 +1877,8 @@
       nil))
     nil)
    ((real_times_real_is_real application-judgement "real" reals nil)
+    (* const-decl "Matrix" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (sigma_scal formula-decl nil sigma "reals/")
@@ -1838,6 +1908,8 @@
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (M skolem-const-decl "Matrix" matrices nil)
+    (N skolem-const-decl "{N | M`cols = N`rows}" matrices nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
@@ -1847,16 +1919,16 @@
      "(strict_total_order?[real])" real_props nil))
    shostak))
  (mult_assoc_vect_TCC1 0
-  (mult_assoc_vect_TCC1-1 nil 3519735992 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (mult_assoc_vect_TCC1-1 nil 3519735992 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)) nil))
  (mult_assoc_vect_TCC2 0
   (mult_assoc_vect_TCC2-1 nil 3519735992 ("" (subtype-tcc) nil nil)
    ((real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil))
    nil))
  (mult_assoc_vect_TCC3 0
-  (mult_assoc_vect_TCC3-1 nil 3519735992 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (mult_assoc_vect_TCC3-1 nil 3519735992 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)) nil))
  (mult_assoc_vect 0
   (thm "thm" 3519907836
    ("" (skosimp)
@@ -1976,7 +2048,8 @@
         nil))
       nil))
     nil)
-   ((* const-decl "Vector[M`rows]" matrices nil)
+   ((* const-decl "Matrix" matrices nil)
+    (* const-decl "Vector[M`rows]" matrices nil)
     (posint nonempty-type-eq-decl nil integers nil)
     (> const-decl "bool" reals nil)
     (nonneg_int nonempty-type-eq-decl nil integers nil)
@@ -1984,9 +2057,11 @@
     (sigma_eq formula-decl nil sigma "reals/")
     (below type-eq-decl nil nat_types nil)
     (subrange type-eq-decl nil integers nil)
+    (bb skolem-const-decl "[below(N!1`cols) -> real]" matrices nil)
     (sigma_scal formula-decl nil sigma "reals/")
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (aa skolem-const-decl "[below(N!1`cols) -> real]" matrices nil)
     (sigma_prop formula-decl nil matrices nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
@@ -1995,8 +2070,10 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (<= const-decl "bool" reals nil)
+    (N!1 skolem-const-decl "{N | M!1`cols = N`rows}" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (M!1 skolem-const-decl "Matrix" matrices nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
@@ -2040,10 +2117,12 @@
    nil shostak))
  (left_scal_shift_vect_TCC1 0
   (left_scal_shift_vect_TCC1-1 nil 3636285164
-   ("" (subtype-tcc) nil nil) nil nil))
+   ("" (subtype-tcc) nil nil) ((* const-decl "Matrix" matrices nil))
+   nil))
  (left_scal_shift_vect_TCC2 0
   (left_scal_shift_vect_TCC2-1 nil 3636285164
-   ("" (subtype-tcc) nil nil) nil nil))
+   ("" (subtype-tcc) nil nil) ((* const-decl "Matrix" matrices nil))
+   nil))
  (left_scal_shift_vect 0
   (left_scal_shift_vect-1 nil 3636285027
    ("" (skeep)
@@ -2063,6 +2142,7 @@
       nil))
     nil)
    ((* const-decl "Vector" vectors "vectors/")
+    (* const-decl "Matrix" matrices nil)
     (* const-decl "Vector[M`rows]" matrices nil)
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
@@ -2074,6 +2154,7 @@
      real_props nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
+    (M skolem-const-decl "Matrix" matrices nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
@@ -2134,6 +2215,7 @@
      real_props nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
+    (M skolem-const-decl "Matrix" matrices nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
@@ -2166,7 +2248,8 @@
    shostak))
  (scal_assoc 0
   (scal_assoc-1 nil 3637313962 ("" (grind) nil nil)
-   ((real_times_real_is_real application-judgement "real" reals nil))
+   ((* const-decl "Matrix" matrices nil)
+    (real_times_real_is_real application-judgement "real" reals nil))
    shostak))
  (left_distributive_TCC1 0
   (left_distributive_TCC1-1 nil 3460644970 ("" (subtype-tcc) nil nil)
@@ -2176,7 +2259,7 @@
    nil nil))
  (left_distributive_TCC3 0
   (left_distributive_TCC3-1 nil 3460644970 ("" (subtype-tcc) nil nil)
-   nil nil))
+   ((* const-decl "Matrix" matrices nil)) nil))
  (left_distributive 0
   (thm "thm" 3532275618
    ("" (skolem-typepred)
@@ -2209,7 +2292,8 @@
         nil))
       nil))
     nil)
-   ((number_field_pred const-decl "[number -> boolean]" number_fields
+   ((* const-decl "Matrix" matrices nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
@@ -2228,6 +2312,11 @@
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (M!1 skolem-const-decl "Matrix" matrices nil)
+    (N!1 skolem-const-decl "{N | M!1`cols = N`rows}" matrices nil)
+    (P!1 skolem-const-decl
+     "(LAMBDA (N_1: Matrix): N!1`rows = N_1`rows AND N!1`cols = N_1`cols)"
+     matrices nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
@@ -2236,6 +2325,7 @@
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (x!2 skolem-const-decl "below((N!1 + P!1)`cols)" matrices nil)
     (sigma_sum formula-decl nil sigma "reals/")
     (+ const-decl "Matrix" matrices nil)
     (real_times_real_is_real application-judgement "real" reals nil)
@@ -2285,7 +2375,7 @@
    nil nil))
  (right_distributive_TCC3 0
   (right_distributive_TCC3-1 nil 3460644970 ("" (subtype-tcc) nil nil)
-   nil nil))
+   ((* const-decl "Matrix" matrices nil)) nil))
  (right_distributive 0
   (right_distributive-1 nil 3460645380
    ("" (skolem-typepred)
@@ -2334,10 +2424,15 @@
     (T_high type-eq-decl nil sigma "reals/")
     (T_low type-eq-decl nil sigma "reals/")
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (N!1 skolem-const-decl
+     "(LAMBDA (N): M!1`rows = N`rows AND M!1`cols = N`cols)" matrices
+     nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (<= const-decl "bool" reals nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (P!1 skolem-const-decl "{P | M!1`cols = P`rows}" matrices nil)
+    (M!1 skolem-const-decl "Matrix" matrices nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -2345,6 +2440,7 @@
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (sigma_sum formula-decl nil sigma "reals/")
+    (* const-decl "Matrix" matrices nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (Matrix type-eq-decl nil matrices nil)
@@ -2359,22 +2455,85 @@
    shostak))
  (left_distributive_add_vect_TCC1 0
   (left_distributive_add_vect_TCC1-1 nil 3637158620
-   ("" (subtype-tcc) nil nil) nil nil))
+   ("" (subtype-tcc) nil nil)
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (>= const-decl "bool" reals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (Mat type-eq-decl nil matrices nil)
+    (real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil))
+   nil))
  (left_distributive_add_vect_TCC2 0
   (left_distributive_add_vect_TCC2-1 nil 3637158620
-   ("" (subtype-tcc) nil nil) nil nil))
+   ("" (subtype-tcc) nil nil)
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (>= const-decl "bool" reals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (Mat type-eq-decl nil matrices nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (+ const-decl "Matrix" matrices nil))
+   nil))
  (left_distributive_add_vect_TCC3 0
   (left_distributive_add_vect_TCC3-1 nil 3637158620
-   ("" (subtype-tcc) nil nil) nil nil))
+   ("" (subtype-tcc) nil nil)
+   ((real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil))
+   nil))
  (left_distributive_add_vect_TCC4 0
   (left_distributive_add_vect_TCC4-1 nil 3637158620
-   ("" (subtype-tcc) nil nil) nil nil))
+   ("" (subtype-tcc) nil nil)
+   ((real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil))
+   nil))
  (left_distributive_add_vect_TCC5 0
   (left_distributive_add_vect_TCC5-1 nil 3637158620
-   ("" (subtype-tcc) nil nil) nil nil))
+   ("" (subtype-tcc) nil nil)
+   ((real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil))
+   nil))
  (left_distributive_add_vect_TCC6 0
   (left_distributive_add_vect_TCC6-1 nil 3637158620
-   ("" (subtype-tcc) nil nil) nil nil))
+   ("" (subtype-tcc) nil nil) ((+ const-decl "Matrix" matrices nil))
+   nil))
  (left_distributive_add_vect 0
   (left_distributive_add_vect-1 nil 3637158621
    ("" (skeep)
@@ -2535,10 +2694,15 @@
      "(strict_total_order?[real])" real_props nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (m skolem-const-decl "nat" matrices nil)
+    (n skolem-const-decl "nat" matrices nil)
+    (A skolem-const-decl "Mat(m, n)" matrices nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
+    (B skolem-const-decl
+     "(LAMBDA (N): A`rows = N`rows AND A`cols = N`cols)" matrices nil)
     (Index type-eq-decl nil vectors "vectors/")
     (T_low type-eq-decl nil sigma "reals/")
     (T_high type-eq-decl nil sigma "reals/")
@@ -2571,25 +2735,88 @@
    shostak))
  (left_distributive_min_vect_TCC1 0
   (left_distributive_min_vect_TCC1-1 nil 3637410089
-   ("" (subtype-tcc) nil nil) nil nil))
+   ("" (subtype-tcc) nil nil)
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (>= const-decl "bool" reals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (Mat type-eq-decl nil matrices nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (real_gt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil))
+   nil))
  (left_distributive_min_vect_TCC2 0
   (left_distributive_min_vect_TCC2-1 nil 3637410089
    ("" (subtype-tcc) nil nil) nil nil))
  (left_distributive_min_vect_TCC3 0
   (left_distributive_min_vect_TCC3-1 nil 3637410089
-   ("" (subtype-tcc) nil nil) nil nil))
+   ("" (subtype-tcc) nil nil)
+   ((boolean nonempty-type-decl nil booleans nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (NOT const-decl "[bool -> bool]" booleans nil)
+    (number nonempty-type-decl nil numbers nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (>= const-decl "bool" reals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (= const-decl "[T, T -> boolean]" equalities nil)
+    (posnat nonempty-type-eq-decl nil integers nil)
+    (below type-eq-decl nil naturalnumbers nil)
+    (Matrix type-eq-decl nil matrices nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (Mat type-eq-decl nil matrices nil)
+    (real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil)
+    (real_ge_is_total_order name-judgement "(total_order?[real])"
+     real_props nil)
+    (- const-decl "Matrix" matrices nil))
+   nil))
  (left_distributive_min_vect_TCC4 0
   (left_distributive_min_vect_TCC4-1 nil 3637410089
-   ("" (subtype-tcc) nil nil) nil nil))
+   ("" (subtype-tcc) nil nil)
+   ((real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil))
+   nil))
  (left_distributive_min_vect_TCC5 0
   (left_distributive_min_vect_TCC5-1 nil 3637410089
-   ("" (subtype-tcc) nil nil) nil nil))
+   ("" (subtype-tcc) nil nil)
+   ((real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil))
+   nil))
  (left_distributive_min_vect_TCC6 0
   (left_distributive_min_vect_TCC6-1 nil 3637410089
-   ("" (subtype-tcc) nil nil) nil nil))
+   ("" (subtype-tcc) nil nil)
+   ((real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil))
+   nil))
  (left_distributive_min_vect_TCC7 0
   (left_distributive_min_vect_TCC7-1 nil 3637410089
-   ("" (subtype-tcc) nil nil) nil nil))
+   ("" (subtype-tcc) nil nil) ((- const-decl "Matrix" matrices nil))
+   nil))
  (left_distributive_min_vect 0
   (left_distributive_min_vect-1 nil 3637410090
    ("" (skeep)
@@ -2625,7 +2852,8 @@
         nil))
       nil))
     nil)
-   ((- const-decl "real" vectors "vectors/") nil
+   ((- const-decl "real" vectors "vectors/")
+    (- const-decl "Matrix" matrices nil)
     (number nonempty-type-decl nil numbers nil)
     (boolean nonempty-type-decl nil booleans nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
@@ -2652,11 +2880,15 @@
     (sigma def-decl "real" sigma "reals/")
     (T_high type-eq-decl nil sigma "reals/")
     (T_low type-eq-decl nil sigma "reals/")
-    (Index type-eq-decl nil vectors "vectors/") nil
+    (Index type-eq-decl nil vectors "vectors/")
+    (B skolem-const-decl "Mat(m, n)" matrices nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
     (<= const-decl "bool" reals nil)
-    (OR const-decl "[bool, bool -> bool]" booleans nil) nil nil nil
+    (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (A skolem-const-decl "Mat(m, n)" matrices nil)
+    (n skolem-const-decl "nat" matrices nil)
+    (m skolem-const-decl "nat" matrices nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_minus_real_is_real application-judgement "real" reals nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -2774,18 +3006,21 @@
     nil)
    nil shostak))
  (scal_dist_TCC1 0
-  (scal_dist_TCC1-1 nil 3637335243 ("" (subtype-tcc) nil nil) nil nil))
+  (scal_dist_TCC1-1 nil 3637335243 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)) nil))
  (scal_dist 0
   (scal_dist-1 nil 3637335244 ("" (grind) nil nil)
-   ((+ const-decl "Matrix" matrices nil)
+   ((* const-decl "Matrix" matrices nil)
+    (+ const-decl "Matrix" matrices nil)
     (real_times_real_is_real application-judgement "real" reals nil))
    shostak))
  (scal_dist_left_TCC1 0
-  (scal_dist_left_TCC1-1 nil 3637348866 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (scal_dist_left_TCC1-1 nil 3637348866 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)) nil))
  (scal_dist_left 0
   (scal_dist_left-1 nil 3637348866 ("" (grind) nil nil)
-   ((+ const-decl "Matrix" matrices nil)
+   ((* const-decl "Matrix" matrices nil)
+    (+ const-decl "Matrix" matrices nil)
     (real_times_real_is_real application-judgement "real" reals nil))
    shostak))
  (zero_scal 0
@@ -2812,7 +3047,8 @@
     (real nonempty-type-from-decl nil reals nil)
     (Matrix type-eq-decl nil matrices nil)
     (real_times_real_is_real application-judgement "real" reals nil)
-    (Zero_mat const-decl "Zero" matrices nil))
+    (Zero_mat const-decl "Zero" matrices nil)
+    (* const-decl "Matrix" matrices nil))
    shostak))
  (transpose_product_TCC1 0
   (transpose_product_TCC1-1 nil 3460646315 ("" (subtype-tcc) nil nil)
@@ -2896,6 +3132,8 @@
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (M!1 skolem-const-decl "Matrix" matrices nil)
+    (N!1 skolem-const-decl "{N | M!1`cols = N`rows}" matrices nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
@@ -2904,6 +3142,9 @@
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
+    (x!2 skolem-const-decl "below((M!1 * N!1)`rows)" matrices nil)
+    (x!1 skolem-const-decl "below((M!1 * N!1)`cols)" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (Matrix type-eq-decl nil matrices nil)
     (real nonempty-type-from-decl nil reals nil)
     (below type-eq-decl nil naturalnumbers nil)
@@ -3200,12 +3441,19 @@
     (sigma_eq formula-decl nil sigma "reals/")
     (below type-eq-decl nil nat_types nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (A!1 skolem-const-decl "Matrix" matrices nil)
+    (aa skolem-const-decl "[below(A!1`cols) -> real]" matrices nil)
     (sigma_scal formula-decl nil sigma "reals/")
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
+    (a2 skolem-const-decl "[below[transpose(A!1)`cols] -> real]"
+     matrices nil)
+    (a1 skolem-const-decl "[below(A!1`rows) -> real]" matrices nil)
     (real_gt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
+    (bb skolem-const-decl "[Index[transpose(A!1)`rows] -> real]"
+     matrices nil)
     (subrange type-eq-decl nil integers nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -3276,6 +3524,9 @@
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (transpose const-decl "Matrix" matrices nil)
+    (N skolem-const-decl
+     "(LAMBDA (N): M`rows = N`rows AND M`cols = N`cols)" matrices nil)
+    (M skolem-const-decl "Matrix" matrices nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil))
    shostak))
@@ -3306,6 +3557,7 @@
     (Square type-eq-decl nil matrices nil)
     (number nonempty-type-decl nil numbers nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
+    (* const-decl "Matrix" matrices nil)
     (I const-decl "(identity?)" matrices nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil))
@@ -3349,6 +3601,8 @@
     (number_field nonempty-type-from-decl nil number_fields nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
+    (N!1 skolem-const-decl "(inverse?(M!1))" matrices nil)
+    (M!1 skolem-const-decl "(invertible?)" matrices nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (left_mult_ident formula-decl nil matrices nil)
     (mult_assoc formula-decl nil matrices nil)
@@ -3430,9 +3684,15 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (right_mult_ident formula-decl nil matrices nil)
+    (N!1 skolem-const-decl "(inverse?(M!1))" matrices nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (M!1 skolem-const-decl "(invertible?)" matrices nil)
+    (y!1 skolem-const-decl
+     "(LAMBDA (N: Square | N`rows = M!1`rows): inverse?(M!1)(N))"
+     matrices nil)
     (left_mult_ident formula-decl nil matrices nil)
     (mult_assoc formula-decl nil matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
@@ -3470,6 +3730,7 @@
     (invertible? const-decl "bool" matrices nil)
     (number nonempty-type-decl nil numbers nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
+    (* const-decl "Matrix" matrices nil)
     (square? const-decl "bool" matrices nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil))
@@ -3616,6 +3877,12 @@
     (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (M!1 skolem-const-decl "(invertible?)" matrices nil)
+    (N!1 skolem-const-decl "{N: (invertible?) | N`rows = M!1`rows}"
+     matrices nil)
+    (N!3 skolem-const-decl "(inverse?(N!1))" matrices nil)
+    (N!2 skolem-const-decl "(inverse?(M!1))" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (inverse? const-decl "bool" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (number nonempty-type-decl nil numbers nil)
@@ -3691,7 +3958,13 @@
     nil)
    ((int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil)
+    (* const-decl "Matrix" matrices nil)
     (inverse? const-decl "bool" matrices nil)
+    (N!2 skolem-const-decl "(inverse?(M!1))" matrices nil)
+    (N!3 skolem-const-decl "(inverse?(N!1))" matrices nil)
+    (N!1 skolem-const-decl "{N: (invertible?) | N`rows = M!1`rows}"
+     matrices nil)
+    (M!1 skolem-const-decl "(invertible?)" matrices nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (mult_assoc formula-decl nil matrices nil)
     (real_plus_real_is_real application-judgement "real" reals nil)
@@ -3738,6 +4011,7 @@
     (number nonempty-type-decl nil numbers nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (sigma def-decl "real" sigma "reals/")
+    (* const-decl "Matrix" matrices nil)
     (I const-decl "(identity?)" matrices nil)
     (inverse? const-decl "bool" matrices nil)
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
@@ -4275,12 +4549,18 @@ inverse?(M!1)(N)"
     (number_field_pred const-decl "[number -> boolean]" number_fields
      nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (N!3 skolem-const-decl "(inverse?(N!1))" matrices nil)
+    (N!2 skolem-const-decl "(inverse?(M!1))" matrices nil)
     (sigma def-decl "real" sigma "reals/")
     (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (mult_assoc formula-decl nil matrices nil)
     (right_mult_ident formula-decl nil matrices nil)
     (invertible_product formula-decl nil matrices nil)
+    (* const-decl "Matrix" matrices nil)
+    (N!1 skolem-const-decl "{N: (invertible?) | N`rows = M!1`rows}"
+     matrices nil)
+    (M!1 skolem-const-decl "(invertible?)" matrices nil)
     (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (number nonempty-type-decl nil numbers nil)
@@ -4335,11 +4615,21 @@ inverse?(M!1)(N)"
      "(strict_total_order?[real])" real_props nil))
    nil))
  (tr_symm_TCC1 0
-  (tr_symm_TCC1-1 nil 3637172010 ("" (subtype-tcc) nil nil) nil nil))
+  (tr_symm_TCC1-1 nil 3637172010 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)
+    (square? const-decl "bool" matrices nil)
+    (int_minus_int_is_int application-judgement "int" integers nil)
+    (real_times_real_is_real application-judgement "real" reals nil))
+   nil))
  (tr_symm_TCC2 0
   (tr_symm_TCC2-1 nil 3637172010 ("" (subtype-tcc) nil nil) nil nil))
  (tr_symm_TCC3 0
-  (tr_symm_TCC3-1 nil 3637172010 ("" (subtype-tcc) nil nil) nil nil))
+  (tr_symm_TCC3-1 nil 3637172010 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)
+    (square? const-decl "bool" matrices nil)
+    (int_minus_int_is_int application-judgement "int" integers nil)
+    (real_times_real_is_real application-judgement "real" reals nil))
+   nil))
  (tr_symm 0
   (tr_symm-1 nil 3637172011
    ("" (skeep)
@@ -4804,6 +5094,7 @@ inverse?(M!1)(N)"
     (integer nonempty-type-from-decl nil integers nil)
     (subrange type-eq-decl nil integers nil)
     (sigma_eq formula-decl nil sigma "reals/")
+    (x!1 skolem-const-decl "nat" matrices nil)
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (IF const-decl "[boolean, T, T -> T]" if_def nil)
@@ -4837,6 +5128,8 @@ inverse?(M!1)(N)"
     (below type-eq-decl nil naturalnumbers nil)
     (real nonempty-type-from-decl nil reals nil)
     (Matrix type-eq-decl nil matrices nil)
+    (A skolem-const-decl "Matrix" matrices nil)
+    (B skolem-const-decl "Matrix" matrices nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (real_le_is_total_order name-judgement "(total_order?[real])"
@@ -4844,284 +5137,8 @@ inverse?(M!1)(N)"
     (real_ge_is_total_order name-judgement "(total_order?[real])"
      real_props nil)
     (real_lt_is_strict_total_order name-judgement
-     "(strict_total_order?[real])" real_props nil))
-   shostak))
- (tr_sim_TCC1 0
-  (tr_sim_TCC1-1 nil 3637172694 ("" (subtype-tcc) nil nil) nil nil))
- (tr_sim_TCC2 0
-  (tr_sim_TCC2-1 nil 3637172694 ("" (subtype-tcc) nil nil) nil nil))
- (tr_sim_TCC3 0
-  (tr_sim_TCC3-1 nil 3637172694 ("" (subtype-tcc) nil nil) nil nil))
- (tr_sim_TCC4 0
-  (tr_sim_TCC4-1 nil 3637172694 ("" (subtype-tcc) nil nil) nil nil))
- (tr_sim 0
-  (tr_sim-1 nil 3637172695
-   ("" (skeep)
-    (("" (lemma tr_symm)
-      (("" (inst -1 "inverse(B) * A" "B")
-        (("" (assert)
-          (("" (bddsimp)
-            (("1" (replace -1)
-              (("1" (assert)
-                (("1" (lemma mult_assoc)
-                  (("1" (inst -1 B "inverse(B)" A)
-                    (("1" (assert)
-                      (("1" (replace -1)
-                        (("1" (expand invertible?)
-                          (("1" (skosimp -3)
-                            (("1" (typepred N!1)
-                              (("1"
-                                (expand inverse? -3)
-                                (("1"
-                                  (lemma inverse_unique)
-                                  (("1"
-                                    (inst -1 B N!1 "inverse(B)")
-                                    (("1"
-                                      (replace -1)
-                                      (("1"
-                                        (replace -1 1 rl)
-                                        (("1"
-                                          (replace -1 * rl)
-                                          (("1"
-                                            (flatten)
-                                            (("1"
-                                              (replace -4)
-                                              (("1"
-                                                (assert)
-                                                (("1"
-                                                  (lemma
-                                                   left_mult_ident)
-                                                  (("1"
-                                                    (inst
-                                                     -1
-                                                     A
-                                                     "I(B`rows)")
-                                                    (("1"
-                                                      (assert)
-                                                      nil
-                                                      nil)
-                                                     ("2"
-                                                      (lemma
-                                                       inverse_unique)
-                                                      (("2"
-                                                        (name
-                                                         "N2"
-                                                         "the! (N: Square | N`rows = B`rows): inverse?(B)(N)")
-                                                        (("1"
-                                                          (typepred N2)
-                                                          (("1"
-                                                            (expand
-                                                             inverse?
-                                                             -3)
-                                                            (("1"
-                                                              (expand
-                                                               I
-                                                               1)
-                                                              (("1"
-                                                                (assert)
-                                                                nil
-                                                                nil))
-                                                              nil))
-                                                            nil))
-                                                          nil)
-                                                         ("2"
-                                                          (hide 2 3)
-                                                          (("2"
-                                                            (expand
-                                                             singleton?)
-                                                            (("2"
-                                                              (inst
-                                                               1
-                                                               N!1)
-                                                              (("2"
-                                                                (skeep
-                                                                 1)
-                                                                (("2"
-                                                                  (inst
-                                                                   -1
-                                                                   B
-                                                                   N!1
-                                                                   y)
-                                                                  nil
-                                                                  nil))
-                                                                nil))
-                                                              nil))
-                                                            nil))
-                                                          nil))
-                                                        nil))
-                                                      nil))
-                                                    nil))
-                                                  nil))
-                                                nil))
-                                              nil))
-                                            nil))
-                                          nil))
-                                        nil))
-                                      nil)
-                                     ("2"
-                                      (expand inverse)
-                                      (("2" (propax) nil nil))
-                                      nil))
-                                    nil))
-                                  nil))
-                                nil))
-                              nil))
-                            nil))
-                          nil))
-                        nil))
-                      nil)
-                     ("2" (assert)
-                      (("2" (hide 2)
-                        (("2" (hide -1 -2)
-                          (("2" (typepred B)
-                            (("2"
-                              (name "N2"
-                                    "the! (N: Square | N`rows = B`rows): inverse?(B)(N)")
-                              (("1"
-                                (typepred N2)
-                                (("1"
-                                  (typepred A)
-                                  (("1"
-                                    (expand square?)
-                                    (("1" (assert) nil nil))
-                                    nil))
-                                  nil))
-                                nil)
-                               ("2"
-                                (expand singleton?)
-                                (("2"
-                                  (reveal -2)
-                                  (("2"
-                                    (expand invertible?)
-                                    (("2"
-                                      (skosimp -1)
-                                      (("2"
-                                        (typepred N!1)
-                                        (("2"
-                                          (inst 1 N!1)
-                                          (("2"
-                                            (lemma inverse_unique)
-                                            (("2"
-                                              (skeep 1)
-                                              (("2"
-                                                (inst -1 B N!1 y)
-                                                nil
-                                                nil))
-                                              nil))
-                                            nil))
-                                          nil))
-                                        nil))
-                                      nil))
-                                    nil))
-                                  nil))
-                                nil))
-                              nil))
-                            nil))
-                          nil))
-                        nil))
-                      nil))
-                    nil))
-                  nil))
-                nil))
-              nil)
-             ("2" (typepred A)
-              (("2" (expand square?)
-                (("2" (assert)
-                  (("2" (expand * 1)
-                    (("2" (expand inverse)
-                      (("2"
-                        (name "N2"
-                              "the! (N: Square | N`rows = B`rows): inverse?(B)(N)")
-                        (("1" (replace -1)
-                          (("1" (typepred N2)
-                            (("1" (expand square?)
-                              (("1"
-                                (typepred A)
-                                (("1"
-                                  (expand square?)
-                                  (("1" (assert) nil nil))
-                                  nil))
-                                nil))
-                              nil))
-                            nil))
-                          nil)
-                         ("2" (expand singleton?)
-                          (("2" (expand invertible?)
-                            (("2" (skosimp -2)
-                              (("2"
-                                (inst 1 N!1)
-                                (("2"
-                                  (skeep)
-                                  (("2"
-                                    (lemma inverse_unique)
-                                    (("2"
-                                      (inst -1 B N!1 y)
-                                      (("2"
-                                        (typepred B)
-                                        (("2"
-                                          (expand square?)
-                                          (("2" (assert) nil nil))
-                                          nil))
-                                        nil))
-                                      nil))
-                                    nil))
-                                  nil))
-                                nil))
-                              nil))
-                            nil))
-                          nil))
-                        nil))
-                      nil))
-                    nil))
-                  nil))
-                nil))
-              nil)
-             ("3" (typepred A)
-              (("3" (expand square?)
-                (("3" (typepred B)
-                  (("3" (expand *) (("3" (assert) nil nil)) nil)) nil))
-                nil))
-              nil))
-            nil))
-          nil))
-        nil))
-      nil))
-    nil)
-   ((tr_symm formula-decl nil matrices nil)
-    (mult_assoc formula-decl nil matrices nil)
-    (NOT const-decl "[bool -> bool]" booleans nil)
-    (inverse? const-decl "bool" matrices nil)
-    (inverse_unique formula-decl nil matrices nil)
-    (left_mult_ident formula-decl nil matrices nil)
-    (the const-decl "(p)" sets nil)
-    (singleton? const-decl "bool" sets nil)
-    (set type-eq-decl nil sets nil)
-    (number_field_pred const-decl "[number -> boolean]" number_fields
-     nil)
-    (number_field nonempty-type-from-decl nil number_fields nil)
-    (real_pred const-decl "[number_field -> boolean]" reals nil)
-    (rational_pred const-decl "[real -> boolean]" rationals nil)
-    (rational nonempty-type-from-decl nil rationals nil)
-    (integer_pred const-decl "[rational -> boolean]" integers nil)
-    (int nonempty-type-eq-decl nil integers nil)
-    (>= const-decl "bool" reals nil)
-    (nonneg_int nonempty-type-eq-decl nil integers nil)
-    (> const-decl "bool" reals nil)
-    (identity? const-decl "bool" matrices nil)
-    (I const-decl "(identity?)" matrices nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (inverse const-decl "{N: Square | N`rows = M`rows}" matrices nil)
-    (invertible? const-decl "bool" matrices nil)
-    (Square type-eq-decl nil matrices nil)
-    (square? const-decl "bool" matrices nil)
-    (bool nonempty-type-eq-decl nil booleans nil)
-    (= const-decl "[T, T -> boolean]" equalities nil)
-    (boolean nonempty-type-decl nil booleans nil)
-    (number nonempty-type-decl nil numbers nil)
-    (Matrix type-eq-decl nil matrices nil)
-    (real nonempty-type-from-decl nil reals nil)
-    (below type-eq-decl nil naturalnumbers nil)
-    (posnat nonempty-type-eq-decl nil integers nil))
+     "(strict_total_order?[real])" real_props nil)
+    (* const-decl "Matrix" matrices nil))
    shostak))
  (ortho?_TCC1 0
   (ortho?_TCC1-1 nil 3581762874 ("" (subtype-tcc) nil nil)
@@ -5181,6 +5198,7 @@ inverse?(M!1)(N)"
       nil))
     nil)
    ((symmetric? const-decl "bool" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (trans_scal formula-decl nil matrices nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (number nonempty-type-decl nil numbers nil)
@@ -5190,6 +5208,7 @@ inverse?(M!1)(N)"
      nil)
     (number_field nonempty-type-from-decl nil number_fields nil)
     (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (M skolem-const-decl "Square" matrices nil)
     (transpose2 formula-decl nil matrices nil)
     (trans_sum formula-decl nil matrices nil)
     (boolean nonempty-type-decl nil booleans nil)
@@ -5204,23 +5223,62 @@ inverse?(M!1)(N)"
     (square? const-decl "bool" matrices nil))
    nil))
  (skew_symmetric_part_TCC1 0
-  (skew_symmetric_part_TCC1-1 nil 3636913400 ("" (subtype-tcc) nil nil)
-   ((boolean nonempty-type-decl nil booleans nil)
+  (skew_symmetric_part_TCC1-1 nil 3636913400
+   ("" (grind)
+    (("" (apply-extensionality)
+      (("1" (apply-extensionality 1)
+        (("1" (hide 2 3) (("1" (grind) nil nil)) nil)) nil)
+       ("2" (hide 2) (("2" (grind) nil nil)) nil))
+      nil))
+    nil)
+   ((number nonempty-type-decl nil numbers nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (>= const-decl "bool" reals nil)
+    (nonneg_int nonempty-type-eq-decl nil integers nil)
+    (> const-decl "bool" reals nil)
+    (nat nonempty-type-eq-decl nil naturalnumbers nil)
+    (< const-decl "bool" reals nil)
+    (numfield nonempty-type-eq-decl nil number_fields nil)
+    (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (- const-decl "[numfield -> numfield]" number_fields nil)
+    (M!1 skolem-const-decl "Square" matrices nil)
+    (IFF const-decl "[bool, bool -> bool]" booleans nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
+    (minus_real_is_real application-judgement "real" reals nil)
+    (posrat_div_posrat_is_posrat application-judgement "posrat"
+     rationals nil)
+    (boolean nonempty-type-decl nil booleans nil)
     (bool nonempty-type-eq-decl nil booleans nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (posnat nonempty-type-eq-decl nil integers nil)
     (below type-eq-decl nil naturalnumbers nil)
     (real nonempty-type-from-decl nil reals nil)
     (Matrix type-eq-decl nil matrices nil)
-    (square? const-decl "bool" matrices nil)
     (Square type-eq-decl nil matrices nil)
+    (real_minus_real_is_real application-judgement "real" reals nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
+    (skew_symmetric? const-decl "bool" matrices nil)
+    (- const-decl "Matrix" matrices nil)
+    (square? const-decl "bool" matrices nil)
+    (* const-decl "Matrix" matrices nil)
+    (- const-decl "Matrix" matrices nil)
     (transpose const-decl "Matrix" matrices nil))
    nil))
  (square_decomp_TCC1 0
   (square_decomp_TCC1-1 nil 3636913400 ("" (subtype-tcc) nil nil)
    ((transpose const-decl "Matrix" matrices nil)
     (+ const-decl "Matrix" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (symmetric_part const-decl "(symmetric?)" matrices nil)
+    (- const-decl "Matrix" matrices nil)
     (skew_symmetric_part const-decl "(skew_symmetric?)" matrices nil))
    nil))
  (square_decomp 0
@@ -5261,7 +5319,9 @@ inverse?(M!1)(N)"
      rationals nil)
     (transpose const-decl "Matrix" matrices nil)
     (+ const-decl "Matrix" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (symmetric_part const-decl "(symmetric?)" matrices nil)
+    (- const-decl "Matrix" matrices nil)
     (skew_symmetric_part const-decl "(skew_symmetric?)" matrices nil))
    shostak))
  (square_matrix_induct 0
@@ -5333,8 +5393,7 @@ inverse?(M!1)(N)"
     (int_minus_int_is_int application-judgement "int" integers nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (sigma_zero formula-decl nil sigma "reals/")
-    (sigma_nnreal application-judgement "nnreal" vectors "vectors/")
-    (sigma_nat application-judgement "nat" vectors "vectors/")
+    (sigma_nat application-judgement "nat" sigma_swap "reals/")
     (number nonempty-type-decl nil numbers nil)
     (boolean nonempty-type-decl nil booleans nil)
     (number_field_pred const-decl "[number -> boolean]" number_fields
@@ -5367,6 +5426,8 @@ inverse?(M!1)(N)"
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (numfield nonempty-type-eq-decl nil number_fields nil)
     (- const-decl "[numfield, numfield -> numfield]" number_fields nil)
+    (pm skolem-const-decl "posnat" matrices nil)
+    (pn skolem-const-decl "posnat" matrices nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
     (<= const-decl "bool" reals nil)
     (comp_zero formula-decl nil vectors "vectors/")
@@ -5434,6 +5495,9 @@ inverse?(M!1)(N)"
       nil))
     nil)
    ((symmetric? const-decl "bool" matrices nil)
+    (* const-decl "Matrix" matrices nil)
+    (a skolem-const-decl "real" matrices nil)
+    (M skolem-const-decl "Matrix" matrices nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (* const-decl "[numfield, numfield -> numfield]" number_fields nil)
@@ -5529,6 +5593,7 @@ inverse?(M!1)(N)"
  (symmetric_prod_1 0
   (symmetric_prod_1-1 nil 3637315640 ("" (grind) nil nil)
    ((transpose const-decl "Matrix" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (square? const-decl "bool" matrices nil)
     (symmetric? const-decl "bool" matrices nil)
     (real_times_real_is_real application-judgement "real" reals nil)
@@ -5536,10 +5601,11 @@ inverse?(M!1)(N)"
    shostak))
  (symmetric_prod_2_TCC1 0
   (symmetric_prod_2_TCC1-1 nil 3637315640 ("" (subtype-tcc) nil nil)
-   nil nil))
+   ((transpose const-decl "Matrix" matrices nil)) nil))
  (symmetric_prod_2 0
   (symmetric_prod_2-1 nil 3637315648 ("" (grind) nil nil)
    ((transpose const-decl "Matrix" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (square? const-decl "bool" matrices nil)
     (symmetric? const-decl "bool" matrices nil)
     (real_times_real_is_real application-judgement "real" reals nil)
@@ -5582,11 +5648,11 @@ inverse?(M!1)(N)"
    ("" (expand Zero_mat) (("" (propax) nil nil)) nil)
    ((Zero_mat const-decl "Zero" matrices nil)) shostak))
  (mult_scal_dim_row 0
-  (mult_scal_dim_row-1 nil 3599419520 ("" (default-strategy)) nil
-   shostak))
+  (mult_scal_dim_row-1 nil 3599419520 ("" (default-strategy))
+   ((* const-decl "Matrix" matrices nil)) shostak))
  (mult_scal_dim_col 0
-  (mult_scal_dim_col-1 nil 3599419520 ("" (default-strategy)) nil
-   shostak))
+  (mult_scal_dim_col-1 nil 3599419520 ("" (default-strategy))
+   ((* const-decl "Matrix" matrices nil)) shostak))
  (transp_row 0
   (transp_row-1 nil 3599327488
    ("" (expand transpose) (("" (propax) nil nil)) nil)
@@ -5597,7 +5663,9 @@ inverse?(M!1)(N)"
    ((transpose const-decl "Matrix" matrices nil)) shostak))
  (left_scal_id_TCC1 0
   (left_scal_id_TCC1-1 nil 3631462856 ("" (subtype-tcc) nil nil)
-   ((I const-decl "(identity?)" matrices nil)) nil))
+   ((I const-decl "(identity?)" matrices nil)
+    (* const-decl "Matrix" matrices nil))
+   nil))
  (left_scal_id 0
   (left_scal_id-1 nil 3631462856
    ("" (skeep)
@@ -5660,7 +5728,9 @@ inverse?(M!1)(N)"
         nil))
       nil))
     nil)
-   ((real_times_real_is_real application-judgement "real" reals nil)
+   ((* const-decl "Matrix" matrices nil)
+    (* const-decl "Matrix" matrices nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
@@ -5707,12 +5777,15 @@ inverse?(M!1)(N)"
     (<= const-decl "bool" reals nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (OR const-decl "[bool, bool -> bool]" booleans nil)
+    (M skolem-const-decl "Matrix" matrices nil)
     (IFF const-decl "[bool, bool -> bool]" booleans nil)
     (I const-decl "(identity?)" matrices nil))
    shostak))
  (right_scal_id_TCC1 0
   (right_scal_id_TCC1-1 nil 3631463534 ("" (subtype-tcc) nil nil)
-   ((I const-decl "(identity?)" matrices nil)) nil))
+   ((I const-decl "(identity?)" matrices nil)
+    (* const-decl "Matrix" matrices nil))
+   nil))
  (right_scal_id 0
   (right_scal_id-1 nil 3631463534
    ("" (skeep)
@@ -5750,6 +5823,8 @@ inverse?(M!1)(N)"
     (integer_pred const-decl "[rational -> boolean]" integers nil)
     (rational nonempty-type-from-decl nil rationals nil)
     (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (* const-decl "Matrix" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (transpose_product formula-decl nil matrices nil)
     (ident_trans formula-decl nil matrices nil)
@@ -5769,8 +5844,6 @@ inverse?(M!1)(N)"
     (below type-eq-decl nil naturalnumbers nil)
     (posnat nonempty-type-eq-decl nil integers nil))
    shostak))
- (v2ml_row_TCC1 0
-  (v2ml_row_TCC1-1 nil 3637337704 ("" (subtype-tcc) nil nil) nil nil))
  (v2ml_row 0
   (v2ml_row-1 nil 3637337705 ("" (grind) nil nil)
    ((V2Ml const-decl "Matrix" matrices nil)) shostak))
@@ -5778,13 +5851,25 @@ inverse?(M!1)(N)"
   (v2ml_col-1 nil 3637337708 ("" (grind) nil nil)
    ((V2Ml const-decl "Matrix" matrices nil)) shostak))
  (v2ml_quad_TCC1 0
-  (v2ml_quad_TCC1-1 nil 3637335857 ("" (subtype-tcc) nil nil) nil nil))
+  (v2ml_quad_TCC1-1 nil 3637335857 ("" (subtype-tcc) nil nil)
+   ((V2Ml const-decl "Matrix" matrices nil)
+    (transpose const-decl "Matrix" matrices nil))
+   nil))
  (v2ml_quad_TCC2 0
-  (v2ml_quad_TCC2-1 nil 3637335857 ("" (subtype-tcc) nil nil) nil nil))
+  (v2ml_quad_TCC2-1 nil 3637335857 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)
+    (V2Ml const-decl "Matrix" matrices nil))
+   nil))
  (v2ml_quad_TCC3 0
-  (v2ml_quad_TCC3-1 nil 3637335857 ("" (subtype-tcc) nil nil) nil nil))
+  (v2ml_quad_TCC3-1 nil 3637335857 ("" (subtype-tcc) nil nil)
+   ((real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil))
+   nil))
  (v2ml_quad_TCC4 0
-  (v2ml_quad_TCC4-1 nil 3637335857 ("" (subtype-tcc) nil nil) nil nil))
+  (v2ml_quad_TCC4-1 nil 3637335857 ("" (subtype-tcc) nil nil)
+   ((real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil))
+   nil))
  (v2ml_quad 0
   (v2ml_quad-1 nil 3637335858
    ("" (skeep)
@@ -5798,44 +5883,43 @@ inverse?(M!1)(N)"
    ((V2Ml const-decl "Matrix" matrices nil)
     (I const-decl "(identity?)" matrices nil)
     (transpose const-decl "Matrix" matrices nil)
+    (* const-decl "Matrix" matrices nil)
+    (* const-decl "Matrix" matrices nil)
     (* const-decl "real" vectors "vectors/")
     (* const-decl "Vector[M`rows]" matrices nil))
    shostak))
  (v2ml_quad_2_TCC1 0
-  (v2ml_quad_2_TCC1-1 nil 3638961443 ("" (subtype-tcc) nil nil) nil
-   nil))
- (v2ml_quad_2_TCC2 0
-  (v2ml_quad_2_TCC2-1 nil 3638961443 ("" (subtype-tcc) nil nil) nil
-   nil))
- (v2ml_quad_2_TCC3 0
-  (v2ml_quad_2_TCC3-1 nil 3638961443 ("" (subtype-tcc) nil nil) nil
-   nil))
- (v2ml_quad_2_TCC4 0
-  (v2ml_quad_2_TCC4-1 nil 3638961443 ("" (subtype-tcc) nil nil) nil
+  (v2ml_quad_2_TCC1-1 nil 3638961443 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)
+    (V2Ml const-decl "Matrix" matrices nil))
    nil))
  (v2ml_quad_2 0
   (v2ml_quad_2-1 nil 3638961444 ("" (skeep) (("" (grind) nil nil)) nil)
-   ((V2Ml const-decl "Matrix" matrices nil)
-    (transpose const-decl "Matrix" matrices nil)
-    (sigma def-decl "real" sigma "reals/")
-    (* const-decl "Matrix" matrices nil)
-    (* const-decl "Vector[M`rows]" matrices nil)
-    (* const-decl "real" vectors "vectors/")
-    (I const-decl "(identity?)" matrices nil)
-    (* const-decl "Matrix" matrices nil)
-    (real_plus_real_is_real application-judgement "real" reals nil)
+   ((int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil)
-    (int_minus_int_is_int application-judgement "int" integers nil))
+    (real_plus_real_is_real application-judgement "real" reals nil)
+    (* const-decl "Matrix" matrices nil)
+    (I const-decl "(identity?)" matrices nil)
+    (* const-decl "real" vectors "vectors/")
+    (* const-decl "Vector[M`rows]" matrices nil)
+    (* const-decl "Matrix" matrices nil)
+    (sigma def-decl "real" sigma "reals/")
+    (transpose const-decl "Matrix" matrices nil)
+    (V2Ml const-decl "Matrix" matrices nil))
    shostak))
  (conv_vect_mat_TCC1 0
-  (conv_vect_mat_TCC1-1 nil 3637337728 ("" (subtype-tcc) nil nil) nil
+  (conv_vect_mat_TCC1-1 nil 3637337728 ("" (subtype-tcc) nil nil)
+   ((real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil))
    nil))
  (conv_vect_mat_TCC2 0
-  (conv_vect_mat_TCC2-1 nil 3637337728 ("" (subtype-tcc) nil nil) nil
+  (conv_vect_mat_TCC2-1 nil 3637337728 ("" (subtype-tcc) nil nil)
+   ((real_lt_is_strict_total_order name-judgement
+     "(strict_total_order?[real])" real_props nil))
    nil))
  (conv_vect_mat_TCC3 0
-  (conv_vect_mat_TCC3-1 nil 3637337728 ("" (subtype-tcc) nil nil) nil
-   nil))
+  (conv_vect_mat_TCC3-1 nil 3637337728 ("" (subtype-tcc) nil nil)
+   ((V2Mc const-decl "Matrix" matrices nil)) nil))
  (conv_vect_mat 0
   (conv_vect_mat-1 nil 3637337729
    ("" (skeep)
@@ -5882,19 +5966,25 @@ inverse?(M!1)(N)"
     (Matrix type-eq-decl nil matrices nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
+    (m skolem-const-decl "posnat" matrices nil)
+    (n skolem-const-decl "posnat" matrices nil)
     (Mat type-eq-decl nil matrices nil)
+    (M skolem-const-decl "Mat(m, n)" matrices nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
     (real_times_real_is_real application-judgement "real" reals nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
-    (* const-decl "Vector[M`rows]" matrices nil))
+    (* const-decl "Vector[M`rows]" matrices nil)
+    (* const-decl "Matrix" matrices nil))
    shostak))
  (v2ml_scal 0
   (v2ml_scal-1 nil 3637337830 ("" (grind) nil nil)
    ((* const-decl "Vector" vectors "vectors/")
-    (V2Ml const-decl "Matrix" matrices nil))
+    (V2Ml const-decl "Matrix" matrices nil)
+    (* const-decl "Matrix" matrices nil))
    shostak))
  (v2ml_sum_TCC1 0
-  (v2ml_sum_TCC1-1 nil 3637337829 ("" (subtype-tcc) nil nil) nil nil))
+  (v2ml_sum_TCC1-1 nil 3637337829 ("" (subtype-tcc) nil nil)
+   ((V2Ml const-decl "Matrix" matrices nil)) nil))
  (v2ml_sum 0
   (v2ml_sum-1 nil 3637337834 ("" (grind) nil nil)
    ((+ const-decl "real" vectors "vectors/")
@@ -5902,11 +5992,11 @@ inverse?(M!1)(N)"
     (+ const-decl "Matrix" matrices nil))
    shostak))
  (v2ml_dot_TCC1 0
-  (v2ml_dot_TCC1-1 nil 3637337829 ("" (subtype-tcc) nil nil) nil nil))
+  (v2ml_dot_TCC1-1 nil 3637337829 ("" (subtype-tcc) nil nil)
+   ((V2Ml const-decl "Matrix" matrices nil)) nil))
  (v2ml_dot_TCC2 0
-  (v2ml_dot_TCC2-1 nil 3637337829 ("" (subtype-tcc) nil nil) nil nil))
- (v2ml_dot_TCC3 0
-  (v2ml_dot_TCC3-1 nil 3638961443 ("" (subtype-tcc) nil nil) nil nil))
+  (v2ml_dot_TCC2-1 nil 3637337829 ("" (subtype-tcc) nil nil)
+   ((V2Ml const-decl "Matrix" matrices nil)) nil))
  (v2ml_dot 0
   (v2ml_dot-1 nil 3637337838
    ("" (skeep)

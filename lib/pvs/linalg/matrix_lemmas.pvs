@@ -106,10 +106,11 @@ matrix_lemmas: THEORY
 
  invertible_scal: LEMMA FORALL(N:(invertible?), a:nzreal): invertible?(a*N)
 
- inverse_scal: LEMMA FORALL(N:(invertible?), a:nzreal): inverse?(a*N)= (1/a)*inverse(N)
+ inverse_scal: LEMMA FORALL(N:(invertible?), a:nzreal): inverse(a*N)= (1/a)*inverse(N)
 
  inv_prodvect: LEMMA FORALL (A:(invertible?), x:Vector[A`cols]) : A*x = zero[A`rows] IFF x = zero[A`rows]
 
+tr_sim: LEMMA FORALL (A: Square, B: (same_dim?(A))): invertible?(B) IMPLIES trace(inverse(B)*A*B) = trace(A)
 
 invertible22 : LEMMA FORALL (p11,p22,p12,p21:real, MM:Mat(2,2)):
       	MM = (# cols := 2, rows :=2, 
