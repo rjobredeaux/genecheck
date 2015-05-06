@@ -280,6 +280,8 @@ scal_dist : LEMMA FORALL (A,B:Mat(m,n), x:real): x*A+x*B = x*(A+B)
 
 scal_dist_left : LEMMA FORALL(x,y:real,A:Mat(m,n)) : (x+y)*A = x*A + y*A
 
+scal_dist_left_min : LEMMA FORALL(x,y:real,A:Mat(m,n)) : (x-y)*A = x*A - y*A
+
 zero_scal : LEMMA 0*M = Zero_mat(M`rows,M`cols)
 
  transpose_product: LEMMA

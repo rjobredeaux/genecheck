@@ -2,10 +2,11 @@ matrix_lemmas: THEORY
 
 % Linear Algebra library
 % Heber Herencia-Zapana NIA
+% Romain Jobredeaux     Georgia Institute of Technology
 % Gilberto Pérez        University of Coruña Spain
 % Pablo Ascariz         University of Coruña Spain
 % Felicidad >Aguado      University of Coruña Spain
-% Date: December, 2013
+% Date: May, 2015
 
  BEGIN
 

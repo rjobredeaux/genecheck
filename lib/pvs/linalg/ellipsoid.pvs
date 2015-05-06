@@ -1,7 +1,6 @@
-
 % --------------------------------------------------------------
 %  File Name: ellipsoid
-%  Author Names: Romain Jobredeaux & Heber Herencia-Zapana 
+%  Author Names: Romain Jobredeaux & Heber Herencia-Zapana
 %
 % ---------------------------------------------------------------
 % This PVS theory defines the notion of ellipsoid (centered at the origin),
@@ -9,7 +8,7 @@
 % (  1 x^T  )
 % (         ) >= 0, referred to with the predicate "in_ellipsoid_Q?"
 % (  x P^-1 )
-% 
+%
 % Theorems are then introduced that describe how a linear transformation
 % affects an ellipsoid
 ellipsoid: theory
@@ -24,147 +23,162 @@ n:var posnat
 
 Vector_no_param: TYPE = [# length: posnat, vect: vectors[length].Vector #]
 
--(x: Vector_no_param,y: Vector_no_param | x`length=y`length) : Vector_no_param = (# length:=x`length, vect:=x`vect-y`vect #);
+-(x: Vector_no_param,y: Vector_no_param | x`length=y`length) :
+  Vector_no_param = (# length:=x`length, vect:=x`vect-y`vect #);
 
-*(P: Matrix, c: Vector_no_param | P`cols=c`length) : Vector_no_param = (# length:= P`rows, vect:= P*c`vect #);
+*(P: Matrix, c: Vector_no_param | P`cols=c`length) :
+  Vector_no_param = (# length:= P`rows, vect:= P*c`vect #);
 
-in_ellipsoid_P?(n:posnat, P:SquareMat(n), x:Vector[n]): bool = 
-	def_pos?(P) AND symmetric?(P) AND x*(P*x)<=1
+in_ellipsoid_P?(n:posnat, P:SquareMat(n), x:Vector[n]): bool =
+  def_pos?(P) AND symmetric?(P) AND x*(P*x)<=1
 
 in_ellipsoid_Q?(n:posnat, Q:SquareMat(n), x:Vector[n]): bool =
-	semidef_pos?(Q) AND symmetric?(Q) AND semidef_pos?(Block2M(M2Block(1,n,1,n)(I(1),transpose(V2Ml(n,x)),V2Ml(n,x),Q)))  
+  semidef_pos?(Q) AND symmetric?(Q) AND
+  semidef_pos?(Block2M(M2Block(1,n,1,n)(I(1),transpose(V2Ml(n,x)),V2Ml(n,x),Q)))
 
 ellipsoid: LEMMA
-  forall (n:posnat, Q, M: SquareMat(n), x, y, b, c: Vector[n]):
-                 bijective?(n)(T(n,n)(Q)) AND bijective?(n)(T(n,n)(M))
-                 AND (x-c)*(inv(n)(Q)*(x-c))<=1  
-                 AND y=M*x + b
-                 IMPLIES 
-                 (y-b-M*c)*(inv(n)(M*(Q*transpose(M)))*(y-b-M*c))<=1
+forall (n:posnat, Q, M: SquareMat(n), x, y, b, c: Vector[n]):
+bijective?(n)(T(n,n)(Q)) AND bijective?(n)(T(n,n)(M))
+AND (x-c)*(inv(n)(Q)*(x-c))<=1
+AND y=M*x + b
+IMPLIES
+(y-b-M*c)*(inv(n)(M*(Q*transpose(M)))*(y-b-M*c))<=1
 
 ellipsoid_simp: LEMMA
-  forall (n:posnat, Q, M: SquareMat(n), x, y: Vector[n]):
-                 bijective?(n)(T(n,n)(Q)) AND bijective?(n)(T(n,n)(M))
-                 AND x*(inv(n)(Q)*x)<=1  
-                 AND y=M*x
-                 IMPLIES 
-                 y*(inv(n)(M*(Q*transpose(M)))*(y))<=1
+forall (n:posnat, Q, M: SquareMat(n), x, y: Vector[n]):
+bijective?(n)(T(n,n)(Q)) AND bijective?(n)(T(n,n)(M))
+AND x*(inv(n)(Q)*x)<=1
+AND y=M*x
+IMPLIES
+y*(inv(n)(M*(Q*transpose(M)))*(y))<=1
 
-
-
-ellipsoid_general: THEOREM 
- FORALL (n:posnat, m:posnat, Q:SquareMat(n), M:Mat(m,n), x:Vector[n], y:Vector[m]):
- 		in_ellipsoid_Q?(n,Q,x)
-   		AND y = M*x
-  		IMPLIES 
-   		in_ellipsoid_Q?(m,M*Q*transpose(M),y)
+ellipsoid_general: THEOREM
+FORALL (n:posnat,m:posnat,Q:SquareMat(n),M:Mat(m,n),x:Vector[n],y:Vector[m]):
+in_ellipsoid_Q?(n,Q,x)
+AND y = M*x
+IMPLIES
+in_ellipsoid_Q?(m,M*Q*transpose(M),y)
 
  AUTO_REWRITE+ v2ml_row
  AUTO_REWRITE+ v2ml_col
 
 ellipsoid_equivalence: THEOREM FORALL (n:posnat, P:SquareMat(n), x:Vector[n]):
-		       invertible?(P) IMPLIES
-		       (in_ellipsoid_Q?(n,inverse(P),x) IFF in_ellipsoid_P?(n,P,x))
-		
-ellipsoid_combination: THEOREM 
- forall (n,m:posnat, lambda_1, lambda_2: posreal, 
-         Q_1: Mat(n,n), Q_2: Mat(m,m), x:Vector[n], 
-	 y:Vector[m], z:Vector[m+n]):
-	    in_ellipsoid_Q?(n,Q_1,x)
-	AND in_ellipsoid_Q?(m,Q_2,y)
-	AND lambda_1+ lambda_2 = 1
-	AND z = Block2V(V2Block(n,m)(x,y))
-	IMPLIES in_ellipsoid_Q?(n+m,Block2M(
-	                             M2Block(n,m,n,m)(1/lambda_1*Q_1,Zero_mat(m,n),
-	                                              Zero_mat(n,m), 1/lambda_2*Q_2)),z)
+	invertible?(P) IMPLIES
+	(in_ellipsoid_Q?(n,inverse(P),x) IFF in_ellipsoid_P?(n,P,x))
+
+ellipsoid_combination: THEOREM
+ forall (n,m:posnat, lambda_1, lambda_2: posreal,
+ Q_1: Mat(n,n), Q_2: Mat(m,m), x:Vector[n],
+ y:Vector[m], z:Vector[m+n]):
+   in_ellipsoid_Q?(n,Q_1,x)
+   AND in_ellipsoid_Q?(m,Q_2,y)
+   AND lambda_1+ lambda_2 = 1
+   AND z = Block2V(V2Block(n,m)(x,y))
+   IMPLIES in_ellipsoid_Q?(n+m,
+   Block2M(M2Block(n,m,n,m)(1/lambda_1*Q_1,Zero_mat(m,n),
+   Zero_mat(n,m), 1/lambda_2*Q_2)),z)
 
 
 step_ellipsoid_combination_plus: THEOREM
  forall (n:posnat, Q: Mat(n,n), x: Vector[n], mu: posreal):
      mu>=1 AND in_ellipsoid_Q?(n,Q,x) IMPLIES in_ellipsoid_Q?(n,mu*Q,x)
-	
-ellipsoid_combination_plus: THEOREM	
- forall (n,m:posnat, lambda_1, lambda_2: posreal, 
- 	 Q_1: Mat(n,n), Q_2: Mat(m,m), x:Vector[n], 
-	 y:Vector[m], z:Vector[m+n]):
-	    in_ellipsoid_Q?(n,Q_1,x)
-	AND in_ellipsoid_Q?(m,Q_2,y)
-	AND lambda_1+ lambda_2 <= 1
-	AND z = Block2V(V2Block(n,m)(x,y))
-	IMPLIES in_ellipsoid_Q?(n+m,Block2M(
-                                     M2Block(n,m,n,m)(1/lambda_1*Q_1,Zero_mat(m,n),
-				                      Zero_mat(n,m),1/lambda_2*Q_2)),z)
+
+ellipsoid_combination_plus: THEOREM
+ forall (n,m:posnat, lambda_1, lambda_2: posreal,
+  Q_1: Mat(n,n), Q_2: Mat(m,m), x:Vector[n],
+  y:Vector[m], z:Vector[m+n]):
+   in_ellipsoid_Q?(n,Q_1,x)
+   AND in_ellipsoid_Q?(m,Q_2,y)
+   AND lambda_1+ lambda_2 <= 1
+   AND z = Block2V(V2Block(n,m)(x,y))
+   IMPLIES in_ellipsoid_Q?(n+m,
+   Block2M(M2Block(n,m,n,m)(1/lambda_1*Q_1,Zero_mat(m,n),
+   Zero_mat(n,m),1/lambda_2*Q_2)),z)
 
 ellipsoid_general_2 : THEOREM
- forall (n:posnat,m:posnat, Q:SquareMat(n), M: Mat(m,n), x:Vector[n], y:Vector[m],c:Vector[n]):
-		in_ellipsoid_Q?(n,Q,x-c)
-		AND y = M*x
-		IMPLIES in_ellipsoid_Q?(m,M*Q*transpose(M),y-M*c)
+ forall (n:posnat,m:posnat, Q:SquareMat(n), M: Mat(m,n),
+  x:Vector[n], y:Vector[m],c:Vector[n]):
+   in_ellipsoid_Q?(n,Q,x-c)
+   AND y = M*x
+   IMPLIES in_ellipsoid_Q?(m,M*Q*transpose(M),y-M*c)
 
 in_ellipsoid_Q2?(n:posnat, Q:SquareMat(n), x:Vector[n],lam:nnreal): bool =
-	semidef_pos?(Q) AND symmetric?(Q) AND semidef_pos?(Block2M(M2Block(1,n,1,n)(lam*I(1),transpose(V2Ml(n,x)),V2Ml(n,x),Q)))
+   semidef_pos?(Q) AND symmetric?(Q) AND
+   semidef_pos?(Block2M(M2Block(1,n,1,n)(lam*I(1),transpose(V2Ml(n,x)),
+					 V2Ml(n,x),Q)))
 
 in_ellipsoid_P2?(n:posnat, P:SquareMat(n), x:Vector[n],lam:nnreal): bool =
 		def_pos?(P) AND symmetric?(P) AND x*(P*x)<=lam
 
 eq_ellq_ellq2 : lemma
-  forall (n:posnat, Q:SquareMat(n), x:Vector[n],lam:nnreal):
-   in_ellipsoid_Q2?(n, Q, x,lam) IFF in_ellipsoid_Q?(n, lam*Q, x) 
+  forall (n:posnat, Q:SquareMat(n), x:Vector[n],lam:posreal):
+   in_ellipsoid_Q2?(n, Q, x,lam) IFF in_ellipsoid_Q?(n, lam*Q, x)
 
 eq_ellp_ellp2 : lemma
   forall (n:posnat, P:SquareMat(n), x:Vector[n],lam:posreal):
-   in_ellipsoid_P2?(n, P, x,lam) IFF in_ellipsoid_P?(n, (1/lam)*P, x) 
+   in_ellipsoid_P2?(n, P, x,lam) IFF in_ellipsoid_P?(n, (1/lam)*P, x)
 
-ellipsoid_equivalence_2: THEOREM FORALL (n:posnat, P:SquareMat(n), x:Vector[n], lam:nnreal):
-		       invertible?(P) IMPLIES
-		       (in_ellipsoid_Q2?(n,inverse(P),x,lam) IFF in_ellipsoid_P2?(n,P,x,lam))
+ellP2_zero: LEMMA FORALL (n:posnat, P:SquareMat(n),x:Vector[n]):
+  in_ellipsoid_P2?(n,P,x,0) IFF (x=zero[n] AND symmetric?(P) AND
+				 def_pos?(P))
+
+ellQ2_zero: LEMMA FORALL(n:posnat, Q:SquareMat(n),x:Vector[n]):
+	    in_ellipsoid_Q2?(n,Q,x,0) IFF (x=zero[n] AND symmetric?(Q) AND
+					   semidef_pos?(Q))
+
+ellipsoid_equivalence_2: THEOREM FORALL (n:posnat, P:SquareMat(n),
+  x:Vector[n], lam:nnreal):
+    invertible?(P)
+    IMPLIES
+    (in_ellipsoid_Q2?(n,inverse(P),x,lam) IFF in_ellipsoid_P2?(n,P,x,lam))
 
 
-ellipsoid_general_3 : THEOREM  
- forall (n:posnat,m:posnat, Q:SquareMat(n), M: Mat(m,n), 
+ellipsoid_general_3 : THEOREM
+ forall (n:posnat,m:posnat, Q:SquareMat(n), M: Mat(m,n),
          x:Vector[n], y:Vector[m],c:Vector[n],lam:nnreal):
 		in_ellipsoid_Q2?(n,Q,x-c,lam)
 		AND y = M*x
-		IMPLIES in_ellipsoid_Q2?(m,M*Q*transpose(M),y-M*c,lam) 
+		IMPLIES in_ellipsoid_Q2?(m,M*Q*transpose(M),y-M*c,lam)
 
 ellipsoid_general_4 : THEOREM
- forall (n:posnat,m:posnat, Q:SquareMat(n), M: Mat(m,n), 
-         x:Vector[n], y,b:Vector[m],c:Vector[n],lam:nnreal):
+ forall (n:posnat,m:posnat, Q:SquareMat(n), M: Mat(m,n),
+	 x:Vector[n], y,b:Vector[m],c:Vector[n],lam:nnreal):
 		in_ellipsoid_Q2?(n,Q,x-c,lam)
 		AND y = M*x+b
-		IMPLIES in_ellipsoid_Q2?(m,M*Q*transpose(M),y-(M*c+b),lam) 
+		IMPLIES in_ellipsoid_Q2?(m,M*Q*transpose(M),y-(M*c+b),lam)
 
 ellipsoid_bound : THEOREM
  forall(n:posnat, Q:SquareMat(n), c,x:Vector[n]):
    in_ellipsoid_Q?(n,Q,x) IMPLIES abs(c*x)<= sqrt(c*(Q*c))
 
 sat(x:real): real = TABLE
-  %-------+----++  
-  | x < -1| -1 ||  
-  %-------+----++  
-  | x > 1 | 1  ||  
-  %-------+----++  
-  | ELSE  | x  ||  
+  %-------+----++
+  | x < -1| -1 ||
+  %-------+----++
+  | x > 1 | 1  ||
+  %-------+----++
+  | ELSE  | x  ||
   %-------+----++
 ENDTABLE
 
 sat_id_comp : LEMMA FORALL (x:real) : (x<=0 IMPLIES sat(x)>=x) AND
-	      	    	   	       (x>=0 IMPLIES sat(x)<=x)
+				      (x>=0 IMPLIES sat(x)<=x)
 
 sat_lin_com : LEMMA FORALL (x:real, d:posreal) : (abs(x)<= d) AND d>=1 IMPLIES
 	    (x<=0 IMPLIES sat(x)<=(1/d) * x) AND
 	    (x>=0 IMPLIES sat(x)>=(1/d) * x)
 
-sat_sect_bound_step: LEMMA FORALL (n:posnat, Q:SquareMat(n), c,x: Vector[n], d:posreal):
-		     in_ellipsoid_Q?(n,Q,x) AND d >= sqrt(c*(Q*c))
-		     IMPLIES
-		     (sat(c*x)-(c*x))*(sat(c*x)-(1/d)*(c*x))<=0 
+sat_sect_bound_step: LEMMA FORALL (n:posnat, Q:SquareMat(n),
+  c,x: Vector[n], d:posreal):
+    in_ellipsoid_Q?(n,Q,x) AND d >= sqrt(c*(Q*c))
+    IMPLIES
+    (sat(c*x)-(c*x))*(sat(c*x)-(1/d)*(c*x))<=0
 
 
 block_rank_1: LEMMA FORALL (m,n:posnat, x,z:Vector[m],y,t:Vector[n]):
 	      LET  a = Block2V(V2Block(m,n)(x,y)) IN
 	      LET  b = Block2V(V2Block(m,n)(z,t)) IN
-	      transpose(V2Ml(n+m,a))*V2Ml(n+m,b) = 
+	      transpose(V2Ml(n+m,a))*V2Ml(n+m,b) =
 	      Block2M(M2Block(m,n,m,n)(transpose(V2Ml(m,x))*V2Ml(m,z),
 				       transpose(V2Ml(n,y))*V2Ml(m,z),
 				       transpose(V2Ml(m,x))*V2Ml(n,t),
@@ -174,195 +188,215 @@ block_rank_1: LEMMA FORALL (m,n:posnat, x,z:Vector[m],y,t:Vector[n]):
 block_sym_rank_1 : LEMMA FORALL (n:posnat, c:Vector[n], d:posreal):
 	       LET a = Block2V(V2Block(n,1)(-c,LAMBDA (i:below(1)): 1)) IN
 	       LET b = Block2V(V2Block(n,1)((-1/d)*c,LAMBDA (i:below(1)): 1)) IN
-	       LET G = 1/2*(transpose(V2Ml(n+1,a))*V2Ml(n+1,b) + transpose(V2Ml(n+1,b))*V2Ml(n+1,a))
+	       LET G = 1/2*(transpose(V2Ml(n+1,a))*V2Ml(n+1,b) +
+			    transpose(V2Ml(n+1,b))*V2Ml(n+1,a))
 	       IN
 	       G = Block2M(M2Block(n,1,n,1)(
-	          (1/d)*transpose(V2Ml(n,c))*V2Ml(n,c), 1/2*(-1-1/d)*V2Ml(n,c) , 
+		  (1/d)*transpose(V2Ml(n,c))*V2Ml(n,c), 1/2*(-1-1/d)*V2Ml(n,c),
 		  1/2*(-1-1/d)*transpose(V2Ml(n,c)), I(1)))
 
 
 
-sat_sect_bound : THEOREM FORALL (n:posnat, Q:SquareMat(n), c,x:Vector[n], d:posreal):
+sat_sect_bound : THEOREM FORALL (n:posnat, Q:SquareMat(n),
+		   c,x:Vector[n], d:posreal):
 	       LET z = Block2V(V2Block(n,1)(x,LAMBDA (i:below(1)): sat(c*x))) IN
 	       LET a = Block2V(V2Block(n,1)(-c,LAMBDA (i:below(1)): 1)) IN
 	       LET b = Block2V(V2Block(n,1)((-1/d)*c,LAMBDA (i:below(1)): 1)) IN
-	       LET G = 1/2*(transpose(V2Ml(n+1,a))*V2Ml(n+1,b) + transpose(V2Ml(n+1,b))*V2Ml(n+1,a)) IN
-       	       in_ellipsoid_Q?(n,Q,x) AND
+	       LET G = 1/2*(transpose(V2Ml(n+1,a))*V2Ml(n+1,b) +
+			    transpose(V2Ml(n+1,b))*V2Ml(n+1,a)) IN
+		       in_ellipsoid_Q?(n,Q,x) AND
 	       d >= sqrt(c*(Q*c))
-     	       IMPLIES z*(G*z) <= 0 
+	       IMPLIES z*(G*z) <= 0
 
-sect_bound_quad: THEOREM FORALL (n:posnat, d1,d2:posreal, f:[real->real], x:real):
-		 LET v = Block2V(V2Block(1,1)(LAMBDA (i:below(1)): x,LAMBDA (i:below(1)): f(x))) IN
-		 LET g = (# cols :=2, rows:=2, 
-	            matrix:= LAMBDA(i,j:below(2)) : 
-		    	     COND
-			     (i=0 AND j=0) -> 1/(d1*d2), (i=0 AND j=1) -> -(d1+d2)/(2*d1*d2),
-			     (i=1 AND j=0) -> -(d1+d2)/(2*d1*d2), (i=1 AND j=1) -> 1
-			     ENDCOND #) IN
+sect_bound_quad: THEOREM FORALL (n:posnat, d1,d2:posreal,f:[real->real],x:real):
+		 LET v = Block2V(V2Block(1,1)(LAMBDA (i:below(1)): x,
+					      LAMBDA (i:below(1)): f(x))) IN
+		 LET g = (# cols :=2, rows:=2,
+		   matrix:= LAMBDA(i,j:below(2)):
+		COND
+		(i=0 AND j=0) -> 1/(d1*d2), (i=0 AND j=1) -> -(d1+d2)/(2*d1*d2),
+		(i=1 AND j=0) -> -(d1+d2)/(2*d1*d2), (i=1 AND j=1) -> 1
+		ENDCOND #) IN
 		   (f(x)-(1/d1)*x)*(f(x)-(1/d2)*x)<=0 IFF
 		   v*(g*v)<=0
-		 
-		 
 
-sect_bound_ell : THEOREM FORALL (n:posnat, Q:SquareMat(n), c,x:Vector[n], d1,d2,mu:posreal, f:[real->real]):
-	       LET d = c*(Q*c) IN
-	       LET g = (# cols :=2, rows:=2, 
-	            matrix:= LAMBDA(i,j:below(2)) : 
-		    	     COND
-			     (i=0 AND j=0) -> 1/(d1*d2), (i=0 AND j=1) -> -(d1+d2)/(2*d1*d2),
-			     (i=1 AND j=0) -> -(d1+d2)/(2*d1*d2), (i=1 AND j=1) -> 1
-			     ENDCOND #) IN
-	       LET v = Block2V(V2Block(1,1)(LAMBDA (i:below(1)): c*x,LAMBDA (i:below(1)): f(c*x))) IN
-	       LET D = 4*(d1*d2)^2-mu*d*(d1-d2)^2 IN
-	       
-	       in_ellipsoid_Q?(n,Q,x) AND
-	       D>0 AND
-               (f(c*x)-(1/d1)*(c*x))*(f(c*x)-(1/d2)*(c*x))<=0 AND
-	       d>0
-	       IMPLIES
-	       LET q =(# cols :=2, rows:=2, 
-	            matrix:= LAMBDA(i,j:below(2)) : 
-		    	     COND
-			     (i=0 AND j=0) -> 1/d, (i=0 AND j=1) -> 0,
-			     (i=1 AND j=0) -> 0, (i=1 AND j=1) -> 0
-			     ENDCOND #) IN
-	       in_ellipsoid_P2?(2,q+mu*g,v,(c*x)^2/(c*(Q*c)))
+sect_bound_ell : THEOREM FORALL (n:posnat, Q:SquareMat(n), c,x:Vector[n],
+  d1,d2,mu:posreal, f:[real->real]):
+  LET d = c*(Q*c) IN
+  LET g = (# cols :=2, rows:=2,
+  matrix:= LAMBDA(i,j:below(2)) :
+    COND
+    (i=0 AND j=0) -> 1/(d1*d2), (i=0 AND j=1) -> -(d1+d2)/(2*d1*d2),
+    (i=1 AND j=0) -> -(d1+d2)/(2*d1*d2), (i=1 AND j=1) -> 1
+    ENDCOND #) IN
+  LET v = Block2V(V2Block(1,1)(LAMBDA (i:below(1)): c*x,
+			       LAMBDA (i:below(1)): f(c*x))) IN
+  LET D = 4*(d1*d2)^2-mu*d*(d1-d2)^2 IN
+  in_ellipsoid_Q?(n,Q,x) AND
+  D>0 AND
+  (f(c*x)-(1/d1)*(c*x))*(f(c*x)-(1/d2)*(c*x))<=0 AND
+  d>0
+  IMPLIES
+  LET q =(# cols :=2, rows:=2,
+    matrix:= LAMBDA(i,j:below(2)) :
+    COND
+    (i=0 AND j=0) -> 1/d, (i=0 AND j=1) -> 0,
+    (i=1 AND j=0) -> 0, (i=1 AND j=1) -> 0
+    ENDCOND #) IN
+  in_ellipsoid_P2?(2,q+mu*g,v,(c*x)^2/(c*(Q*c)))
 
 sect_bound_invertible:THEOREM FORALL(d,d1,d2,mu:posreal):
-      	       LET g = (# cols :=2, rows:=2, 
-	            matrix:= LAMBDA(i,j:below(2)) : 
-		    	     COND
-			     (i=0 AND j=0) -> 1/(d1*d2), (i=0 AND j=1) -> -(d1+d2)/(2*d1*d2),
-			     (i=1 AND j=0) -> -(d1+d2)/(2*d1*d2), (i=1 AND j=1) -> 1
-			     ENDCOND #) IN
-	       LET q =(# cols :=2, rows:=2, 
-	            matrix:= LAMBDA(i,j:below(2)) : 
-		    	     COND
-			     (i=0 AND j=0) -> 1/d, (i=0 AND j=1) -> 0,
-			     (i=1 AND j=0) -> 0, (i=1 AND j=1) -> 0
-			     ENDCOND #) IN
-      	       LET D = 4*(d1*d2)^2-mu*d*(d1-d2)^2 IN
-	       D>0 IMPLIES invertible?(q+mu*g)
+  LET g = (# cols :=2, rows:=2,
+    matrix:= LAMBDA(i,j:below(2)) :
+    COND
+    (i=0 AND j=0) -> 1/(d1*d2), (i=0 AND j=1) -> -(d1+d2)/(2*d1*d2),
+    (i=1 AND j=0) -> -(d1+d2)/(2*d1*d2), (i=1 AND j=1) -> 1
+    ENDCOND #) IN
+  LET q =(# cols :=2, rows:=2,
+    matrix:= LAMBDA(i,j:below(2)) :
+    COND
+    (i=0 AND j=0) -> 1/d, (i=0 AND j=1) -> 0,
+    (i=1 AND j=0) -> 0, (i=1 AND j=1) -> 0
+    ENDCOND #) IN
+  LET D = 4*(d1*d2)^2-mu*d*(d1-d2)^2 IN
+  D>0 IMPLIES invertible?(q+mu*g)
 
 sect_bound_inv: THEOREM FORALL(d,d1,d2,mu:posreal):
-      	       LET g = (# cols :=2, rows:=2, 
-	            matrix:= LAMBDA(i,j:below(2)) : 
-		    	     COND
-			     (i=0 AND j=0) -> 1/(d1*d2), (i=0 AND j=1) -> -(d1+d2)/(2*d1*d2),
-			     (i=1 AND j=0) -> -(d1+d2)/(2*d1*d2), (i=1 AND j=1) -> 1
-			     ENDCOND #) IN
-	       LET q =(# cols :=2, rows:=2, 
-	            matrix:= LAMBDA(i,j:below(2)) : 
-		    	     COND
-			     (i=0 AND j=0) -> 1/d, (i=0 AND j=1) -> 0,
-			     (i=1 AND j=0) -> 0, (i=1 AND j=1) -> 0
-			     ENDCOND #) IN
-      	       LET D = 4*(d1*d2)^2-mu*d*(d1-d2)^2 IN
-	       D>0 IMPLIES LET h = 1/D *(# cols :=2, rows:=2, 
-	            matrix:= LAMBDA(i,j:below(2)) : 
-		    	     COND
-			     (i=0 AND j=0) -> sq(2*d1*d2)*d,        (i=0 AND j=1) -> (2*d*d1*d2)*(d1+d2),
-			     (i=1 AND j=0) -> (2*d*d1*d2)*(d1+d2),  (i=1 AND j=1) -> (4*d1*d2)/mu*(mu*d+d1*d2)
-			     ENDCOND #) IN
-			     inverse(q+mu*g) = h
+  LET g = (# cols :=2, rows:=2,
+    matrix:= LAMBDA(i,j:below(2)) :
+    COND
+    (i=0 AND j=0) -> 1/(d1*d2), (i=0 AND j=1) -> -(d1+d2)/(2*d1*d2),
+    (i=1 AND j=0) -> -(d1+d2)/(2*d1*d2), (i=1 AND j=1) -> 1
+    ENDCOND #) IN
+  LET q =(# cols :=2, rows:=2,
+    matrix:= LAMBDA(i,j:below(2)) :
+    COND
+    (i=0 AND j=0) -> 1/d, (i=0 AND j=1) -> 0,
+    (i=1 AND j=0) -> 0, (i=1 AND j=1) -> 0
+    ENDCOND #) IN
+  LET D = 4*(d1*d2)^2-mu*d*(d1-d2)^2 IN
+  D>0 IMPLIES
+  LET h = 1/D *(# cols :=2, rows:=2,
+    matrix:= LAMBDA(i,j:below(2)) :
+COND
+(i=0 AND j=0) -> sq(2*d1*d2)*d,       (i=0 AND j=1) -> (2*d*d1*d2)*(d1+d2),
+(i=1 AND j=0) -> (2*d*d1*d2)*(d1+d2), (i=1 AND j=1) -> (4*d1*d2)/mu*(mu*d+d1*d2)
+ENDCOND #) IN
+  inverse(q+mu*g) = h
 
 sect_bound_P2Q: THEOREM FORALL(d,d1,d2,mu:posreal, lam:nnreal,v:Vector[2]):
-      	       LET g = (# cols :=2, rows:=2, 
-	            matrix:= LAMBDA(i,j:below(2)) : 
-		    	     COND
-			     (i=0 AND j=0) -> 1/(d1*d2), (i=0 AND j=1) -> -(d1+d2)/(2*d1*d2),
-			     (i=1 AND j=0) -> -(d1+d2)/(2*d1*d2), (i=1 AND j=1) -> 1
-			     ENDCOND #) IN
-	       LET q =(# cols :=2, rows:=2, 
-	            matrix:= LAMBDA(i,j:below(2)) : 
-		    	     COND
-			     (i=0 AND j=0) -> 1/d, (i=0 AND j=1) -> 0,
-			     (i=1 AND j=0) -> 0, (i=1 AND j=1) -> 0
-			     ENDCOND #) IN
-      	       LET D = 4*(d1*d2)^2-mu*d*(d1-d2)^2 IN
-	       D>0 AND
-	       in_ellipsoid_P2?(2,q+mu*g,v,lam) IMPLIES LET h = 1/D *(# cols :=2, rows:=2, 
-	            matrix:= LAMBDA(i,j:below(2)) : 
-		    	     COND
-			     (i=0 AND j=0) -> sq(2*d1*d2)*d,        (i=0 AND j=1) -> (2*d*d1*d2)*(d1+d2),
-			     (i=1 AND j=0) -> (2*d*d1*d2)*(d1+d2),  (i=1 AND j=1) -> (4*d1*d2)/mu*(mu*d+d1*d2)
-			     ENDCOND #) IN
-	       in_ellipsoid_Q2?(2,h,v,lam)
+  LET g = (# cols :=2, rows:=2,
+  matrix:= LAMBDA(i,j:below(2)) :
+COND
+(i=0 AND j=0) -> 1/(d1*d2), (i=0 AND j=1) -> -(d1+d2)/(2*d1*d2),
+(i=1 AND j=0) -> -(d1+d2)/(2*d1*d2), (i=1 AND j=1) -> 1
+ENDCOND #) IN
+  LET q =(# cols :=2, rows:=2,
+  matrix:= LAMBDA(i,j:below(2)) :
+COND
+(i=0 AND j=0) -> 1/d, (i=0 AND j=1) -> 0,
+(i=1 AND j=0) -> 0, (i=1 AND j=1) -> 0
+ENDCOND #) IN
+  LET D = 4*(d1*d2)^2-mu*d*(d1-d2)^2 IN
+  D>0 AND
+  in_ellipsoid_P2?(2,q+mu*g,v,lam) IMPLIES LET h = 1/D *(# cols :=2, rows:=2,
+  matrix:= LAMBDA(i,j:below(2)) :
+COND
+(i=0 AND j=0) -> sq(2*d1*d2)*d,       (i=0 AND j=1) -> (2*d*d1*d2)*(d1+d2),
+(i=1 AND j=0) -> (2*d*d1*d2)*(d1+d2), (i=1 AND j=1) -> (4*d1*d2)/mu*(mu*d+d1*d2)
+ENDCOND #) IN
+  in_ellipsoid_Q2?(2,h,v,lam)
 
 
-sect_bound_ell_Q: THEOREM FORALL (n:posnat, Q:SquareMat(n), c,x:Vector[n], d1,d2:posreal,mu:posreal, f:[real->real]):
-	       LET d = c*(Q*c) IN
-      	       LET D = 4*(d1*d2)^2-mu*d*(d1-d2)^2 IN
-	       LET v = Block2V(V2Block(1,1)(LAMBDA (i:below(1)): c*x,LAMBDA (i:below(1)): f(c*x))) IN
-	       in_ellipsoid_Q?(n,Q,x) AND
-	       D>0 AND
-               (f(c*x)-(1/d1)*(c*x))*(f(c*x)-(1/d2)*(c*x))<=0 AND
-	       d>0
-	       IMPLIES
-	       LET h = 1/D *(# cols :=2, rows:=2, 
-	            matrix:= LAMBDA(i,j:below(2)) : 
-		    	     COND
-			     (i=0 AND j=0) -> sq(2*d1*d2)*d,        (i=0 AND j=1) -> (2*d*d1*d2)*(d1+d2),
-			     (i=1 AND j=0) -> (2*d*d1*d2)*(d1+d2),  (i=1 AND j=1) -> (4*d1*d2)/mu*(mu*d+d1*d2)
-			     ENDCOND #) IN
-	       in_ellipsoid_Q2?(2,h,v,(c*x)^2/d)
+sect_bound_ell_Q: THEOREM FORALL (n:posnat, Q:SquareMat(n),
+		  c,x:Vector[n], d1,d2:posreal,mu:posreal, f:[real->real]):
+  LET d = c*(Q*c) IN
+  LET D = 4*(d1*d2)^2-mu*d*(d1-d2)^2 IN
+  LET v = Block2V(V2Block(1,1)(LAMBDA (i:below(1)): c*x,
+			       LAMBDA (i:below(1)): f(c*x))) IN
+  in_ellipsoid_Q?(n,Q,x) AND
+  D>0 AND
+  (f(c*x)-(1/d1)*(c*x))*(f(c*x)-(1/d2)*(c*x))<=0 AND
+  d>0
+  IMPLIES
+  LET h = 1/D *(# cols :=2, rows:=2,
+  matrix:= LAMBDA(i,j:below(2)) :
+COND
+(i=0 AND j=0) -> sq(2*d1*d2)*d,        (i=0 AND j=1) -> (2*d*d1*d2)*(d1+d2),
+(i=1 AND j=0) -> (2*d*d1*d2)*(d1+d2), (i=1 AND j=1) -> (4*d1*d2)/mu*(mu*d+d1*d2)
+ENDCOND #) IN
+	in_ellipsoid_Q2?(2,h,v,(c*x)^2/d)
 
-sat_sect_bound_ell_Q: THEOREM FORALL (n:posnat, Q:SquareMat(n), c,x:Vector[n],mu:posreal):
-	       LET v = Block2V(V2Block(1,1)(LAMBDA (i:below(1)): c*x,LAMBDA (i:below(1)): sat(c*x))) IN
-	       in_ellipsoid_Q?(n,Q,x) 
-	       IMPLIES LET d1 = sqrt(c*(Q*c)) IN
-	       	       LET D = 4-mu*(d1-1)^2 IN
-		       D>0 AND
-	       d1>0 IMPLIES
-	       LET h = 1/D *(# cols :=2, rows:=2, 
-	            matrix:= LAMBDA(i,j:below(2)) : 
-		    	     COND
-			     (i=0 AND j=0) -> sq(2*d1),        (i=0 AND j=1) -> (2*d1)*(d1+1),
-			     (i=1 AND j=0) -> (2*d1)*(d1+1),  (i=1 AND j=1) -> 4/mu*(mu*d1+1)
-			     ENDCOND #) IN
-	       in_ellipsoid_Q2?(2,h,v,(c*x)^2/(c*(Q*c)))
-	       
-ell_proj_lem_1: LEMMA FORALL (n:posnat, Q:SquareMat(n), c,x:Vector[n], d1,d2:posreal,mu:posreal, f:[real->real]):
-	       LET d = c*(Q*c) IN
-      	       LET D = 4*(d1*d2)^2-mu*d*(d1-d2)^2 IN
-	       in_ellipsoid_Q?(n,Q,x) AND
-	       D>0 AND
-               (f(c*x)-(1/d1)*(c*x))*(f(c*x)-(1/d2)*(c*x))<=0 AND
-	       d>0
-	       IMPLIES 	       LET v = Block2V(V2Block(n,1)( ((c*x)/d)*(Q*c),LAMBDA (i:below(1)): f(c*x))) IN
-	       LET M = Block2M(M2Block(n,1,1,1)(transpose(V2Ml(n,(1/d)*(Q*c))),Zero_mat(1,1),Zero_mat(n,1),I(1))) IN
-	       LET h = 1/D *(# cols :=2, rows:=2, 
-	            matrix:= LAMBDA(i,j:below(2)) : 
-		    	     COND
-			     (i=0 AND j=0) -> sq(2*d1*d2)*d,        (i=0 AND j=1) -> (2*d*d1*d2)*(d1+d2),
-			     (i=1 AND j=0) -> (2*d*d1*d2)*(d1+d2),  (i=1 AND j=1) -> (4*d1*d2)/mu*(mu*d+d1*d2)
-			     ENDCOND #) IN
-	       in_ellipsoid_Q2?(n+1,
-			        M*h*(transpose(M)),v,(c*x)^2/d)
-				
+sat_sect_bound_ell_Q: THEOREM FORALL (n:posnat, Q:SquareMat(n),
+		      c,x:Vector[n],mu:posreal):
+  LET v = Block2V(V2Block(1,1)(LAMBDA (i:below(1)): c*x,
+			       LAMBDA (i:below(1)): sat(c*x))) IN
+  in_ellipsoid_Q?(n,Q,x)
+  IMPLIES
+  LET d1 = sqrt(c*(Q*c)) IN
+  LET D = 4-mu*(d1-1)^2 IN
+  D>0 AND
+  d1>0 IMPLIES
+  LET h = 1/D *(# cols :=2, rows:=2,
+matrix:= LAMBDA(i,j:below(2)) :
+COND
+(i=0 AND j=0) -> sq(2*d1),        (i=0 AND j=1) -> (2*d1)*(d1+1),
+(i=1 AND j=0) -> (2*d1)*(d1+1),  (i=1 AND j=1) -> 4/mu*(mu*d1+1)
+ENDCOND #) IN
+  in_ellipsoid_Q2?(2,h,v,(c*x)^2/(c*(Q*c)))
+
+ell_proj_lem_1: LEMMA FORALL (n:posnat, Q:SquareMat(n),
+		c,x:Vector[n], d1,d2:posreal,mu:posreal, f:[real->real]):
+  LET d = c*(Q*c) IN
+  LET D = 4*(d1*d2)^2-mu*d*(d1-d2)^2 IN
+  in_ellipsoid_Q?(n,Q,x) AND
+  D>0 AND
+  (f(c*x)-(1/d1)*(c*x))*(f(c*x)-(1/d2)*(c*x))<=0 AND
+  d>0
+  IMPLIES
+  LET v = Block2V(V2Block(n,1)( ((c*x)/d)*(Q*c),LAMBDA (i:below(1)): f(c*x))) IN
+  LET M = Block2M(M2Block(n,1,1,1)(transpose(V2Ml(n,(1/d)*(Q*c))),
+				   Zero_mat(1,1),Zero_mat(n,1),I(1))) IN
+  LET h = 1/D *(# cols :=2, rows:=2,
+  matrix:= LAMBDA(i,j:below(2)) :
+COND
+(i=0 AND j=0) -> sq(2*d1*d2)*d,        (i=0 AND j=1) -> (2*d*d1*d2)*(d1+d2),
+(i=1 AND j=0) -> (2*d*d1*d2)*(d1+d2), (i=1 AND j=1) -> (4*d1*d2)/mu*(mu*d+d1*d2)
+ENDCOND #) IN
+  in_ellipsoid_Q2?(n+1,M*h*(transpose(M)),v,(c*x)^2/d)
+
 ell_proj_lem_2: LEMMA FORALL (n:posnat, Q:SquareMat(n), c,x:Vector[n]):
-		c*(Q*c)>0 AND
-		in_ellipsoid_Q?(n,Q,x) IMPLIES
-		in_ellipsoid_Q2?(n,Q,x-((c*x)/(c*(Q*c)))*(Q*c),1-(c*x)^2/(c*(Q*c)))
+  c*(Q*c)>0 AND
+  in_ellipsoid_Q?(n,Q,x) IMPLIES
+  in_ellipsoid_Q2?(n,Q,x-((c*x)/(c*(Q*c)))*(Q*c),1-(c*x)^2/(c*(Q*c)))
 
-ell_proj_combination: THEOREM FORALL (n:posnat, Q:SquareMat(n), c,x:Vector[n], h:Mat(2,2), y:real):
-		      LET v = Block2V(V2Block(1,1)(LAMBDA (i:below(1)): c*x,LAMBDA (i:below(1)):y)) IN
-		      LET outV = Block2V(V2Block(n,1)(x,LAMBDA (i:below(1)): y)) IN
-		      in_ellipsoid_Q?(n,Q,x) AND
-		      in_ellipsoid_Q?(2,h,v) AND
-		      c*(Q*c) >0 IMPLIES
-		      in_ellipsoid_Q?(n+1,Block2M(M2Block(n,1,n,1)(Q-1/(c*(Q*c))*(transpose(V2Ml(n,Q*c))*V2Ml(n,Q*c)),
-						  Zero_mat(1,n),Zero_mat(n,1),Zero_mat(1,1))) +
-					  Block2M(M2Block(n,1,1,1)(1/(c*(Q*c))*transpose(V2Ml(n,Q*c)),Zero_mat(1,1),Zero_mat(n,1),I(1)))*
-		      			  h * transpose(Block2M(M2Block(n,1,1,1)(1/(c*(Q*c))*transpose(V2Ml(n,Q*c)),Zero_mat(1,1),Zero_mat(n,1),I(1)))),
-					  outV)
+ell_proj_combination: THEOREM FORALL (n:posnat, Q:SquareMat(n),
+		      c,x:Vector[n], h:Mat(2,2), y:real):
+  LET v = Block2V(V2Block(1,1)(LAMBDA (i:below(1)): c*x,
+			       LAMBDA (i:below(1)):y)) IN
+  LET outV = Block2V(V2Block(n,1)(x,LAMBDA (i:below(1)): y)) IN
+  in_ellipsoid_Q?(n,Q,x) AND
+  in_ellipsoid_Q?(2,h,v) AND
+  c*(Q*c) >0 IMPLIES
+  in_ellipsoid_Q?(n+1,Block2M(M2Block(n,1,n,1)(
+			Q-1/(c*(Q*c))*(transpose(V2Ml(n,Q*c))*V2Ml(n,Q*c)),
+			Zero_mat(1,n),Zero_mat(n,1),Zero_mat(1,1))) +
+		      Block2M(M2Block(n,1,1,1)(
+			1/(c*(Q*c))*transpose(V2Ml(n,Q*c)),
+			Zero_mat(1,1),Zero_mat(n,1),I(1)))*
+			h *
+			transpose(Block2M(M2Block(n,1,1,1)(
+				    1/(c*(Q*c))*transpose(V2Ml(n,Q*c)),
+				    Zero_mat(1,1),Zero_mat(n,1),I(1)))),
+		  outV)
 
 
-convex_ellipsoid: THEOREM FORALL (n:posnat, Q:SquareMat(n), x,y:Vector[n], lam:nnreal):
-		  in_ellipsoid_Q?(n,Q,x) AND
-		  in_ellipsoid_Q?(n,Q,y) AND
-		  lam<=1 IMPLIES
-		  in_ellipsoid_Q?(n,Q,lam*x+(1-lam)*y)
+convex_ellipsoid: THEOREM FORALL (n:posnat, Q:SquareMat(n),
+		  x,y:Vector[n], lam:nnreal):
+in_ellipsoid_Q?(n,Q,x) AND
+in_ellipsoid_Q?(n,Q,y) AND
+lam<=1 IMPLIES
+in_ellipsoid_Q?(n,Q,lam*x+(1-lam)*y)
 
 
 

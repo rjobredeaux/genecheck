@@ -3023,6 +3023,17 @@
     (+ const-decl "Matrix" matrices nil)
     (real_times_real_is_real application-judgement "real" reals nil))
    shostak))
+ (scal_dist_left_min_TCC1 0
+  (scal_dist_left_min_TCC1-1 nil 3639911109 ("" (subtype-tcc) nil nil)
+   ((* const-decl "Matrix" matrices nil)) nil))
+ (scal_dist_left_min 0
+  (scal_dist_left_min-1 nil 3639911111
+   ("" (skeep) (("" (grind) nil nil)) nil)
+   ((real_minus_real_is_real application-judgement "real" reals nil)
+    (real_times_real_is_real application-judgement "real" reals nil)
+    (- const-decl "Matrix" matrices nil)
+    (* const-decl "Matrix" matrices nil))
+   shostak))
  (zero_scal 0
   (zero_scal-1 nil 3637349515
    ("" (grind) (("" (apply-extensionality) nil nil)) nil)
