@@ -27,7 +27,6 @@ matrix_lemmas: THEORY
  matrix_prod_zero: LEMMA FORALL (A:Matrix): A * zero[A`cols] = zero[A`rows]
 
 
-
 %----------------------------------------------------------------
 % Rows and cols of a subtraction of matrices
 %----------------------------------------------------------------
@@ -35,7 +34,6 @@ matrix_lemmas: THEORY
  minus_rows: LEMMA FORALL (A:Matrix,B: (same_dim?(A))): (A - B)`rows = A`rows
 
  minus_cols: LEMMA FORALL (A:Matrix,B: (same_dim?(A))): (A - B)`cols = A`cols
- 
 
 
 %----------------------------------------------------------------
@@ -54,13 +52,12 @@ matrix_lemmas: THEORY
 
  ident_inverse: LEMMA FORALL (N: (invertible?)): N * (inverse(N)) = I(N`rows)
 
- 
+
 %----------------------------------------------------------------
 % Multiplying the identity matrix by a vector yields the vector
 %----------------------------------------------------------------
 
  ident_mat_prod: LEMMA FORALL (n: posnat, x: Vector[n]): matrices.I(n) * x = x
-
 
 
 %----------------------------------------------------------------
@@ -77,14 +74,17 @@ matrix_lemmas: THEORY
 
  invertible_scal: LEMMA FORALL(N:(invertible?), a:nzreal): invertible?(a*N)
 
- inverse_scal: LEMMA FORALL(N:(invertible?), a:nzreal): inverse(a*N)= (1/a)*inverse(N)
+ inverse_scal: LEMMA FORALL(N:(invertible?), a:nzreal):
+  inverse(a*N)= (1/a)*inverse(N)
 
- inv_prodvect: LEMMA FORALL (A:(invertible?), x:Vector[A`cols]) : A*x = zero[A`rows] IFF x = zero[A`rows]
+ inv_prodvect: LEMMA FORALL (A:(invertible?), x:Vector[A`cols]) :
+  A*x = zero[A`rows] IFF x = zero[A`rows]
 
-tr_sim: LEMMA FORALL (A: Square, B: (same_dim?(A))): invertible?(B) IMPLIES trace(inverse(B)*A*B) = trace(A)
+tr_sim: LEMMA FORALL (A: Square, B: (same_dim?(A))):
+  invertible?(B) IMPLIES trace(inverse(B)*A*B) = trace(A)
 
 invertible22 : LEMMA FORALL (p11,p22,p12,p21:real, MM:Mat(2,2)):
-      	MM = (# cols := 2, rows :=2, 
+	MM = (# cols := 2, rows :=2,
  matrix:= LAMBDA(i,j:below(2)) : COND
 (i=0 AND j=0) -> p11, (i=0 AND j=1) -> p12,
 (i=1 AND j=0) -> p21, (i=1 AND j=1) -> p22
@@ -92,12 +92,12 @@ ENDCOND #)AND (NOT p11*p22-p12*p21 =0) IMPLIES
  invertible?(MM);
 
 inv22 : LEMMA FORALL (p11,p22,p12,p21:real, MM:Mat(2,2)):
-      MM = (# cols := 2, rows :=2, 
+      MM = (# cols := 2, rows :=2,
  matrix:= LAMBDA(i,j:below(2)) : COND
 (i=0 AND j=0) -> p11, (i=0 AND j=1) -> p12,
 (i=1 AND j=0) -> p21, (i=1 AND j=1) -> p22
 ENDCOND #) AND (NOT p11*p22-p12*p21 =0) IMPLIES
- inverse(MM) =(1/(p11*p22-p12*p21))* (# cols := 2, rows :=2, 
+ inverse(MM) =(1/(p11*p22-p12*p21))* (# cols := 2, rows :=2,
  matrix:= LAMBDA(i,j:below(2)) :COND
 (i=0 AND j=0) -> p22, (i=0 AND j=1) -> -p12,
 (i=1 AND j=0) -> -p21, (i=1 AND j=1) -> p11
@@ -114,20 +114,27 @@ ENDCOND#);
 %----------------------------------------------------------------
 % Transpose and inverse "commute"
 %----------------------------------------------------------------
-transp_invertible: LEMMA FORALL (M: (invertible?)):
-                      invertible?(transpose(M))
+transp_invertible:
+LEMMA
+  FORALL (M: (invertible?)):
+    invertible?(transpose(M))
 
 
- transp_inv: LEMMA FORALL (M: (invertible?)):
-                transpose(inverse(M))=inverse((transpose(M)))
+transp_inv:
+LEMMA
+  FORALL (M: (invertible?)):
+    transpose(inverse(M))=inverse((transpose(M)))
 
-sym_inv: LEMMA FORALL (M:(invertible?)): symmetric?(M) IMPLIES symmetric?(inverse(M))
+sym_inv: LEMMA FORALL (M:(invertible?)):
+  symmetric?(M) IMPLIES symmetric?(inverse(M))
 
 %----------------------------------------------------------------
 % Distributive rules for matrices and vectors
 %----------------------------------------------------------------
 
- distr_mat_vect: LEMMA FORALL (A: Matrix, (B: (same_dim?(A))), y: Vector[A`cols]):
+ distr_mat_vect:
+LEMMA
+  FORALL (A: Matrix, (B: (same_dim?(A))), y: Vector[A`cols]):
     (A + B) * y = A * y + B * y
 
  distr_vect_mat: LEMMA FORALL (A: Matrix, x, y: Vector[A`cols]):
@@ -139,26 +146,15 @@ sym_inv: LEMMA FORALL (M:(invertible?)): symmetric?(M) IMPLIES symmetric?(invers
 % Technical lemmas about applying "minus" to matrices
 %----------------------------------------------------------------
 
- matrix_sum_minus: LEMMA FORALL (A: Matrix, (B: (same_dim?(A)))): A - B = A + (-B)
+ matrix_sum_minus:
+ LEMMA
+   FORALL (A: Matrix, (B: (same_dim?(A)))): A - B = A + (-B)
 
- matrix_prod_minus: LEMMA FORALL (A: Matrix, x: Vector[A`cols]): -(A * x) = (-A) * x
+ matrix_prod_minus:
+ LEMMA
+  FORALL (A: Matrix, x: Vector[A`cols]): -(A * x) = (-A) * x
 
 neg_vect_mult : LEMMA FORALL (M:Matrix, (v1:Vector[M`cols])): M*(-v1) = -(M*v1)
-
-
-
-%----------------------------------------------------------------
-% Some more distributive rules for matrices and vectors
-%----------------------------------------------------------------
-
- distr_esc_add: LEMMA FORALL (A: Matrix, (B: (same_dim?(A))), x:Vector[A`rows], y:Vector[A`cols]):
-    x * ((A + B) * y) = x * (A * y) + x * (B * y)
-
- distr_esc_dif: LEMMA FORALL (A: Matrix, (B: (same_dim?(A))), x:Vector[A`rows], y:Vector[A`cols]):
-    x * ((A - B) * y) = x * (A * y) - x * (B * y)
-
- distr_add_esc: LEMMA FORALL (A: (square?), x:Vector[A`cols], y:Vector[A`cols]):
-    (x + y) * (A  * (x + y)) = x * (A * x) + x * (A * y) + y * (A * x) + y * (A * y)
 
 
 END matrix_lemmas

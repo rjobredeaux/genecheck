@@ -56,12 +56,11 @@ Matrix =
     matrix := LAMBDA (i: below(M`rows1), j: below(M`cols2)):
       M`matrix(i,j + M`cols1) #)
 
- Block2M4(M):
+ Block2M4(M): %lower right block
 Matrix =
  (# rows := M`rows2, cols := M`cols2,matrix :=
  LAMBDA (i: below(M`rows2), j: below(M`cols2)):
 		M`matrix(i + M`rows1,j + M`cols1) #)
- %lower right block
 
 M2Block(m,n,p,q)(A: Mat(m,p),B: Mat(n,p),C: Mat(m,q),D: Mat(n,q)):
 Block_Matrix =
